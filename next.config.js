@@ -2,6 +2,7 @@
 const nextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
+    qualities: [75, 100],
     remotePatterns: [{ protocol: 'https', hostname: '*.supabase.co' }],
   },
   async redirects() {

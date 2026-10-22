@@ -33,8 +33,10 @@ export const circles: Circle[] = [
 
 /** The "While You Wait" entry points inside Common Ground. */
 export const whileYouWait = [
+  { title: 'While You Wait', text: 'Everything for the weeks between the call and the first day, in one place.', href: '/families/while-you-wait' },
   { title: 'I need a next step', text: 'A short guided path to what matters this week.', href: '/families/intake' },
   { title: 'What is ABA, in plain words', text: 'No jargon. What a session looks like and what your role is.', href: '/families/what-is-aba' },
   { title: 'Help at home right now', text: 'Routines, transitions, and the hard moments.', href: '/families/at-home' },
   { title: 'Paying for care', text: 'Insurance, Medicaid, waivers, and grants explained.', href: '/families/financial' },
+  { title: 'Parent Pulse', text: 'A one-minute weekly check-in on you.', href: '/families/pulse' },
 ];

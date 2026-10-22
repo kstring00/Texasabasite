@@ -192,7 +192,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
               <ul className="mt-3 space-y-3">
                 {whileYouWait.slice(0, 3).map((w) => (
                   <li key={w.href}>
-                    <Link href={w.href} className="group flex items-start justify-between gap-3 rounded-2xl border border-line p-4 transition hover:border-ink/40">
+                    <Link href={w.href === '/families/while-you-wait' ? `/families/while-you-wait?center=${l.slug}` : w.href} className="group flex items-start justify-between gap-3 rounded-2xl border border-line p-4 transition hover:border-ink/40">
                       <span>
                         <span className="block font-semibold text-ink">{w.title}</span>
                         <span className="block text-sm text-body">{w.text}</span>

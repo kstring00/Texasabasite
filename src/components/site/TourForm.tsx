@@ -6,7 +6,7 @@ import { CalendarCheck, ArrowRight, Users } from 'lucide-react';
 import { submitTourRequest, type TourRequestResult } from '@/app/request-a-tour/actions';
 import { locations, getLocation } from '@/data/locations';
 import { tourResponder } from '@/data/people';
-import { whileYouWait, circles } from '@/data/circles';
+import { circles } from '@/data/circles';
 import { upcomingEvents } from '@/data/events';
 import { captureAttribution, track } from '@/lib/site/analytics';
 import { cn } from '@/lib/site/utils';
@@ -199,10 +199,10 @@ export function Confirmation({ name, centerSlug }: { name: string; centerSlug: s
         {center ? `${center.name} will text you within one business day.` : 'We will text you within one business day.'} While you wait, here are two things families find helpful:
       </p>
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        <Link href={whileYouWait[0].href} className="card card-hover block">
+        <Link href={`/families/while-you-wait?center=${centerSlug}`} className="card card-hover block">
           <p className="eyebrow">While you wait</p>
-          <p className="h3 mt-2">{whileYouWait[0].title}</p>
-          <p className="mt-2 text-base text-body">{whileYouWait[0].text}</p>
+          <p className="h3 mt-2">What to do between now and day one</p>
+          <p className="mt-2 text-base text-body">A next step, plain answers about ABA, help at home, and parents to talk to. Free, starting now.</p>
           <span className="mt-4 inline-flex items-center gap-1 font-semibold text-ink">
             Open Common Ground <ArrowRight className="h-4 w-4" aria-hidden />
           </span>
