@@ -16,8 +16,8 @@ const nav = [
   { href: '/insurance', label: 'Insurance & cost' },
   { href: '/families', label: 'For families' },
   { href: '/events', label: 'Events' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/team', label: 'Your team' },
+  { href: '/blog', label: 'Blog', secondary: true },
+  { href: '/team', label: 'Your team', secondary: true },
 ];
 
 export function Header() {
@@ -35,12 +35,12 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line/70 bg-paper/85 backdrop-blur-md" style={{ height: 'var(--header-h)' }}>
-      <div className="wrap flex h-full items-center justify-between gap-4">
+      <div className="mx-auto flex h-full w-full max-w-[90rem] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         <Link href="/" className="rounded-xl" aria-label="Texas ABA Centers home">
           <Logo />
         </Link>
 
-        <nav className="hidden items-center gap-1 xl:flex" aria-label="Main">
+        <nav className="hidden items-center gap-0.5 xl:flex" aria-label="Main">
           {nav.map((n) => {
             const active = pathname === n.href || pathname.startsWith(n.href + '/');
             return (
@@ -48,7 +48,7 @@ export function Header() {
                 key={n.href}
                 href={n.href}
                 aria-current={active ? 'page' : undefined}
-                className={cn('whitespace-nowrap rounded-full px-3 py-2 text-[0.95rem] font-semibold text-body transition hover:bg-ink/5 hover:text-ink', active && 'bg-ink/5 text-ink')}
+                className={cn('whitespace-nowrap rounded-full px-2.5 py-2 text-[0.95rem] font-semibold text-body transition hover:bg-ink/5 hover:text-ink', active && 'bg-ink/5 text-ink', 'secondary' in n && n.secondary && 'hidden 2xl:inline-flex')}
               >
                 {n.label}
               </Link>
