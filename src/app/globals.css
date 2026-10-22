@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────
+   Design tokens. One source of truth for the site and Common Ground.
+   Colors are space-separated RGB so Tailwind can apply alpha.
+   ───────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* Pulled from the Texas ABA Centers mark: navy wordmark, red→plum hearts. */
+    --ink: 26 46 82;        /* deep grounded navy */
+    --paper: 251 248 243;   /* warm cream */
+    --card: 255 255 255;
+    --line: 227 221 212;
+    --sun: 242 181 76;      /* one accent that feels like sunlight */
+    --rose: 226 40 58;      /* brand red, used sparingly */
+    --plum: 112 48 104;
+    --body: 52 54 59;
+    --soft: 110 114 122;
+
+    --header-h: 4.25rem;
+    --radius: 1rem;
+
+    /* Fonts are set on <html> by the layout (fontsource). */
+    --font-serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+    --font-sans: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-display: var(--font-serif);
+    --font-body: var(--font-sans);
+
+    /* Common Ground legacy variables */
+    --brand-navy: #1a2e52;
+    --brand-red: #e2283a;
+    --brand-burgundy: #8b2442;
+    --brand-plum: #703068;
+    --brand-purple: #32175a;
+    --brand-muted: #6e727a;
+    --brand-warm: #c5c2cf;
+    --brand-teal: #0F6E56;
+
+    color-scheme: light;
+  }
+
+  :root[data-theme='dark'] {
+    --ink: 236 232 224;
+    --paper: 22 25 36;
+    --card: 31 35 50;
+    --line: 58 63 82;
+    --sun: 247 196 108;
+    --rose: 240 96 110;
+    --plum: 186 128 178;
+    --body: 221 217 210;
+    --soft: 160 164 176;
+    color-scheme: dark;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --ink: 236 232 224;
+      --paper: 22 25 36;
+      --card: 31 35 50;
+      --line: 58 63 82;
+      --sun: 247 196 108;
+      --rose: 240 96 110;
+      --plum: 186 128 178;
+      --body: 221 217 210;
+      --soft: 160 164 176;
+      color-scheme: dark;
+    }
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+
+  body {
+    background-color: rgb(var(--paper));
+    color: rgb(var(--body));
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    color: rgb(var(--ink));
+    letter-spacing: -0.01em;
+    font-variation-settings: 'opsz' 72, 'SOFT' 50, 'WONK' 0;
+    text-wrap: balance;
+  }
+  h4, h5, h6 { color: rgb(var(--ink)); }
+
+  :focus-visible {
+    outline: 3px solid rgb(var(--sun));
+    outline-offset: 3px;
+    border-radius: 0.5rem;
+  }
+
+  ::selection { background: rgb(var(--sun) / 0.35); }
+
+  img { height: auto; }
+}
+
+@layer components {
+  .wrap { @apply mx-auto w-full max-w-wrap px-4 sm:px-6 lg:px-8; }
+
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-base font-semibold transition-all duration-200
+      focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sun/60 active:scale-[0.98];
+  }
+  .btn-primary { @apply btn bg-ink text-paper shadow-lift hover:bg-ink/90 hover:shadow-card-hover; }
+  .btn-secondary { @apply btn border border-ink/20 bg-card text-ink hover:border-ink/40 hover:bg-ink/5; }
+  .btn-ghost { @apply btn text-ink hover:bg-ink/5; }
+  .btn-sun { @apply btn bg-sun text-ink shadow-lift hover:brightness-105; }
+  .btn-accent { @apply btn bg-accent text-accent-foreground hover:bg-accent-dark; }
+
+  .eyebrow { @apply text-xs font-bold uppercase tracking-[0.18em] text-plum; }
+  .h1 { @apply font-serif text-4xl leading-[1.08] text-ink sm:text-5xl lg:text-6xl; }
+  .h2 { @apply font-serif text-3xl leading-tight text-ink sm:text-4xl; }
+  .h3 { @apply font-serif text-xl leading-snug text-ink sm:text-2xl; }
+  .lede { @apply text-lg leading-relaxed text-body sm:text-xl; }
+  .card { @apply rounded-3xl border border-line bg-card p-6 shadow-card transition-all duration-300; }
+  .card-hover { @apply hover:-translate-y-1 hover:shadow-card-hover; }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-3 py-1 text-sm font-semibold text-ink; }
+  .prose-site { @apply text-body [&_a]:font-semibold [&_a]:text-ink [&_a]:underline [&_a]:underline-offset-4 [&_h2]:mt-10 [&_h2]:text-2xl [&_h3]:mt-8 [&_h3]:text-xl [&_li]:my-1 [&_p]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6; }
+
+  .input-field {
+    @apply w-full rounded-2xl border border-line bg-card px-4 py-3 text-base text-ink placeholder:text-soft
+      focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/15;
+  }
+  .label { @apply mb-2 block text-sm font-semibold text-ink; }
+
+  /* Common Ground legacy classes (kept so mounted pages keep working) */
+  .page-shell { @apply space-y-8 md:space-y-10; }
+  .page-header { @apply space-y-3; }
+  .page-title { @apply text-2xl font-bold text-ink sm:text-3xl md:text-[2rem]; }
+  .page-description { @apply max-w-3xl text-sm leading-relaxed text-soft sm:text-base; }
+}
+
+/* Photography treatment: soft corners, warm grade, so mixed sources feel like one family. */
+.photo { @apply overflow-hidden rounded-3xl; }
+.photo img { filter: saturate(0.92) sepia(0.08) contrast(1.02); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
