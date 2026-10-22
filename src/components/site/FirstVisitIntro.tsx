@@ -47,7 +47,8 @@ export function FirstVisitIntro() {
       return;
     }
     setPhase('draw');
-    const t = (fn: () => void, ms: number) => timers.current.push(window.setTimeout(fn, ms));
+    const pending = timers.current;
+    const t = (fn: () => void, ms: number) => pending.push(window.setTimeout(fn, ms));
     t(() => setPhase('fill'), remaining * 0.3);
     t(() => {
       // Shared-element settle: measure where the header mark lives.
@@ -61,7 +62,7 @@ export function FirstVisitIntro() {
       setPhase('settle');
     }, remaining * 0.68);
     t(() => finish(), remaining - 20);
-    return () => timers.current.forEach((x) => window.clearTimeout(x));
+    return () => pending.forEach((x) => window.clearTimeout(x));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduce]);
 
