@@ -20,7 +20,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
   const organizer = events.eventbriteOrganizerId;
   return (
     <>
-      <Section eyebrow="Events" title="This month across Texas." lede="Parent nights, trainings, and family days. Open to every family, enrolled or not. RSVP on Eventbrite so we know how many chairs to set out.">
+      <Section titleAs="h1" eyebrow="Events" title="This month across Texas." lede="Parent nights, trainings, and family days. Open to every family, enrolled or not. RSVP on Eventbrite so we know how many chairs to set out.">
         <EventsFilter current={center} />
         {upcoming.length > 0 ? (
           <ul className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">

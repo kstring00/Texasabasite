@@ -45,7 +45,7 @@ export function Wordmark({ className }: { className?: string }) {
 export function Logo({ className, markClassName }: { className?: string; markClassName?: string }) {
   return (
     <span className={cn('inline-flex items-center gap-3', className)}>
-      <FlowerMark className={cn('h-11 w-11', markClassName)} id="header-mark" title="" />
+      <span id="header-mark-anchor" className="inline-flex"><FlowerMark className={cn("h-11 w-11", markClassName)} id="header-mark" title="" /></span>
       <Wordmark />
     </span>
   );

@@ -15,6 +15,7 @@ import { ServicesStrip, InsuranceStrip, CommonGroundBridge } from '@/components/
 import { EventsThisMonth } from '@/components/site/EventsThisMonth';
 import { FromTheBlog } from '@/components/site/FromTheBlog';
 import { Hero } from '@/components/site/Hero';
+import { Reveal, RevealGroup, RevealItem } from '@/components/site/motion';
 
 export const metadata: Metadata = {
   title: 'ABA Therapy & Autism Evaluations in Texas, No Long Waitlist | Texas ABA Centers',
@@ -28,16 +29,22 @@ export default function HomePage() {
   return (
     <>
       <Hero>
-        <p className="eyebrow">Texas ABA Centers</p>
-        <h1 className="h1 mt-3">{site.tagline}</h1>
-        <p className="lede mt-5 max-w-2xl">
-          See your nearest center, meet the people who will be with your child, and know what the first visit looks like before you ever walk in.
-        </p>
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <TourButton size="lg" />
-          <CallButton place="hero" variant="ghost" />
-        </div>
-        <CenterFinder className="mt-8" compact />
+        <Reveal>
+          <p className="eyebrow">Texas ABA Centers</p>
+          <h1 className="h1 mt-3">{site.tagline}</h1>
+        </Reveal>
+        <Reveal delay={0.08}>
+          <p className="lede mt-5 max-w-2xl">
+            See your nearest center, meet the people who will be with your child, and know what the first visit looks like before you ever walk in.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <TourButton size="lg" />
+            <CallButton place="hero" variant="ghost" />
+          </div>
+        </Reveal>
+        <Reveal delay={0.16}>
+          <CenterFinder className="mt-8" compact />
+        </Reveal>
       </Hero>
 
       <Section eyebrow="How it works" title="Your path from first worry to first day." lede="Five steps. Each one says who you meet and how long it takes. No step is a surprise.">
@@ -48,13 +55,13 @@ export default function HomePage() {
       </Section>
 
       <Section id="centers" tone="tint" eyebrow="Six centers" title="Centers across Texas." lede="Houston, Dallas–Fort Worth, and Austin. Every center does evaluations and therapy, so there is one front door.">
-        <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <RevealGroup as="ul" className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {locations.map((l, i) => (
-            <li key={l.slug}>
+            <RevealItem as="li" key={l.slug}>
               <LocationCard location={l} index={i} />
-            </li>
+            </RevealItem>
           ))}
-        </ul>
+        </RevealGroup>
       </Section>
 
       <CommonGroundBridge />
@@ -69,7 +76,9 @@ export default function HomePage() {
 
       {people.length > 0 && (
         <Section id="people" eyebrow="Your people" title="A name, not a call center." lede="These are the people who answer when you reach out. They text back.">
-          <PeopleCards people={people} />
+          <Reveal>
+            <PeopleCards people={people} />
+          </Reveal>
         </Section>
       )}
 

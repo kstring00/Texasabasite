@@ -6,13 +6,14 @@ import { circles, whileYouWait } from '@/data/circles';
 import { CoverageButton } from './Buttons';
 import { Section } from './Section';
 import { cn } from '@/lib/site/utils';
+import { Reveal, RevealGroup, RevealItem } from './motion';
 
 export function ServicesStrip({ title = 'What we offer', lede }: { title?: string; lede?: string }) {
   return (
     <Section eyebrow="Services" title={title} lede={lede ?? 'From the first evaluation to a teen planning what comes after school. One team, one plan, you in it.'}>
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <RevealGroup as="ul" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((s) => (
-          <li key={s.slug}>
+          <RevealItem as="li" key={s.slug}>
             <Link href={`/services/${s.slug}`} className="card card-hover flex h-full flex-col">
               <p className="eyebrow">{s.ages}</p>
               <h3 className="h3 mt-2">{s.name}</h3>
@@ -21,9 +22,9 @@ export function ServicesStrip({ title = 'What we offer', lede }: { title?: strin
                 Learn more <ArrowRight className="h-4 w-4" aria-hidden />
               </span>
             </Link>
-          </li>
+          </RevealItem>
         ))}
-      </ul>
+      </RevealGroup>
     </Section>
   );
 }
@@ -78,7 +79,7 @@ export function CommonGroundBridge({ className }: { className?: string }) {
       <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-sun/20 blur-3xl" aria-hidden />
       <div className="pointer-events-none absolute -bottom-40 -left-20 h-96 w-96 rounded-full bg-plum/40 blur-3xl" aria-hidden />
       <div className="wrap relative grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-        <div>
+        <Reveal>
           <p className="eyebrow text-sun">Common Ground</p>
           <h2 className="mt-3 font-serif text-3xl leading-tight text-paper sm:text-4xl lg:text-5xl">You&rsquo;re part of the team from day one.</h2>
           <p className="mt-5 max-w-xl text-lg text-paper/80">
@@ -98,16 +99,16 @@ export function CommonGroundBridge({ className }: { className?: string }) {
               </li>
             ))}
           </ul>
-        </div>
-        <ul className="grid gap-4 sm:grid-cols-2">
+        </Reveal>
+        <RevealGroup as="ul" className="grid gap-4 sm:grid-cols-2" stagger={0.1}>
           {pillars.map((p) => (
-            <li key={p.title} className="rounded-3xl border border-paper/15 bg-paper/5 p-5 backdrop-blur-sm">
+            <RevealItem as="li" key={p.title} className="rounded-3xl border border-paper/15 bg-paper/5 p-5 backdrop-blur-sm">
               <p.icon className="h-6 w-6 text-sun" aria-hidden />
               <h3 className="mt-3 font-sans text-lg font-bold text-paper">{p.title}</h3>
               <p className="mt-1 text-base text-paper/75">{p.text}</p>
-            </li>
+            </RevealItem>
           ))}
-        </ul>
+        </RevealGroup>
       </div>
     </section>
   );

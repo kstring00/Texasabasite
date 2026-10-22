@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function InsurancePage() {
   return (
     <>
-      <Section eyebrow="Insurance & cost" title="Know the cost before you commit." lede={insurance.freeVerification}>
+      <Section titleAs="h1" eyebrow="Insurance & cost" title="Know the cost before you commit." lede={insurance.freeVerification}>
         {insurance.plans.length > 0 && (
           <ul className="flex flex-wrap gap-2" aria-label="Plans we work with">
             {insurance.plans.map((p) => (

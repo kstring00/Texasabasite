@@ -14,7 +14,7 @@ export default function BlogIndex() {
   const posts = getAllPosts();
   return (
     <>
-      <Section eyebrow="Blog" title="Plain answers, with a name on every post." lede="Short and practical. Written by the people at the centers, not a content farm.">
+      <Section titleAs="h1" eyebrow="Blog" title="Plain answers, with a name on every post." lede="Short and practical. Written by the people at the centers, not a content farm.">
         {posts.length === 0 ? (
           <p className="text-base text-body">First posts are on the way.</p>
         ) : (

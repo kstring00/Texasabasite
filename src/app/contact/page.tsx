@@ -17,7 +17,7 @@ export default function ContactPage() {
   const people = peopleForRegion('all');
   return (
     <>
-      <Section eyebrow="Contact" title="Talk to a person." lede={`Call ${site.phone.display}, ${site.phoneHours.toLowerCase()}. Or request a tour and we text you back within one business day.`}>
+      <Section titleAs="h1" eyebrow="Contact" title="Talk to a person." lede={`Call ${site.phone.display}, ${site.phoneHours.toLowerCase()}. Or request a tour and we text you back within one business day.`}>
         <div className="flex flex-wrap gap-3">
           <TourButton size="lg" />
           <CallButton place="contact" />

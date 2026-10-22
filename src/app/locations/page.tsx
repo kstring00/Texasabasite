@@ -16,7 +16,7 @@ export default function LocationsPage() {
   const regions = ['Houston', 'Dallas–Fort Worth', 'Austin'] as const;
   return (
     <>
-      <Section eyebrow="Locations" title="Six centers across Texas." lede="Type your ZIP or city and we will point you to the closest one. Every center does evaluations and therapy.">
+      <Section titleAs="h1" eyebrow="Locations" title="Six centers across Texas." lede="Type your ZIP or city and we will point you to the closest one. Every center does evaluations and therapy.">
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <CenterFinder />
           <TexasMap />

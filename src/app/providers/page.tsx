@@ -16,7 +16,7 @@ export default function ProvidersPage() {
   const contact = visiblePeople.filter((p) => p.role === 'business-development');
   return (
     <>
-      <Section eyebrow="For providers" title="Refer a family in one call." lede="Pediatricians, therapists, ECI, and school teams: we take referrals directly and we do the diagnostic evaluation in-house, so a family you refer is not sent to a second waitlist.">
+      <Section titleAs="h1" eyebrow="For providers" title="Refer a family in one call." lede="Pediatricians, therapists, ECI, and school teams: we take referrals directly and we do the diagnostic evaluation in-house, so a family you refer is not sent to a second waitlist.">
         <div className="grid gap-5 md:grid-cols-3">
           <div className="card">
             <p className="eyebrow">Who to contact</p>

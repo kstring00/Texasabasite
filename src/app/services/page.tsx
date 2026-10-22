@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function ServicesPage() {
   return (
     <>
-      <Section eyebrow="Services" title="What ABA is here, in plain words." lede="ABA stands for Applied Behavior Analysis. A trained therapist helps your child learn the skills they want and need, in small steps, with lots of encouragement, and keeps track of what works. Here it is play-based, neurodiversity-affirming, and built with you in the room.">
+      <Section titleAs="h1" eyebrow="Services" title="What ABA is here, in plain words." lede="ABA stands for Applied Behavior Analysis. A trained therapist helps your child learn the skills they want and need, in small steps, with lots of encouragement, and keeps track of what works. Here it is play-based, neurodiversity-affirming, and built with you in the room.">
         <dl className="grid gap-4 sm:grid-cols-3">
           <div className="card">
             <dt className="font-semibold text-ink">BCBA</dt>

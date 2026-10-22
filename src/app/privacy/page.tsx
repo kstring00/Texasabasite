@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <Section eyebrow="Privacy" title="What we collect on this site, and why.">
+    <Section titleAs="h1" eyebrow="Privacy" title="What we collect on this site, and why.">
       <div className="prose-site max-w-3xl">
         <p>
           <strong>Draft for review.</strong> This policy covers the website only. It is a plain-language draft for Texas ABA Centers&rsquo; legal and compliance team to finalize before launch.

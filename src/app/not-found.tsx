@@ -5,7 +5,7 @@ import { CenterFinder } from '@/components/site/CenterFinder';
 
 export default function NotFound() {
   return (
-    <Section eyebrow="404" title="That page moved, but we are still here." lede="Find your nearest center, or go to the page most families are looking for.">
+    <Section titleAs="h1" eyebrow="404" title="That page moved, but we are still here." lede="Find your nearest center, or go to the page most families are looking for.">
       <CenterFinder compact />
       <div className="mt-8 flex flex-wrap gap-3">
         <TourButton />

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function GettingStartedPage() {
   return (
     <>
-      <Section eyebrow="Getting started" title="From first worry to first day." lede="Nobody should have to guess what happens next. Here is every step, who you meet, what to bring, and how long it usually takes.">
+      <Section titleAs="h1" eyebrow="Getting started" title="From first worry to first day." lede="Nobody should have to guess what happens next. Here is every step, who you meet, what to bring, and how long it usually takes.">
         <StepPath compact />
       </Section>
       {steps.map((s, i) => (

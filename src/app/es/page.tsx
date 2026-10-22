@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function EsPage() {
   return (
     <div lang="es">
-      <Section eyebrow="Español" title="Terapia ABA y evaluaciones de autismo en Texas." lede="La versión completa en español está en camino. Mientras tanto, puede llamarnos y hablar con una persona en español.">
+      <Section titleAs="h1" eyebrow="Español" title="Terapia ABA y evaluaciones de autismo en Texas." lede="La versión completa en español está en camino. Mientras tanto, puede llamarnos y hablar con una persona en español.">
         <div className="flex flex-wrap gap-3">
           <a href={`tel:${site.phone.tel}`} className="btn-primary">
             Llamar {site.phone.display}

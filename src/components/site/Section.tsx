@@ -1,4 +1,5 @@
 import { cn } from '@/lib/site/utils';
+import { Reveal } from './motion';
 
 export function Section({
   id,
@@ -10,6 +11,7 @@ export function Section({
   tone = 'paper',
   align = 'left',
   as: Tag = 'section',
+  titleAs: TitleTag = 'h2',
 }: {
   id?: string;
   eyebrow?: string;
@@ -20,6 +22,8 @@ export function Section({
   tone?: 'paper' | 'card' | 'ink' | 'tint';
   align?: 'left' | 'center';
   as?: 'section' | 'div';
+  /** The first section on a page owns the H1. */
+  titleAs?: 'h1' | 'h2';
 }) {
   const tones = {
     paper: '',
@@ -31,11 +35,11 @@ export function Section({
     <Tag id={id} className={cn('py-16 sm:py-20 lg:py-24', tones[tone], className)}>
       <div className="wrap">
         {(eyebrow || title || lede) && (
-          <header className={cn('mb-10 max-w-3xl sm:mb-12', align === 'center' && 'mx-auto text-center')}>
+          <Reveal as="header" className={cn('mb-10 max-w-3xl sm:mb-12', align === 'center' && 'mx-auto text-center')}>
             {eyebrow && <p className={cn('eyebrow mb-3', tone === 'ink' && 'text-sun')}>{eyebrow}</p>}
-            {title && <h2 className="h2">{title}</h2>}
+            {title && <TitleTag className={TitleTag === 'h1' ? 'h1' : 'h2'}>{title}</TitleTag>}
             {lede && <p className="lede mt-4">{lede}</p>}
-          </header>
+          </Reveal>
         )}
         {children}
       </div>

@@ -20,6 +20,7 @@ export default async function RequestTourPage({ searchParams }: { searchParams: 
   const isCoverage = sp.about === 'coverage';
   return (
     <Section
+      titleAs="h1"
       eyebrow={isCoverage ? 'Free benefits check' : 'Request a tour'}
       title={isCoverage ? 'Find out what your plan covers.' : center ? `Come see ${center.name}.` : 'Come see a center.'}
       lede={isCoverage ? 'We call your insurance so you do not have to, and come back with plain numbers. Nothing to pay, nothing to commit to.' : 'Four quick questions. Then a real person texts you to set a time.'}

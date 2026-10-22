@@ -2,7 +2,8 @@
 
 import { useActionState, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { CalendarCheck, ArrowRight, Users } from 'lucide-react';
+import { CalendarCheck, ArrowRight, Users, Check } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { submitTourRequest, type TourRequestResult } from '@/app/request-a-tour/actions';
 import { locations, getLocation } from '@/data/locations';
 import { tourResponder } from '@/data/people';
@@ -191,14 +192,25 @@ export function Confirmation({ name, centerSlug }: { name: string; centerSlug: s
   const center = getLocation(centerSlug);
   const nextEvent = upcomingEvents(centerSlug)[0];
   const circle = circles[0];
+  const reduce = useReducedMotion();
+  const item = (i: number) => (reduce ? {} : { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 }, transition: { delay: 0.25 + i * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } });
   return (
     <div className="card p-6 sm:p-8" role="status" aria-live="polite">
-      <p className="eyebrow">Got it</p>
-      <h2 className="h2 mt-2">Thanks, {name}.</h2>
-      <p className="lede mt-3">
+      <motion.span
+        className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-sun text-ink"
+        initial={reduce ? false : { scale: 0.6, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 18 }}
+        aria-hidden
+      >
+        <Check className="h-7 w-7" strokeWidth={3} />
+      </motion.span>
+      <motion.p className="eyebrow mt-5" {...item(0)}>Got it</motion.p>
+      <motion.h2 className="h2 mt-2" {...item(1)}>Thanks, {name}.</motion.h2>
+      <motion.p className="lede mt-3" {...item(2)}>
         {center ? `${center.name} will text you within one business day.` : 'We will text you within one business day.'} While you wait, here are two things families find helpful:
-      </p>
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      </motion.p>
+      <motion.div className="mt-8 grid gap-4 sm:grid-cols-2" {...item(3)}>
         <Link href={`/families/while-you-wait?center=${centerSlug}`} className="card card-hover block">
           <p className="eyebrow">While you wait</p>
           <p className="h3 mt-2">What to do between now and day one</p>
@@ -234,7 +246,7 @@ export function Confirmation({ name, centerSlug }: { name: string; centerSlug: s
             </span>
           </Link>
         )}
-      </div>
+      </motion.div>
       <div className="mt-8 flex flex-wrap gap-3">
         <CallButton location={center} place="confirmation" label={center ? `Call ${center.name} now` : undefined} />
         <Link href="/getting-started" className="btn-ghost">

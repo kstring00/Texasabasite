@@ -30,7 +30,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
   const others = services.filter((o) => o.slug !== s.slug);
   return (
     <>
-      <Section eyebrow={`Services · ${s.ages}`} title={s.name} lede={s.intro}>
+      <Section titleAs="h1" eyebrow={`Services · ${s.ages}`} title={s.name} lede={s.intro}>
         <div className="flex flex-wrap gap-2">
           <span className="chip">{s.ages}</span>
           <span className="chip">{s.where}</span>

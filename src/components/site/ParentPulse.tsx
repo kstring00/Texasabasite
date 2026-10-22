@@ -41,6 +41,7 @@ export function ParentPulse() {
         <section className="card">
           {showForm ? (
             <BandwidthCheck
+              hideHeader
               initialInputs={last?.inputs}
               submitLabel="Save this week's pulse"
               onComplete={(r) => {

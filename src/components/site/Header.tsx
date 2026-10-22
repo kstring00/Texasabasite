@@ -48,7 +48,7 @@ export function Header() {
                 key={n.href}
                 href={n.href}
                 aria-current={active ? 'page' : undefined}
-                className={cn('rounded-full px-3 py-2 text-[0.95rem] font-semibold text-body transition hover:bg-ink/5 hover:text-ink', active && 'bg-ink/5 text-ink')}
+                className={cn('whitespace-nowrap rounded-full px-3 py-2 text-[0.95rem] font-semibold text-body transition hover:bg-ink/5 hover:text-ink', active && 'bg-ink/5 text-ink')}
               >
                 {n.label}
               </Link>
@@ -59,7 +59,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <Link
             href={isEs ? '/' : '/es'}
-            className="hidden items-center gap-1 rounded-full px-3 py-2 text-sm font-semibold text-body hover:bg-ink/5 md:inline-flex"
+            className="hidden items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold text-body hover:bg-ink/5 md:inline-flex"
             lang={isEs ? 'en' : 'es'}
             aria-label={isEs ? 'Switch to English' : 'Cambiar a español'}
           >
@@ -68,11 +68,11 @@ export function Header() {
           <a
             href={`tel:${site.phone.tel}`}
             onClick={() => track({ name: 'call_tap', center: 'main', place: 'header' })}
-            className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-ink hover:bg-ink/5 md:inline-flex"
+            className="hidden items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold text-ink hover:bg-ink/5 md:inline-flex xl:hidden 2xl:inline-flex"
           >
             <Phone className="h-4 w-4" aria-hidden /> {site.phone.display}
           </a>
-          <Link href="/request-a-tour" className="btn-primary hidden min-h-11 px-5 text-base sm:inline-flex">
+          <Link href="/request-a-tour" className="btn-primary hidden min-h-11 whitespace-nowrap px-5 text-base sm:inline-flex">
             Request a tour
           </Link>
           <button

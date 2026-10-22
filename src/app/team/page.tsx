@@ -17,7 +17,7 @@ export default function TeamPage() {
   const cds = visiblePeople.filter((p) => p.role === 'clinical-director');
   return (
     <>
-      <Section eyebrow="Your team" title="Real names. Real faces. Direct lines." lede="When you call, you reach a person who works here and knows the centers. These are the people you will hear back from.">
+      <Section titleAs="h1" eyebrow="Your team" title="Real names. Real faces. Direct lines." lede="When you call, you reach a person who works here and knows the centers. These are the people you will hear back from.">
         {bd.length > 0 && <PeopleCards people={bd} />}
       </Section>
       {reds.length > 0 && (
