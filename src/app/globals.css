@@ -1,0 +1,561 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────
+   Design tokens. One source of truth for the site and Common Ground.
+   Colors are space-separated RGB so Tailwind can apply alpha.
+   ───────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* Pulled from the Texas ABA Centers mark: navy wordmark, red→plum hearts. */
+    --ink: 26 46 82;        /* deep grounded navy */
+    --paper: 251 248 243;   /* warm cream */
+    --card: 255 255 255;
+    --line: 227 221 212;
+    --sun: 242 181 76;      /* one accent that feels like sunlight */
+    --rose: 226 40 58;      /* brand red, used sparingly */
+    --plum: 112 48 104;
+    --body: 52 54 59;
+    --soft: 110 114 122;
+
+    --header-h: 4.25rem;
+    --radius: 1rem;
+
+    /* Fonts are set on <html> by the layout (fontsource). */
+    --font-serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+    --font-sans: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-display: var(--font-serif);
+    --font-body: var(--font-sans);
+
+    /* Common Ground legacy variables */
+    --brand-navy: #1a2e52;
+    --brand-red: #e2283a;
+    --brand-burgundy: #8b2442;
+    --brand-plum: #703068;
+    --brand-purple: #32175a;
+    --brand-muted: #6e727a;
+    --brand-warm: #c5c2cf;
+    --brand-teal: #0F6E56;
+
+    color-scheme: light;
+  }
+
+  :root[data-theme='dark'] {
+    --ink: 236 232 224;
+    --paper: 22 25 36;
+    --card: 31 35 50;
+    --line: 58 63 82;
+    --sun: 247 196 108;
+    --rose: 240 96 110;
+    --plum: 186 128 178;
+    --body: 221 217 210;
+    --soft: 160 164 176;
+    color-scheme: dark;
+  }
+
+  /* Auto dark mode is opt-in: set NEXT_PUBLIC_AUTO_DARK=1 and add data-theme="auto" on <html>. */
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme='auto'] {
+      --ink: 236 232 224;
+      --paper: 22 25 36;
+      --card: 31 35 50;
+      --line: 58 63 82;
+      --sun: 247 196 108;
+      --rose: 240 96 110;
+      --plum: 186 128 178;
+      --body: 221 217 210;
+      --soft: 160 164 176;
+      color-scheme: dark;
+    }
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+
+  body {
+    background-color: rgb(var(--paper));
+    color: rgb(var(--body));
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    color: rgb(var(--ink));
+    letter-spacing: -0.01em;
+    font-variation-settings: 'opsz' 72, 'SOFT' 50, 'WONK' 0;
+    text-wrap: balance;
+  }
+  h4, h5, h6 { color: rgb(var(--ink)); }
+
+  :focus-visible {
+    outline: 3px solid rgb(var(--sun));
+    outline-offset: 3px;
+    border-radius: 0.5rem;
+  }
+
+  ::selection { background: rgb(var(--sun) / 0.35); }
+
+  img { height: auto; }
+}
+
+@layer components {
+  .wrap { @apply mx-auto w-full max-w-wrap px-4 sm:px-6 lg:px-8; }
+
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-base font-semibold transition-all duration-200
+      focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sun/60 active:scale-[0.98];
+  }
+  .btn-primary { @apply btn bg-ink text-paper shadow-lift hover:bg-ink/90 hover:shadow-card-hover; }
+  .btn-secondary { @apply btn border border-ink/20 bg-card text-ink hover:border-ink/40 hover:bg-ink/5; }
+  .btn-ghost { @apply btn text-ink hover:bg-ink/5; }
+  .btn-sun { @apply btn bg-sun text-ink shadow-lift hover:brightness-105; }
+  .btn-accent { @apply btn bg-accent text-accent-foreground hover:bg-accent-dark; }
+
+  .eyebrow { @apply text-xs font-bold uppercase tracking-[0.18em] text-plum; }
+  .h1 { @apply font-serif text-4xl leading-[1.08] text-ink sm:text-5xl lg:text-6xl; }
+  .h2 { @apply font-serif text-3xl leading-tight text-ink sm:text-4xl; }
+  .h3 { @apply font-serif text-xl leading-snug text-ink sm:text-2xl; }
+  .lede { @apply text-lg leading-relaxed text-body sm:text-xl; }
+  .card { @apply rounded-3xl border border-line bg-card p-6 shadow-card transition-all duration-300; }
+  .card-hover { @apply hover:-translate-y-1 hover:shadow-card-hover; }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-3 py-1 text-sm font-semibold text-ink; }
+  .prose-site { @apply text-body [&_a]:font-semibold [&_a]:text-ink [&_a]:underline [&_a]:underline-offset-4 [&_h2]:mt-10 [&_h2]:text-2xl [&_h3]:mt-8 [&_h3]:text-xl [&_li]:my-1 [&_p]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6; }
+
+  .input-field {
+    @apply w-full rounded-2xl border border-line bg-card px-4 py-3 text-base text-ink placeholder:text-soft
+      focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/15;
+  }
+  .label { @apply mb-2 block text-sm font-semibold text-ink; }
+
+  /* Common Ground legacy classes (kept so mounted pages keep working) */
+  .page-shell { @apply space-y-8 md:space-y-10; }
+  .page-header { @apply space-y-3; }
+  .page-title { @apply text-2xl font-bold text-ink sm:text-3xl md:text-[2rem]; }
+  .page-description { @apply max-w-3xl text-sm leading-relaxed text-soft sm:text-base; }
+}
+
+/* First-visit intro: overlay exists in server HTML, only shown when the inline script opts in. */
+html:not([data-intro]) [data-intro-overlay] { display: none; }
+
+/* Page transitions (Next experimental View Transitions). Calm cross-fade, no slide. */
+::view-transition-old(root) { animation: 160ms ease-out both vt-out; }
+::view-transition-new(root) { animation: 220ms ease-out both vt-in; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+
+/* Photography treatment: soft corners, warm grade, so mixed sources feel like one family. */
+.photo { @apply overflow-hidden rounded-3xl; }
+.photo img { filter: saturate(0.92) sepia(0.08) contrast(1.02); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ───────────── Common Ground (mounted at /families) ───────────── */
+/* Common Ground styles carried over from the original codebase. Tokens come from globals.css. */
+/* ── Breathing orb animation ─────────────────────────── */
+@keyframes breathe-in {
+  0%   { transform: scale(0.72); opacity: 0.5; }
+  100% { transform: scale(1.0);  opacity: 1.0; }
+}
+@keyframes breathe-out {
+  0%   { transform: scale(1.0);  opacity: 1.0; }
+  100% { transform: scale(0.72); opacity: 0.5; }
+}
+@keyframes breathe-hold {
+  0%, 100% { transform: scale(1.0); opacity: 1.0; }
+}
+@keyframes orb-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(112,48,104,0.35), 0 0 40px 8px rgba(112,48,104,0.15); }
+  50%       { box-shadow: 0 0 0 18px rgba(112,48,104,0.0), 0 0 60px 20px rgba(112,48,104,0.22); }
+}
+.breathe-in  { animation: breathe-in  4s ease-in-out forwards; }
+.breathe-hold{ animation: breathe-hold 7s linear forwards; }
+.breathe-out { animation: breathe-out  8s ease-in-out forwards; }
+@layer components {
+  .section-title {
+    @apply text-lg sm:text-xl font-semibold text-brand-muted-900;
+  }
+
+  .soft-panel {
+    @apply rounded-3xl border border-surface-border bg-gradient-to-br from-white to-brand-warm-100 p-5 sm:p-6 shadow-soft;
+  }
+
+  .card-elevated {
+    @apply bg-white rounded-3xl border border-surface-border p-6 shadow-card transition-all duration-300 hover:shadow-card-hover;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-surface-border bg-white px-3 py-1.5 text-xs font-semibold text-brand-muted-600;
+  }
+
+  .toolbox-reveal {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 260ms cubic-bezier(0.33, 1, 0.68, 1),
+      opacity 220ms ease-out;
+  }
+
+  .toolbox-reveal[data-open='true'] {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+
+  .toolbox-reveal-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .toolbox-reveal-content {
+    transform: translateY(-6px);
+    transition: transform 260ms cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .toolbox-reveal[data-open='true'] .toolbox-reveal-content {
+    transform: translateY(0);
+  }
+
+  .toolbox-chevron {
+    transition: transform 260ms cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .toolbox-chevron[data-open='true'] {
+    transform: rotate(180deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolbox-reveal,
+  .toolbox-reveal-content,
+  .toolbox-chevron {
+    transition: none !important;
+  }
+
+  .toolbox-reveal[data-open='false'] {
+    display: none;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .gradient-navy {
+    background: linear-gradient(140deg, #182b4e 0%, #2d1752 52%, #5c2e67 100%);
+  }
+
+  .gradient-warm {
+    background: linear-gradient(180deg, #eef0f6 0%, #f2f4f8 55%, #f2f4f8 100%);
+  }
+
+  .gradient-brand-hearts {
+    background: linear-gradient(135deg, #e2283a 0%, #8b2442 30%, #703068 62%, #32175a 82%, #1a2e52 100%);
+  }
+
+  .wave-divider-navy {
+    background: #1a2e52;
+    clip-path: ellipse(100% 60% at 50% 100%);
+  }
+
+  .wave-divider-top {
+    position: relative;
+  }
+  .wave-divider-top::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -40px;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: inherit;
+    clip-path: ellipse(55% 100% at 50% 100%);
+    z-index: 1;
+  }
+}
+
+/* Support Guide — center-content visual polish only. App shell/nav remain untouched. */
+div.page-shell.max-w-3xl {
+  position: relative;
+  max-width: 56rem;
+}
+
+div.page-shell.max-w-3xl > section:first-of-type {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(112, 48, 104, 0.12);
+  border-radius: 28px;
+  padding: 28px 30px;
+  background:
+    radial-gradient(circle at 88% 24%, rgba(226, 40, 58, 0.10), transparent 28%),
+    radial-gradient(circle at 72% 0%, rgba(112, 48, 104, 0.12), transparent 34%),
+    linear-gradient(135deg, #fff7fa 0%, #f8f5ff 48%, #eef5ff 100%);
+  box-shadow: 0 18px 45px rgba(26, 46, 82, 0.08);
+}
+
+div.page-shell.max-w-3xl > section:first-of-type::after {
+  content: '';
+  position: absolute;
+  right: -55px;
+  bottom: -72px;
+  width: 220px;
+  height: 150px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(50, 23, 90, 0.11), rgba(226, 40, 58, 0.08));
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+div.page-shell.max-w-3xl > section:first-of-type p:first-child {
+  color: #703068;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+div.page-shell.max-w-3xl > section:first-of-type h1 {
+  max-width: 720px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: #14264a;
+}
+
+div.page-shell.max-w-3xl > section:first-of-type h1::after {
+  content: '';
+  display: block;
+  width: 150px;
+  height: 8px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(226, 40, 58, 0.42), rgba(112, 48, 104, 0.38), rgba(26, 46, 82, 0.12));
+}
+
+div.page-shell.max-w-3xl > section:nth-of-type(2) {
+  display: grid;
+  gap: 12px;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a {
+  position: relative;
+  min-height: 72px;
+  border: 1px solid rgba(26, 46, 82, 0.10) !important;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 22px rgba(26, 46, 82, 0.055);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 13px 30px rgba(26, 46, 82, 0.10);
+}
+
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a::after {
+  content: '›';
+  margin-left: auto;
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 400;
+  color: #66728a;
+}
+
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a > span:first-child {
+  width: 22px;
+  height: 22px;
+  border-width: 2px;
+  border-color: #a6adbb;
+  box-shadow: 0 0 0 7px rgba(242, 244, 248, 0.9);
+}
+
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a > span:nth-child(2) {
+  font-size: 16px;
+  font-weight: 650;
+  color: #172b51;
+}
+
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a:nth-child(1) {
+  border-color: rgba(226, 40, 58, 0.24) !important;
+  background: linear-gradient(90deg, rgba(255, 241, 245, 0.94), rgba(255,255,255,0.98));
+}
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a:nth-child(1)::after { color: #c61e45; }
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a:nth-child(2) {
+  border-color: rgba(62, 136, 232, 0.22) !important;
+  background: linear-gradient(90deg, rgba(239, 247, 255, 0.98), rgba(255,255,255,0.98));
+}
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a:nth-child(2)::after { color: #2f76c8; }
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a:nth-child(3) {
+  border-color: rgba(15, 110, 86, 0.22) !important;
+  background: linear-gradient(90deg, rgba(238, 252, 248, 0.98), rgba(255,255,255,0.98));
+}
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a:nth-child(3)::after { color: #0f6e56; }
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a:nth-child(4) {
+  border-color: rgba(112, 48, 104, 0.24) !important;
+  background: linear-gradient(90deg, rgba(249, 242, 252, 0.98), rgba(255,255,255,0.98));
+}
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a:nth-child(4)::after { color: #703068; }
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a:nth-child(5) {
+  border-color: rgba(210, 150, 18, 0.28) !important;
+  background: linear-gradient(90deg, rgba(255, 249, 228, 0.98), rgba(255,255,255,0.98));
+}
+div.page-shell.max-w-3xl > section:nth-of-type(2) > a:nth-child(5)::after { color: #a96b00; }
+
+div.page-shell.max-w-3xl > section:nth-of-type(3) {
+  position: relative;
+  border: 1px solid rgba(26, 46, 82, 0.10);
+  border-radius: 22px;
+  padding: 20px 24px 20px 74px;
+  background: linear-gradient(90deg, #edf9ff 0%, #f4fbff 44%, #f6f4ff 100%);
+  box-shadow: 0 9px 24px rgba(26, 46, 82, 0.055);
+}
+
+div.page-shell.max-w-3xl > section:nth-of-type(3)::before {
+  content: '☎';
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 50%;
+  background: white;
+  color: #1a2e52;
+  font-size: 18px;
+  box-shadow: 0 5px 14px rgba(26, 46, 82, 0.10);
+  transform: translateY(-50%);
+}
+
+div.page-shell.max-w-3xl > section:nth-of-type(3) > p:first-child {
+  color: #245bb1;
+  font-weight: 800;
+}
+
+div.page-shell.max-w-3xl > section:nth-of-type(3) a,
+div.page-shell.max-w-3xl > section:nth-of-type(3) > p:last-child {
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+div.page-shell.max-w-3xl > footer {
+  border: 1px solid rgba(26, 46, 82, 0.09);
+  border-radius: 18px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #747d8e;
+  box-shadow: 0 6px 18px rgba(26, 46, 82, 0.035);
+}
+
+@media (max-width: 640px) {
+  main.page-shell.max-w-3xl > section:first-of-type {
+    border-radius: 22px;
+    padding: 22px 20px;
+  }
+
+  main.page-shell.max-w-3xl > section:nth-of-type(2) > a {
+    min-height: 66px;
+    border-radius: 16px;
+  }
+
+  main.page-shell.max-w-3xl > section:nth-of-type(3) {
+    padding: 18px 18px 18px 64px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Print styles — keeps the care plan readable when a parent saves it as PDF.
+ * Hides chrome that doesn't translate to paper (sidebars, nav, action rows),
+ * and forces a calm, single-column layout.
+ * ------------------------------------------------------------------------- */
+@media print {
+  @page {
+    margin: 0.45in;
+  }
+
+  aside,
+  nav,
+  header,
+  .print\:hidden,
+  [aria-label="Plan actions"] {
+    display: none !important;
+  }
+
+  body,
+  html {
+    background: white !important;
+    color: black !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .care-plan-print-sheet {
+    width: 100% !important;
+    max-width: 7.2in !important;
+    margin: 0 auto !important;
+  }
+
+  .care-plan-print-sheet > * + * {
+    margin-top: 0.16in !important;
+  }
+
+  .care-plan-print-sheet h1 {
+    font-size: 20pt !important;
+    line-height: 1.1 !important;
+  }
+
+  .care-plan-print-sheet h2 {
+    font-size: 13pt !important;
+    line-height: 1.2 !important;
+  }
+
+  .care-plan-print-sheet p,
+  .care-plan-print-sheet li {
+    font-size: 9.5pt !important;
+    line-height: 1.35 !important;
+  }
+
+  .care-plan-print-sheet section,
+  .care-plan-print-sheet [data-print-card] {
+    padding: 0.12in !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+
+  section,
+  article {
+    page-break-inside: avoid;
+  }
+
+  a[href]:after {
+    content: '';
+  }
+}

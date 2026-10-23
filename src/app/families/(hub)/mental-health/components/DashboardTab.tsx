@@ -1,0 +1,454 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import type { Inputs, HistoryDay, Driver } from './RiskEngine';
+import { riskState } from './RiskEngine';
+import type { Rec, RecAction, Insight } from './RecommendationsEngine';
+import { SliderPanel } from './SliderPanel';
+import { TrendChart } from './TrendChart';
+import styles from '../mental-health.module.css';
+
+function useAnimatedNumber(target: number): number {
+  const [value, setValue] = useState(target);
+  const prevRef = useRef(target);
+
+  useEffect(() => {
+    const start = prevRef.current;
+    if (start === target) { prevRef.current = target; return; }
+    const duration = 400;
+    const startTime = performance.now();
+    let rafId: number;
+
+    function step(now: number) {
+      const t = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setValue(Math.round(start + (target - start) * eased));
+      if (t < 1) { rafId = requestAnimationFrame(step); }
+      else { prevRef.current = target; }
+    }
+
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [target]);
+
+  return value;
+}
+
+function getDayGreeting(streak: number, isDemo = false): string {
+  const now = new Date();
+  const day = now.toLocaleDateString('en-US', { weekday: 'long' });
+  const hour = now.getHours();
+  const timeOfDay = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+  if (isDemo) {
+    return `Demo: ${day} ${timeOfDay}, ${streak || 5}-day check-in pattern`;
+  }
+  if (streak > 0) {
+    return `${day} ${timeOfDay} · ${streak}-day check-in pattern`;
+  }
+  return `${day} ${timeOfDay} · pull a slider or take a 1-minute check-in`;
+}
+
+const ICON_SVGS: Record<string, React.ReactNode> = {
+  priority: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+  ),
+  support: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+    </svg>
+  ),
+  calm: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>
+    </svg>
+  ),
+  insight: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7c.5.5 1 1.3 1 2.3v1h6v-1c0-1 .5-1.8 1-2.3A7 7 0 0012 2z"/>
+    </svg>
+  ),
+};
+
+const REC_ICON_CLASS: Record<string, string> = {
+  priority: styles.recIconPriority,
+  support: styles.recIconSupport,
+  calm: styles.recIconCalm,
+  insight: styles.recIconInsight,
+};
+
+interface Props {
+  userName: string;
+  isReturning: boolean;
+  /** When true, the dashboard hides the populated demo and prompts for a first check-in. */
+  freshStart?: boolean;
+  streak: number;
+  inputs: Inputs;
+  history: HistoryDay[];
+  risk: number;
+  wellness: number;
+  drivers: Driver[];
+  explainText: string;
+  recs: Rec[];
+  insights: Insight[];
+  range: number;
+  metric: string;
+  onInputChange: (key: keyof Inputs, value: number) => void;
+  onRangeChange: (r: number) => void;
+  onMetricChange: (m: string) => void;
+  onNavigate: (tab: string) => void;
+  onRecAction: (action: RecAction) => void;
+}
+
+export function DashboardTab({
+  userName,
+  isReturning,
+  freshStart = false,
+  streak,
+  inputs,
+  history,
+  risk,
+  wellness,
+  drivers,
+  explainText,
+  recs,
+  insights,
+  range,
+  metric,
+  onInputChange,
+  onRangeChange,
+  onMetricChange,
+  onNavigate,
+  onRecAction,
+}: Props) {
+  const animatedWellness = useAnimatedNumber(wellness);
+  const rs = riskState(risk);
+
+  const riskPillClass = {
+    stable: styles.riskPillStable,
+    watch: styles.riskPillWatch,
+    risk: styles.riskPillRisk,
+  }[rs.key];
+
+  const heroScoreColor = {
+    stable: 'var(--sage-deep)',
+    watch: 'var(--gold)',
+    risk: 'var(--burgundy)',
+  }[rs.key];
+
+  const METRICS = ['overall', 'stress', 'sleep', 'anxiety', 'support', 'energy'];
+  const METRIC_LABELS: Record<string, string> = {
+    overall: 'Overall',
+    stress: 'Stress',
+    sleep: 'Sleep',
+    anxiety: 'Anxiety',
+    support: 'Support',
+    energy: 'Energy',
+  };
+
+  if (freshStart) {
+    return (
+      <div>
+        <header className={styles.pageHeader}>
+          <div className={styles.greeting}>
+            <h1>start fresh.</h1>
+            <p>after your first check-in, you&rsquo;ll see your data take shape over the next few days.</p>
+          </div>
+        </header>
+        <div
+          style={{
+            marginTop: 16,
+            padding: 28,
+            borderRadius: 20,
+            background: 'var(--paper, #FBF7EF)',
+            border: '1px solid rgba(0,0,0,0.06)',
+          }}
+        >
+          <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--ink-900, #1f2227)' }}>
+            how are you right now?
+          </p>
+          <p style={{ marginTop: 8, color: 'var(--ink-600, #5a5d64)', lineHeight: 1.6 }}>
+            slide to begin. we&rsquo;ll start building your pattern from here.
+          </p>
+          <button
+            style={{
+              marginTop: 18,
+              padding: '10px 18px',
+              borderRadius: 12,
+              background: 'var(--ink-900, #1f2227)',
+              color: 'white',
+              fontWeight: 600,
+              fontSize: 14,
+              border: 0,
+              cursor: 'pointer',
+            }}
+            onClick={() => onNavigate('checkin')}
+          >
+            Start your first check-in
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const isDemo = !userName;
+
+  return (
+    <div>
+      <header className={styles.pageHeader}>
+        <div className={styles.greeting}>
+          <h1>
+            {userName
+              ? <>{isReturning ? 'Welcome back, ' : 'Welcome, '}<em>{userName}</em>.</>
+              : 'Demo view.'}
+          </h1>
+          <p>{getDayGreeting(streak, isDemo)}</p>
+          {isDemo && (
+            <p style={{ marginTop: 4, fontSize: 12.5, color: 'var(--ink-500, #6e727a)' }}>
+              example data — refreshes when you check in
+            </p>
+          )}
+        </div>
+        <div className={styles.headerActions}>
+          <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => onNavigate('calming')}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+            </svg>
+            Calming tools
+          </button>
+          <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => onNavigate('checkin')}>
+            New check-in
+          </button>
+        </div>
+      </header>
+
+      {/* Compact hero — score + sliders side by side, chart moved below the fold */}
+      <div className={styles.dashGrid}>
+        <div className={styles.heroCardCompact}>
+          <div className={styles.heroLabel}>
+            <span className={styles.liveDot} />
+            {isDemo ? 'your check-in pattern this week · example data' : 'your check-in pattern this week'}
+          </div>
+          <div className={styles.heroScoreRow}>
+            <div className={styles.heroScoreCompact} style={{ color: heroScoreColor }}>
+              {animatedWellness}
+            </div>
+            <div className={styles.heroScoreSuffix}>/ 100</div>
+            <div style={{ marginLeft: 'auto' }}>
+              <div className={`${styles.riskPill} ${riskPillClass}`}>
+                <span className={styles.riskPillDot} />
+                {rs.label}
+              </div>
+            </div>
+          </div>
+          <p className={styles.heroExplain}>{explainText}</p>
+          <div className={styles.drivingList}>
+            {drivers.map((d) => {
+              const isUp = d.impact > 0;
+              return (
+                <div
+                  key={d.key}
+                  className={`${styles.drivingChip} ${isUp ? styles.drivingChipUp : styles.drivingChipDown}`}
+                >
+                  <span className={styles.drivingChipArrow}>{isUp ? '↑' : '↓'}</span>
+                  {d.label}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div>
+              <div className={styles.cardTitle}>How are you right now?</div>
+              <div className={styles.cardSubtitle}>Pull a slider — your score moves with you, and saves automatically</div>
+            </div>
+          </div>
+          <SliderPanel inputs={inputs} onChange={onInputChange} />
+        </div>
+      </div>
+
+      {/* Recommendations — bumped up so they're the first thing after the hero */}
+      <div className={`${styles.card} ${styles.sectionSpacer}`}>
+        <div className={styles.cardHeader}>
+          <div>
+            <div className={styles.cardTitle}>For you, right now</div>
+            <div className={styles.cardSubtitle}>Updates as your inputs change · Based on what&apos;s driving your score today</div>
+          </div>
+          <span className={styles.heroLabel} style={{ marginBottom: 0 }}>
+            <span className={styles.liveDot} />
+            Live
+          </span>
+        </div>
+        <div className={styles.recsGrid}>
+          {recs.map((r, idx) => (
+            <div key={idx} className={styles.rec} style={{ animationDelay: `${idx * 0.05}s` }}>
+              <div className={styles.recTag}>{r.tag}</div>
+              <div className={`${styles.recIcon} ${REC_ICON_CLASS[r.icon]}`}>
+                {ICON_SVGS[r.icon]}
+              </div>
+              <div className={styles.recTitle}>{r.title}</div>
+              <div className={styles.recBody}>{r.body}</div>
+              <button className={styles.recAction} onClick={() => onRecAction(r.to)}>
+                {r.action}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Trend — collapsed to a tighter card; metric segmented control sits in the header */}
+      <div className={`${styles.card} ${styles.sectionSpacer} ${styles.chartCard}`}>
+        <div className={styles.chartCardTop}>
+          <div>
+            <div className={styles.cardTitle}>Wellness over time</div>
+            <div className={styles.cardSubtitle}>Last {range} days · Pick a metric to overlay</div>
+          </div>
+          <div className={styles.chartCardActions}>
+            <div className={styles.rangeTabs}>
+              {[7, 30].map((r) => (
+                <button
+                  key={r}
+                  className={`${styles.rangeTab} ${range === r ? styles.rangeTabActive : ''}`}
+                  onClick={() => onRangeChange(r)}
+                >
+                  {r}d
+                </button>
+              ))}
+            </div>
+            <button
+              className={styles.miniLink}
+              onClick={() => onNavigate('trends')}
+            >
+              Open trends →
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.metricSegments} role="tablist" aria-label="Choose metric">
+          {METRICS.map((m) => (
+            <button
+              key={m}
+              role="tab"
+              aria-selected={metric === m}
+              className={`${styles.metricSegment} ${metric === m ? styles.metricSegmentActive : ''}`}
+              onClick={() => onMetricChange(m)}
+            >
+              {METRIC_LABELS[m]}
+            </button>
+          ))}
+        </div>
+
+        <div className={styles.chartCompact}>
+          <TrendChart
+            history={history}
+            range={range}
+            metric={metric}
+            maxTicksLimit={range === 7 ? 7 : 8}
+          />
+        </div>
+      </div>
+
+      {/* Your data — small surface showing what's saved on this device */}
+      <YourDataSummary streak={streak} historyLen={history.length} />
+
+      {/* Patterns — improved presentation, grouped */}
+      <div className={`${styles.card} ${styles.sectionSpacer}`}>
+        <div className={styles.cardHeader}>
+          <div>
+            <div className={styles.cardTitle}>Patterns worth knowing</div>
+            <div className={styles.cardSubtitle}>From your last 30 days · Not a diagnosis — just what we&apos;ve noticed</div>
+          </div>
+        </div>
+        <div className={styles.patternGrid}>
+          {insights.length === 0 && (
+            <div className={styles.patternEmpty}>
+              Patterns appear here after a few days of check-ins. Pull a slider, do a quick check-in, and come back tomorrow.
+            </div>
+          )}
+          {insights.map((ins, i) => {
+            const tone = ins.type === 'alert' ? 'alert' : ins.type === 'warning' ? 'warning' : 'good';
+            return (
+              <div
+                key={i}
+                className={`${styles.patternCard} ${styles[`patternCard_${tone}`]}`}
+              >
+                <span className={styles.patternBadge}>
+                  {tone === 'alert' ? 'Heads up' : tone === 'warning' ? 'Watch this' : 'Good to know'}
+                </span>
+                <div
+                  className={styles.patternText}
+                  dangerouslySetInnerHTML={{ __html: ins.text }}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Your-data summary (small footer card) ───────────────────────────── */
+
+interface YourDataProps { streak: number; historyLen: number; }
+
+function YourDataSummary({ streak, historyLen }: YourDataProps) {
+  const [journalCount, setJournalCount] = useState(0);
+  const [hardDaySaved, setHardDaySaved] = useState(false);
+  const [toolUses, setToolUses] = useState(0);
+
+  useEffect(() => {
+    try {
+      const j = localStorage.getItem('cg-journal');
+      if (j) setJournalCount((JSON.parse(j) as unknown[]).length);
+      const h = localStorage.getItem('cg-hard-day-plan');
+      if (h) {
+        const parsed = JSON.parse(h) as { savedAt: string | null };
+        setHardDaySaved(Boolean(parsed.savedAt));
+      }
+      const u = localStorage.getItem('cg-tool-usage');
+      if (u) {
+        const totals: number = Object.values(JSON.parse(u) as Record<string, { total: number }>)
+          .reduce((acc, v) => acc + (v.total ?? 0), 0);
+        setToolUses(totals);
+      }
+    } catch { /* ignore */ }
+  }, []);
+
+  return (
+    <div className={`${styles.card} ${styles.sectionSpacer} ${styles.dataSummaryCard}`}>
+      <div className={styles.cardHeader}>
+        <div>
+          <div className={styles.cardTitle}>Your data, on this device</div>
+          <div className={styles.cardSubtitle}>Saved locally · only you see it · clears when you sign out</div>
+        </div>
+      </div>
+      <div className={styles.dataStatsGrid}>
+        <div className={styles.dataStat}>
+          <div className={styles.dataStatValue}>{streak}</div>
+          <div className={styles.dataStatLabel}>day check-in streak</div>
+        </div>
+        <div className={styles.dataStat}>
+          <div className={styles.dataStatValue}>{historyLen}</div>
+          <div className={styles.dataStatLabel}>days of history</div>
+        </div>
+        <div className={styles.dataStat}>
+          <div className={styles.dataStatValue}>{journalCount}</div>
+          <div className={styles.dataStatLabel}>journal lines</div>
+        </div>
+        <div className={styles.dataStat}>
+          <div className={styles.dataStatValue}>{toolUses}</div>
+          <div className={styles.dataStatLabel}>calming sessions</div>
+        </div>
+        <div className={styles.dataStat}>
+          <div className={styles.dataStatValue}>{hardDaySaved ? '✓' : '—'}</div>
+          <div className={styles.dataStatLabel}>hard-day plan</div>
+        </div>
+      </div>
+    </div>
+  );
+}
