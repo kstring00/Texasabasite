@@ -3,7 +3,7 @@ import { locations } from '@/data/locations';
 import { Section } from '@/components/site/Section';
 import { CenterFinder } from '@/components/site/CenterFinder';
 import { LocationCard } from '@/components/site/LocationCard';
-import { Places } from '@/components/site/acts/Places';
+import { Locations } from '@/components/locations/Locations';
 import { Closing } from '@/components/site/acts/Closing';
 import { RevealGroup, RevealItem } from '@/components/site/motion';
 
@@ -20,9 +20,7 @@ export default function LocationsPage() {
       <Section titleAs="h1" eyebrow="Locations" title={<>Six centers. One <span className="editorial text-cobalt">front door.</span></>} lede="Type your ZIP or city and we point you to the closest one. Every center does evaluations and therapy." size="sm">
         <CenterFinder />
       </Section>
-      <Section tone="tint" eyebrow="The map" title="Pick a center.">
-        <Places />
-      </Section>
+      <Locations eyebrow="THE MAP" title="Pick a center." lede="Tap a pin or a name to see the address, who you will meet, and how to book a tour." />
       {regions.map((r) => {
         const list = locations.filter((l) => l.region === r);
         return (

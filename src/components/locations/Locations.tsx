@@ -12,7 +12,18 @@ import { useMyCenter } from '@/lib/site/myCenter';
  * The locations section. The map and the index are one control: selecting a center anywhere
  * updates everything. Hover or focus "peeks" without changing the selection.
  */
-export function Locations() {
+type Props = {
+  /** Header copy. Defaults to the homepage version. */
+  eyebrow?: string;
+  title?: string;
+  lede?: string;
+};
+
+export function Locations({
+  eyebrow = 'LOCATIONS',
+  title = 'Six centers across Texas. One front door.',
+  lede = 'Pick the center closest to you. Every one of them does evaluations and therapy, so wherever you start, you start in the right place.',
+}: Props = {}) {
   const [selectedId, setSelectedId] = useState(DEFAULT_CENTER_ID);
   const [peekId, setPeekId] = useState<string | null>(null);
   const [animate, setAnimate] = useState(false);
@@ -29,11 +40,11 @@ export function Locations() {
   return (
     <section className={styles.wrap} id="locations" aria-labelledby="locations-title">
       <div className={styles.head}>
-        <div className={styles.eyebrow}>LOCATIONS</div>
+        <div className={styles.eyebrow}>{eyebrow}</div>
         <h2 id="locations-title" className={styles.h2}>
-          Six centers across Texas. One front door.
+          {title}
         </h2>
-        <p>Pick the center closest to you. Every one of them does evaluations and therapy, so wherever you start, you start in the right place.</p>
+        {lede && <p>{lede}</p>}
       </div>
       <div className={styles.grid}>
         <TexasMap selectedId={selectedId} peekId={peekId} onSelect={select} onPeek={setPeekId} />
