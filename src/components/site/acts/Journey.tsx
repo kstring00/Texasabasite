@@ -44,7 +44,7 @@ export function Journey({ compact = false }: { compact?: boolean }) {
             <div className="portal absolute inset-0 bg-ink" />
             <motion.div className="portal absolute inset-x-[14%] bottom-[26%] bg-cobalt" animate={{ top: `${(1 - open) * 100}%` }} transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 80, damping: 20 }} />
             <motion.div className="portal absolute inset-x-[30%] bottom-[26%] bg-paper" animate={{ top: `${Math.min(70, (1 - open) * 100 + 24)}%` }} transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 80, damping: 22 }} />
-            <div className="absolute left-[8%] top-[8%] text-paper">
+            <div className="absolute left-[12%] top-[16%] text-paper">
               <p className="font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em] text-butter">Step</p>
               <p className="num text-[8rem] leading-none">{String(steps[active]?.n ?? 1).padStart(2, '0')}</p>
             </div>
