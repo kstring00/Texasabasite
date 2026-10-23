@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     title: 'ABA Therapy & Autism Evaluations in Texas | Texas ABA Centers',
     description: site.tagline,
     url: site.url,
-    images: [{ url: '/og-home.png', width: 1200, height: 630, alt: 'Texas ABA Centers: a whole lot of life happens next' }],
+    images: [{ url: '/og-home.png', width: 1200, height: 630, alt: 'Texas ABA Centers: a brighter tomorrow' }],
   },
   twitter: { card: 'summary_large_image' },
   robots: { index: true, follow: true },
