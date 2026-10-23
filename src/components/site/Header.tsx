@@ -1,21 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { Phone, X, ArrowUpRight } from 'lucide-react';
+import { Phone, X, ArrowUpRight, ChevronDown } from 'lucide-react';
+import { CG_NEXT_STEP, cgGroups } from '@/data/commonGround';
 import { site } from '@/data/site';
 import { locations } from '@/data/locations';
 import { track } from '@/lib/site/analytics';
 import { cn } from '@/lib/site/utils';
 
-const primary = [
+const primary: { href: string; label: string; mega?: boolean }[] = [
   { href: '/team', label: 'About' },
   { href: '/services', label: 'Services' },
   { href: '/locations', label: 'Our Centers' },
-  { href: '/families', label: 'For Families' },
+  { href: '/families', label: 'Common Ground', mega: true },
   { href: '/blog', label: 'Resources' },
 ];
 const more = [
@@ -77,6 +78,7 @@ export function Header() {
           <nav className="hidden items-center gap-14 min-[1100px]:flex" aria-label="Main">
             {primary.map((n) => {
               const active = pathname === n.href || pathname.startsWith(n.href + '/');
+              if (n.mega) return <MegaMenu key={n.href} href={n.href} label={n.label} active={active} />;
               return (
                 <Link key={n.href} href={n.href} aria-current={active ? 'page' : undefined} className="group relative whitespace-nowrap py-2 font-sans text-[15px] font-medium text-ink">
                   {n.label}
@@ -96,7 +98,7 @@ export function Header() {
             </Link>
             <button
               type="button"
-              className="inline-flex h-[52px] items-center gap-2 rounded-full border border-ink/25 px-3 font-sans sm:px-4 text-[15px] font-semibold text-ink transition hover:bg-ink hover:text-paper min-[1100px]:hidden"
+              className="inline-flex h-[52px] items-center gap-2 rounded-full border border-ink/40 bg-transparent px-3 font-sans text-[15px] font-semibold text-ink transition hover:border-ink hover:bg-ink hover:text-paper sm:px-4 min-[1100px]:hidden"
               aria-expanded={open}
               aria-controls="site-menu"
               onClick={() => setOpen(true)}
@@ -142,6 +144,22 @@ export function Header() {
                     </Link>
                   </motion.div>
                 ))}
+                <div className="mt-8 grid gap-6 sm:grid-cols-2">
+                  {cgGroups.map((g) => (
+                    <div key={g.id}>
+                      <p className="font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em] text-butter">Common Ground · {g.label}</p>
+                      <ul className="mt-2 space-y-1.5">
+                        {g.pages.map((pg) => (
+                          <li key={pg.href}>
+                            <Link href={pg.href} className="font-sans text-[length:var(--t-base)] font-semibold text-paper/85 underline-offset-4 hover:text-paper hover:underline">
+                              {pg.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
                 <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
                   {more.map((n) => (
                     <Link key={n.href} href={n.href} lang={n.href === '/es' ? 'es' : undefined} className="font-sans text-[length:var(--t-base)] font-semibold text-paper/75 underline-offset-4 hover:text-paper hover:underline">
@@ -176,5 +194,115 @@ export function Header() {
         )}
       </AnimatePresence>
     </>
+  );
+}
+
+
+/**
+ * Common Ground mega-menu. Opens on hover or focus, closes on Escape (focus returns to the
+ * trigger) and on outside click. Four groups, each link with its icon and one-line description,
+ * plus the featured "Find my next step" tile.
+ */
+function MegaMenu({ href, label, active }: { href: string; label: string; active: boolean }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeTimer = useRef<number | null>(null);
+  const reduce = useReducedMotion();
+
+  const [panelTop, setPanelTop] = useState(108);
+  const show = () => {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    const hdr = rootRef.current?.closest('header')?.getBoundingClientRect();
+    if (hdr) setPanelTop(hdr.bottom + 8);
+    setOpen(true);
+  };
+  const hideSoon = () => {
+    closeTimer.current = window.setTimeout(() => setOpen(false), 120);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setOpen(false);
+        if (rootRef.current?.contains(document.activeElement)) triggerRef.current?.focus();
+      }
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={rootRef}
+      className="relative"
+      onMouseEnter={show}
+      onMouseLeave={hideSoon}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
+      }}
+    >
+      <div className="flex items-center">
+        <Link href={href} aria-current={active ? 'page' : undefined} className="group relative whitespace-nowrap py-2 font-sans text-[15px] font-medium text-ink" onFocus={show}>
+          {label}
+          <span aria-hidden className={cn('absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-cobalt transition-transform duration-[350ms] ease-out group-hover:scale-x-100', (active || open) && 'scale-x-100')} />
+        </Link>
+        <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="cg-mega" aria-label={`${label} menu`} onClick={() => setOpen((v) => !v)} className="ml-1 rounded-md p-1 text-ink hover:text-cobalt">
+          <ChevronDown className={cn('h-4 w-4 transition-transform', open && 'rotate-180')} aria-hidden />
+        </button>
+      </div>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="cg-mega"
+            initial={reduce ? { opacity: 1 } : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            style={{ top: panelTop }}
+            className="fixed left-[max(24px,calc(50vw-640px))] z-50 w-[min(1280px,calc(100vw-48px))] rounded-[28px] border border-line bg-card p-6 shadow-[0_30px_60px_-30px_rgb(23_38_56/0.45)]"
+            onMouseEnter={show}
+            onMouseLeave={hideSoon}
+          >
+            <div className="grid gap-6 lg:grid-cols-[1fr_1fr_1fr_1fr_0.9fr]">
+              {cgGroups.map((g) => (
+                <div key={g.id}>
+                  <p className="font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em] text-cobalt">{g.label}</p>
+                  <ul className="mt-3 space-y-1">
+                    {g.pages.map((pg) => (
+                      <li key={pg.href}>
+                        <Link href={pg.href} className="group/l flex gap-3 rounded-xl p-2 transition hover:bg-ink/[0.05]" onClick={() => setOpen(false)}>
+                          <pg.icon className="mt-0.5 h-5 w-5 shrink-0 text-cobalt" strokeWidth={1.8} aria-hidden />
+                          <span>
+                            <span className="block font-sans text-[15px] font-semibold text-ink">{pg.label}</span>
+                            <span className="block font-sans text-[14px] leading-snug text-soft">{pg.description}</span>
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <Link href={CG_NEXT_STEP} className="group/t flex flex-col justify-between rounded-[22px] bg-ink p-6 text-paper transition hover:bg-cobalt" onClick={() => setOpen(false)}>
+                <span className="font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em] text-butter">Not sure where to start?</span>
+                <span className="mt-6 font-display text-[length:var(--t-xl)] leading-tight">
+                  Find my next step <span aria-hidden>→</span>
+                </span>
+                <span className="mt-3 font-sans text-[14px] text-paper/80">Two quick questions, then one focused place to begin.</span>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

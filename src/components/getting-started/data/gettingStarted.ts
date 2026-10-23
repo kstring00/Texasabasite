@@ -22,6 +22,8 @@ export type Step = {
   you: string;
   we: string;
   scene: SceneKind;
+  /** Optional text link under the card, into Common Ground. */
+  link?: { text: string; href: string };
 };
 
 // TODO: confirm — is Marcie the family contact for every center?
@@ -57,6 +59,7 @@ export const steps: Step[] = [
     you: 'Bring your child, your insurance card and any past reports.', // TODO: confirm with the clinical team
     we: 'Run a play-based visit and go over the results with you in plain language.',
     scene: 'eval',
+    link: { text: 'Waiting on your evaluation? See what to do while you wait', href: '/families/while-you-wait' },
   },
   {
     title: 'Benefits verified, free',
@@ -74,6 +77,7 @@ export const steps: Step[] = [
     you: 'Pick the days and times that work for your family.',
     we: 'Match your child with a BCBA and therapist and set their first goals with you.',
     scene: 'start',
+    link: { text: 'Meet the people on your team', href: '/families/care-team' },
   },
 ];
 

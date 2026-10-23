@@ -32,6 +32,13 @@ export function StepRail({ activeIndex, onSelect, register }: Props) {
                 </Link>
               </p>
             )}
+            {s.link && (
+              <p className={styles.alt}>
+                <Link href={s.link.href}>
+                  <b>{s.link.text} →</b>
+                </Link>
+              </p>
+            )}
           </div>
         </li>
       ))}

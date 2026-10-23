@@ -4,7 +4,7 @@ import { Paths } from '@/components/site/acts/Paths';
 import { GettingStarted } from '@/components/getting-started/GettingStarted';
 import { Locations } from '@/components/locations/Locations';
 import { ServiceExplorer } from '@/components/site/acts/ServiceExplorer';
-import { CommonGroundFeature } from '@/components/site/acts/CommonGroundFeature';
+import { CommonGroundSection } from '@/components/site/acts/CommonGroundSection';
 import { InsuranceExplainer } from '@/components/site/acts/InsuranceExplainer';
 import { Humans } from '@/components/site/acts/Humans';
 import { Closing } from '@/components/site/acts/Closing';
@@ -29,14 +29,13 @@ export default function HomePage() {
       <Threshold from="paper" to="paper" className="hidden" />
 
       <GettingStarted />
+      <CommonGroundSection />
 
       <Locations />
 
       <Section id="services" eyebrow="What care looks like" title={<>Six services. <span className="editorial text-cobalt">One</span> plan, with you in it.</>} lede="ABA stands for Applied Behavior Analysis. A trained therapist helps your child learn the skills they want and need, in small steps, with lots of encouragement. Here it is play-based, neurodiversity-affirming, and built with you in the room.">
         <ServiceExplorer />
       </Section>
-
-      <CommonGroundFeature />
 
       <Section id="insurance" eyebrow="Insurance & cost" title={<>Know the cost <span className="editorial text-cobalt">before</span> you commit.</>} lede="Five words decide what therapy costs you. Here they are, one illustrative year at a time. We verify your real benefits for free.">
         <InsuranceExplainer />

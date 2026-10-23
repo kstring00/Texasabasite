@@ -221,13 +221,6 @@ export default function CouplesSupportPage() {
 
   return (
     <div className="relative space-y-9 pb-8 sm:space-y-11">
-      <nav aria-label="Breadcrumb" className="text-[12px] text-brand-muted-500">
-        <ol className="flex items-center gap-1.5">
-          <li><Link href="/families" className="hover:text-brand-navy-700">Home</Link></li>
-          <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
-          <li className="font-medium text-brand-muted-700">Partnership &amp; co-parenting</li>
-        </ol>
-      </nav>
 
       <header className="overflow-hidden rounded-[1.7rem] border border-surface-border bg-gradient-to-br from-white via-white to-orange-50/60 p-6 shadow-soft sm:p-8">
         <p className="text-[11px] font-bold uppercase tracking-[0.17em] text-primary">Common Ground · Parent support</p>

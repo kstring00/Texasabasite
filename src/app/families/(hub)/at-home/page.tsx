@@ -98,9 +98,6 @@ export default function AtHomeStrategiesPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
-      <nav aria-label="Breadcrumb" className="text-[12px] text-brand-muted-500">
-        <ol className="flex items-center gap-1.5"><li><Link href="/families" className="hover:text-brand-navy-700">Home</Link></li><li aria-hidden><ChevronRight className="h-3 w-3" /></li><li className="font-medium text-brand-muted-700">{AT_HOME_STRATEGIES_LABEL}</li></ol>
-      </nav>
 
       <header className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-2xl">
