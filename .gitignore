@@ -10,3 +10,6 @@ npm-debug.log*
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# Source hero video stays local; the encoded webm/mp4 derivatives ship.
+public/hero/hero.mp4

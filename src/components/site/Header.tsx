@@ -13,15 +13,15 @@ import { track } from '@/lib/site/analytics';
 import { cn } from '@/lib/site/utils';
 
 const primary: { href: string; label: string; mega?: boolean }[] = [
-  { href: '/team', label: 'About' },
+  { href: '/locations', label: 'Locations' },
   { href: '/services', label: 'Services' },
-  { href: '/locations', label: 'Our Centers' },
+  { href: '/getting-started', label: 'Getting started' },
+  { href: '/insurance', label: 'Insurance' },
   { href: '/families', label: 'Common Ground', mega: true },
-  { href: '/blog', label: 'Resources' },
 ];
 const more = [
-  { href: '/getting-started', label: 'Getting started' },
-  { href: '/insurance', label: 'Insurance & cost' },
+  { href: '/team', label: 'About' },
+  { href: '/blog', label: 'Resources' },
   { href: '/request-a-tour', label: 'Request a tour' },
   { href: '/events', label: 'Events' },
   { href: '/providers', label: 'For providers' },
@@ -35,14 +35,16 @@ function Logo({ className, tall = 40 }: { className?: string; tall?: number }) {
 }
 
 /**
- * Site header. Transparent over the hero; after 80px of scroll it sticks with a blurred cream
- * background, a hairline, and eases from 108px to 76px tall. Below 1100px the links collapse to Menu.
+ * Site header. Over the homepage hero it is absolute and transparent with white text; after 80px
+ * of scroll on any page it is a frosted dark bar so it stays readable over any section.
+ * Phone and "Request a tour" are reachable from the nav on every page.
  */
 export function Header() {
   const pathname = usePathname();
   const reduce = useReducedMotion();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const home = pathname === '/';
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
@@ -60,54 +62,69 @@ export function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const findHref = pathname === '/' ? '#locations' : '/#locations';
+  // Light text over the hero video and over the frosted bar; ink on cream page tops.
+  const light = home || scrolled;
+  const text = light ? 'text-paper' : 'text-ink';
 
   return (
     <>
       <header
+        data-tone={light ? 'light' : 'dark'}
         className={cn(
-          'sticky top-0 z-40 transition-[height,background-color,border-color] duration-300 motion-safe:animate-[nav-in_0.3s_ease-out_both]',
-          scrolled ? 'h-[76px] border-b border-ink/10 bg-paper/85 backdrop-blur-[12px]' : 'h-[88px] border-b border-transparent bg-transparent lg:h-[108px]',
+          'top-0 z-40 w-full transition-[height,background-color,border-color] duration-300 motion-safe:animate-[nav-in_0.5s_ease-out_both]',
+          home ? 'fixed' : 'sticky',
+          home && !reduce && 'motion-safe:[animation-delay:1.3s]',
+          scrolled ? 'h-[76px] border-b border-paper/10 bg-ink/70 backdrop-blur-[12px]' : 'h-[88px] border-b border-transparent bg-transparent lg:h-[108px]',
+          text,
         )}
       >
-        <div className="mx-auto flex h-full w-full max-w-[1680px] items-center justify-between gap-6 px-5 sm:px-8 lg:px-[max(52px,3.3vw)]">
-          <Link href="/" className="inline-flex min-h-[44px] shrink-0 items-center rounded-md" aria-label="Texas ABA Centers home">
-            <Logo />
+        <div className="mx-auto flex h-full w-full max-w-[1680px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-[max(52px,3.3vw)]">
+          <Link href="/" className="inline-flex min-h-[44px] shrink-0 items-center rounded-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-butter/60" aria-label="Texas ABA Centers home">
+            <Logo className={cn(light && 'brightness-0 invert')} />
           </Link>
 
-          <nav className="hidden items-center gap-14 min-[1100px]:flex" aria-label="Main">
+          <nav className="hidden items-center gap-10 min-[1100px]:flex" aria-label="Main">
             {primary.map((n) => {
               const active = pathname === n.href || pathname.startsWith(n.href + '/');
               if (n.mega) return <MegaMenu key={n.href} href={n.href} label={n.label} active={active} />;
               return (
-                <Link key={n.href} href={n.href} aria-current={active ? 'page' : undefined} className="group relative whitespace-nowrap py-2 font-sans text-[15px] font-medium text-ink">
+                <Link key={n.href} href={n.href} aria-current={active ? 'page' : undefined} className="group relative whitespace-nowrap py-2 font-sans text-[15px] font-medium focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-butter/60">
                   {n.label}
-                  <span aria-hidden className={cn('absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-cobalt transition-transform duration-[350ms] ease-out group-hover:scale-x-100', active && 'scale-x-100')} />
+                  <span aria-hidden className={cn('absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-current transition-transform duration-[350ms] ease-out group-hover:scale-x-100', active && 'scale-x-100')} />
                 </Link>
               );
             })}
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <Link href={findHref} className="group inline-flex h-[52px] items-center gap-2 whitespace-nowrap rounded-full bg-cobalt px-4 font-sans text-[15px] font-semibold text-white transition hover:bg-ink sm:px-7 sm:text-[16px]">
-              <span className="max-[400px]:hidden">Find a center</span>
-              <span className="min-[401px]:hidden">Centers</span>
-              <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-[3px]">
-                →
-              </span>
+            <a
+              href={`tel:${site.phone.tel}`}
+              className={cn('inline-flex h-11 items-center gap-2 rounded-full border px-3 font-sans text-[15px] font-semibold transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-butter/60 sm:h-12 sm:px-4', light ? 'border-paper/60 text-paper hover:bg-paper hover:text-ink' : 'border-ink/40 text-ink hover:bg-ink hover:text-paper')}
+              aria-label={`Call ${site.phone.display}`}
+              onClick={() => track({ name: 'call_tap', center: 'main', place: 'nav' })}
+            >
+              <Phone className="h-4 w-4" aria-hidden />
+              <span className="hidden md:inline">{site.phone.display}</span>
+            </a>
+            <Link
+              href="/request-a-tour"
+              className={cn('inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-full px-4 font-sans text-[15px] font-semibold transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-butter/60 sm:h-12 sm:px-6', light ? 'bg-paper text-ink hover:bg-butter' : 'bg-ink text-paper hover:bg-cobalt')}
+            >
+              <span className="max-[400px]:hidden">Request a tour</span>
+              <span className="min-[401px]:hidden">Tour</span>
             </Link>
             <button
               type="button"
-              className="inline-flex h-[52px] items-center gap-2 rounded-full border border-ink/40 bg-transparent px-3 font-sans text-[15px] font-semibold text-ink transition hover:border-ink hover:bg-ink hover:text-paper sm:px-4 min-[1100px]:hidden"
+              className={cn('inline-grid h-11 w-11 shrink-0 place-items-center rounded-full border transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-butter/60 sm:h-12 sm:w-12', light ? 'border-paper/60 text-paper hover:bg-paper hover:text-ink' : 'border-ink/40 text-ink hover:bg-ink hover:text-paper')}
               aria-expanded={open}
               aria-controls="site-menu"
+              aria-label="Open menu"
               onClick={() => setOpen(true)}
             >
               <span className="flex flex-col gap-[5px]" aria-hidden>
                 <span className="block h-0.5 w-5 bg-current" />
                 <span className="block h-0.5 w-5 bg-current" />
               </span>
-              Menu
             </button>
           </div>
         </div>
@@ -181,8 +198,11 @@ export function Header() {
                   ))}
                 </div>
                 <div className="flex flex-wrap gap-3">
-                  <Link href={findHref} className="btn-sun" onClick={() => setOpen(false)}>
-                    Find a center →
+                  <Link href="/request-a-tour" className="btn-sun" onClick={() => setOpen(false)}>
+                    Request a tour →
+                  </Link>
+                  <Link href="/locations" className="btn border border-paper/30 text-paper hover:bg-paper hover:text-ink" onClick={() => setOpen(false)}>
+                    Find a center
                   </Link>
                   <a href={`tel:${site.phone.tel}`} className="btn border border-paper/30 text-paper hover:bg-paper hover:text-ink" onClick={() => track({ name: 'call_tap', center: 'main', place: 'menu' })}>
                     <Phone className="h-4 w-4" aria-hidden /> {site.phone.display}
@@ -252,11 +272,11 @@ function MegaMenu({ href, label, active }: { href: string; label: string; active
       }}
     >
       <div className="flex items-center">
-        <Link href={href} aria-current={active ? 'page' : undefined} className="group relative whitespace-nowrap py-2 font-sans text-[15px] font-medium text-ink" onFocus={show}>
+        <Link href={href} aria-current={active ? 'page' : undefined} className="group relative whitespace-nowrap py-2 font-sans text-[15px] font-medium focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-butter/60" onFocus={show}>
           {label}
-          <span aria-hidden className={cn('absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-cobalt transition-transform duration-[350ms] ease-out group-hover:scale-x-100', (active || open) && 'scale-x-100')} />
+          <span aria-hidden className={cn('absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-current transition-transform duration-[350ms] ease-out group-hover:scale-x-100', (active || open) && 'scale-x-100')} />
         </Link>
-        <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="cg-mega" aria-label={`${label} menu`} onClick={() => setOpen((v) => !v)} className="ml-1 rounded-md p-1 text-ink hover:text-cobalt">
+        <button ref={triggerRef} type="button" aria-expanded={open} aria-controls="cg-mega" aria-label={`${label} menu`} onClick={() => setOpen((v) => !v)} className="ml-1 rounded-md p-1 opacity-80 hover:opacity-100 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-butter/60">
           <ChevronDown className={cn('h-4 w-4 transition-transform', open && 'rotate-180')} aria-hidden />
         </button>
       </div>

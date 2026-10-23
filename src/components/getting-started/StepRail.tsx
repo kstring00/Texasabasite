@@ -88,8 +88,12 @@ function StepCard({ step, index, onSelect, meetExtra }: { step: Step; index: num
   };
 
   return (
-    <div className={styles.card} role="button" tabIndex={0} aria-label={`Step ${index + 1}: ${step.title}. Show what this looks like.`} onClick={() => onSelect(index)} onKeyDown={onKey}>
-      <h3>{step.title}</h3>
+    <div className={styles.card} role="button" tabIndex={0} aria-labelledby={`gs-step-${index}-title`} aria-describedby={`gs-step-${index}-hint`} onClick={() => onSelect(index)} onKeyDown={onKey}>
+      <h3 id={`gs-step-${index}-title`}>
+        <span className="sr-only">Step {index + 1}: </span>
+        {step.title}
+      </h3>
+      <span id={`gs-step-${index}-hint`} className="sr-only">Show what this looks like.</span>
       <p>{step.body}</p>
       <div className={styles.meet}>
         <b>WHO YOU MEET</b>
