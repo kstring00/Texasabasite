@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Opening } from '@/components/site/acts/Opening';
+import { Hero } from '@/components/hero/Hero';
 import { Paths } from '@/components/site/acts/Paths';
 import { Journey } from '@/components/site/acts/Journey';
 import { Places } from '@/components/site/acts/Places';
@@ -16,7 +16,7 @@ import { FromTheBlog } from '@/components/site/FromTheBlog';
 export const metadata: Metadata = {
   title: 'ABA Therapy & Autism Evaluations in Texas, No Long Waitlist | Texas ABA Centers',
   description:
-    'Six centers in Austin, Cedar Hill, Katy, Pearland, Plano and Sugar Land. In-house autism evaluations, free benefits checks, and a real person who texts you back. Request a tour.',
+    'Autism evaluations and ABA therapy across Texas: six centers in Austin, Cedar Hill, Katy, Pearland, Plano and Sugar Land, free benefits checks, and a real person who texts you back. Request a tour.',
   alternates: { canonical: '/' },
 };
 
@@ -24,7 +24,9 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <Opening />
+      <div className="wrap-wide">
+        <Hero />
+      </div>
       <Paths />
       <Threshold from="paper" to="paper" className="hidden" />
 
