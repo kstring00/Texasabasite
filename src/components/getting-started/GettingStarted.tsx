@@ -26,19 +26,32 @@ export function GettingStarted() {
     setActiveIndex(i);
   }, []);
 
+  // Scroll drives the panel. The active step is the card whose top has most recently crossed the
+  // reading line (40% down the viewport), so a card switches only once the eye is on it, and
+  // never switches early just because the next card has entered the middle of the screen.
   useEffect(() => {
-    if (!('IntersectionObserver' in window)) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (Date.now() < lockUntil.current) return;
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActiveIndex(stepEls.current.indexOf(e.target as HTMLLIElement));
-        });
-      },
-      { rootMargin: '-45% 0px -45% 0px' },
-    );
-    stepEls.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      if (Date.now() < lockUntil.current) return;
+      const line = window.innerHeight * 0.4;
+      let next = 0;
+      stepEls.current.forEach((el, i) => {
+        if (el && el.getBoundingClientRect().top <= line) next = i;
+      });
+      setActiveIndex((cur) => (cur === next ? cur : next));
+    };
+    const onScroll = () => {
+      if (!raf) raf = window.requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
