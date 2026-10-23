@@ -181,6 +181,19 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
         {l.arrivalNote && <p className="mt-4 font-sans text-[length:var(--t-base)] text-paper/85">{l.arrivalNote}</p>}
       </Section>
 
+      <section className="wrap pb-[var(--s-4)]" aria-label="For parents at this center">
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-[var(--radius)] border border-line p-6">
+          <div>
+            <p className="eyebrow">For parents at this center</p>
+            <p className="mt-2 font-sans text-[length:var(--t-base)] text-body">Common Ground is the parent side of {l.name}: other parents, and the people on your child&rsquo;s team.</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href={`/families/connect?center=${l.slug}`} className="btn-secondary">Parent Circles &amp; Groups</Link>
+            <Link href={`/families/care-team?center=${l.slug}`} className="btn-secondary">Your Care Team</Link>
+          </div>
+        </div>
+      </section>
+
       <Section tone="lavender" eyebrow="Before day one" title="You can join before you start.">
         <div className="grid gap-5 md:grid-cols-2">
           <div className="rounded-[var(--radius)] bg-paper/70 p-6">

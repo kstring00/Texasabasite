@@ -8,7 +8,7 @@
  */
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Activity, ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 import BandwidthCheck from '@/components/BandwidthCheck';
 import PulseCard from '@/components/PulseCard';
 import { loadBandwidth, type BandwidthResult } from '@/lib/bandwidth';
@@ -28,11 +28,9 @@ export function ParentPulse() {
   return (
     <div className="page-shell">
       <header className="page-header">
-        <p className="eyebrow flex items-center gap-2">
-          <Activity className="h-4 w-4" aria-hidden /> Parent Pulse
-        </p>
-        <h1 className="h2">How are you doing this week?</h1>
-        <p className="page-description text-base">
+        <p className="eyebrow">Parent Pulse</p>
+        <h1>How are you doing this week?</h1>
+        <p className="page-description">
           One minute, three sliders. Not about your child. About you. Your answers stay on this device and are never a score.
         </p>
       </header>
@@ -62,7 +60,7 @@ export function ParentPulse() {
         <aside className="space-y-4">
           <div className="card">
             <p className="flex items-center gap-2 font-sans text-lg font-bold text-ink">
-              <ShieldCheck className="h-5 w-5 text-plum" aria-hidden /> What this is, and is not
+              <ShieldCheck className="h-5 w-5 text-cobalt" strokeWidth={1.8} aria-hidden /> What this is, and is not
             </p>
             <ul className="mt-3 space-y-2 text-base text-body">
               <li>A pattern you can see over a few weeks, so a heavy stretch is noticed before it becomes a crisis.</li>

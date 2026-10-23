@@ -64,13 +64,6 @@ const communityRules = [
 export default function ConnectPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-8 px-4 py-6 sm:px-6 sm:py-8">
-      <nav aria-label="Breadcrumb" className="text-[12px] text-brand-muted-500">
-        <ol className="flex items-center gap-1.5">
-          <li><Link href="/families" className="hover:text-brand-navy-700">Home</Link></li>
-          <li aria-hidden><ChevronRight className="h-3 w-3" /></li>
-          <li className="font-medium text-brand-muted-700">Parent Connection</li>
-        </ol>
-      </nav>
 
       <section className="overflow-hidden rounded-[1.8rem] border border-surface-border bg-gradient-to-br from-white via-white to-brand-plum-50/70 shadow-soft">
         <div className="p-6 sm:p-9">

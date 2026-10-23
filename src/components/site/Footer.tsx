@@ -4,12 +4,13 @@ import { OpenWorldMark } from './OpenWorld';
 import { site } from '@/data/site';
 import { locations } from '@/data/locations';
 import { services } from '@/data/services';
+import { cgGroups, CG_HOME } from '@/data/commonGround';
 
 export function Footer() {
   return (
     <footer className="bg-ink pb-28 pt-[var(--s-5)] text-paper md:pb-[var(--s-4)]">
       <div className="wrap grid grid-cols-12 gap-x-6 gap-y-12">
-        <div className="col-span-12 lg:col-span-5">
+        <div className="col-span-12 lg:col-span-4">
           <Logo className="[&_*]:text-paper" />
           <p className="mt-6 max-w-sm font-sans text-[length:var(--t-lg)] leading-snug text-paper/85">{site.tagline}</p>
           <p className="mt-6 font-sans text-[length:var(--t-base)]">
@@ -32,7 +33,7 @@ export function Footer() {
             ))}
           </ul>
         </nav>
-        <nav aria-label="Services" className="col-span-6 sm:col-span-4 lg:col-span-3">
+        <nav aria-label="Services" className="col-span-6 sm:col-span-4 lg:col-span-2">
           <p className="font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em] text-butter">Services</p>
           <ul className="mt-4 space-y-2">
             {services.map((s) => (
@@ -44,7 +45,19 @@ export function Footer() {
             ))}
           </ul>
         </nav>
-        <nav aria-label="More" className="col-span-12 sm:col-span-4 lg:col-span-2">
+        <nav aria-label="Common Ground" className="col-span-6 sm:col-span-4 lg:col-span-2">
+          <p className="font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em] text-butter">Common Ground</p>
+          <ul className="mt-4 space-y-2">
+            {cgGroups.map((g) => (
+              <li key={g.id}>
+                <Link href={`${CG_HOME}#${g.id}`} className="font-sans text-[length:var(--t-base)] text-paper/85 underline-offset-4 hover:text-paper hover:underline">
+                  {g.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <nav aria-label="More" className="col-span-6 sm:col-span-4 lg:col-span-2">
           <p className="font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em] text-butter">More</p>
           <ul className="mt-4 space-y-2">
             {[
