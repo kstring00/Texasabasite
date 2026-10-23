@@ -1,0 +1,420 @@
+<title>Texas ABA Getting Started</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap">
+<style>
+/* Layout: "Getting started" section. Left: a sticky companion panel whose scene acts out the active step, with the family contact pinned at the bottom (same person every step). Right: the numbered step cards on a rail. */
+:root{
+  --bg:#F6F2EC; --ink:#121A2B; --muted:#5A6170; --line:#DDD6CA; --paper:#FFFDF9; --wash:#EFE9DF;
+  --blue:#2F4EE8; --blue-soft:rgba(47,78,232,.12); --yellow:#E8C35A; --green:#2E8B62;
+  --panel:#121A2B; --panel-2:#1B2540; --panel-fg:#F6F2EC; --panel-muted:#AEB4C2; --panel-line:rgba(255,255,255,.12);
+  --display:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#0F1420; --ink:#F3EEE6; --muted:#B4B9C5; --line:#2A3144; --paper:#161C2B; --wash:#131927;
+  --blue:#4D68FF; --blue-soft:rgba(77,104,255,.18); --yellow:#E9C45E; --green:#4FBF8E;
+  --panel:#1A2238; --panel-2:#232D48; --panel-fg:#F3EEE6; --panel-muted:#AEB4C2; --panel-line:rgba(255,255,255,.12); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0F1420; --ink:#F3EEE6; --muted:#B4B9C5; --line:#2A3144; --paper:#161C2B; --wash:#131927;
+  --blue:#4D68FF; --blue-soft:rgba(77,104,255,.18); --yellow:#E9C45E; --green:#4FBF8E;
+  --panel:#1A2238; --panel-2:#232D48; --panel-fg:#F3EEE6; --panel-muted:#AEB4C2; --panel-line:rgba(255,255,255,.12); color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--display);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0;text-align:inherit}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-radius:12px}
+
+.wrap{max-width:1360px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:64px 88px}
+.head{max-width:64ch;margin-bottom:44px}
+.eyebrow{font-size:12px;letter-spacing:.3em;font-weight:700;color:var(--blue);margin-bottom:14px}
+.head h2{margin:0 0 12px;font-size:clamp(34px,4.4vw,58px);line-height:1.02;letter-spacing:-.03em;font-weight:500;text-wrap:balance}
+.head p{margin:0;color:var(--muted);font-size:18px;max-width:52ch}
+
+.grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:56px;align-items:start}
+
+/* ---------- Companion panel ---------- */
+.panel{position:sticky;top:max(24px,env(safe-area-inset-top,0px));background:var(--panel);color:var(--panel-fg);border-radius:120px 120px 28px 28px;padding:52px 40px 28px;display:flex;flex-direction:column;gap:20px;overflow:hidden;isolation:isolate}
+.panel::before{content:"";position:absolute;width:320px;height:320px;right:-120px;top:-120px;border-radius:50%;background:var(--blue);opacity:.22;filter:blur(60px);z-index:-1}
+.p-top{display:flex;align-items:center;gap:16px}
+.p-step{font-size:12px;letter-spacing:.26em;font-weight:700;color:var(--yellow);white-space:nowrap;font-variant-numeric:tabular-nums}
+.p-bar{flex:1;height:3px;border-radius:3px;background:var(--panel-line);overflow:hidden}
+.p-bar i{display:block;height:100%;width:25%;background:var(--yellow);border-radius:3px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.p-title{margin:0;font-size:clamp(30px,2.6vw,40px);line-height:1.02;letter-spacing:-.025em;font-weight:500}
+.stage{height:318px;background:var(--panel-2);border-radius:22px;position:relative;overflow:hidden}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.split > div{border:1px solid var(--panel-line);border-radius:16px;padding:12px 14px}
+.split b{display:block;font-size:10.5px;letter-spacing:.24em;font-weight:700;margin-bottom:4px}
+.split .you b{color:var(--yellow)}
+.split .we b{color:#9DB0FF}
+.split p{margin:0;font-size:14px;line-height:1.45;color:var(--panel-fg)}
+.contact{display:flex;align-items:center;gap:14px;border-top:1px solid var(--panel-line);padding-top:18px;flex-wrap:wrap}
+.c-av{width:48px;height:48px;border-radius:50%;background:var(--yellow);color:#121A2B;display:grid;place-items:center;font-weight:700;font-size:16px;flex:none;position:relative}
+.c-av::after{content:"";position:absolute;width:11px;height:11px;border-radius:50%;background:var(--green);right:0;bottom:1px;box-shadow:0 0 0 3px var(--panel)}
+.c-who{flex:1;min-width:150px;line-height:1.3}
+.c-who b{display:block;font-size:16px;font-weight:600}
+.c-who small{color:var(--panel-muted);font-size:13px}
+.c-acts{display:flex;gap:8px;flex-wrap:wrap}
+.c-btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:10px 16px;font-weight:600;font-size:14px;border:1.5px solid var(--panel-line);transition:background .25s,transform .25s;font-variant-numeric:tabular-nums}
+.c-btn:hover{background:rgba(255,255,255,.07);transform:translateY(-1px)}
+.c-btn.gold{background:var(--yellow);border-color:var(--yellow);color:#121A2B}
+.c-btn.gold:hover{background:var(--yellow);box-shadow:0 10px 24px -10px var(--yellow)}
+.c-btn svg{width:16px;height:16px}
+
+/* ---------- Scenes (shared by panel and mobile inline) ---------- */
+.sc{position:absolute;inset:0;padding:20px}
+
+/* 1. Chat */
+.chat{display:flex;flex-direction:column;gap:12px}
+.chat-head{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--panel-line)}
+.chat-head .av{width:32px;height:32px;border-radius:50%;background:var(--yellow);color:#121A2B;font-weight:700;font-size:12px;display:grid;place-items:center}
+.chat-head b{display:block;font-size:14px;line-height:1.2}
+.chat-head small{font-size:12px;color:var(--panel-muted)}
+.chat-head .live{margin-left:auto;font-size:10.5px;letter-spacing:.2em;font-weight:700;color:var(--green);display:flex;align-items:center;gap:6px}
+.chat-head .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
+.msgs{display:flex;flex-direction:column;gap:8px}
+.msg{max-width:82%;padding:9px 13px;border-radius:18px;font-size:14px;line-height:1.4}
+.msg.me{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:6px}
+.msg.them{align-self:flex-start;background:#F6F2EC;color:#121A2B;border-bottom-left-radius:6px}
+.msg.typing{display:flex;gap:4px;padding:12px 14px}
+.msg.typing i{width:6px;height:6px;border-radius:50%;background:#7A8090;animation:dot 1s infinite}
+.msg.typing i:nth-child(2){animation-delay:.15s}
+.msg.typing i:nth-child(3){animation-delay:.3s}
+.play .msg{animation:msgIn .45s cubic-bezier(.2,.9,.3,1.2) both}
+.play .msg:nth-child(1){animation-delay:.25s}
+.play .msg.typing{animation:typeShow 1.1s .8s both}
+.play .msg:nth-child(3){animation-delay:1.9s}
+.play .msg:nth-child(4){animation-delay:2.7s}
+.play .msg:nth-child(5){animation-delay:3.4s}
+
+/* 2. Evaluation visit */
+.ev-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:14px}
+.ev-head b{font-size:14px}
+.ev-head small{font-size:11px;letter-spacing:.18em;font-weight:700;color:var(--yellow)}
+.ev-list{list-style:none;margin:0;padding:0 0 0 4px;position:relative;display:grid;gap:12px}
+.ev-list::before{content:"";position:absolute;left:21px;top:14px;bottom:14px;width:2px;background:var(--panel-line)}
+.ev-run{position:absolute;left:21px;top:14px;width:2px;height:0;background:var(--yellow)}
+.play .ev-run{animation:run 3.4s .4s cubic-bezier(.5,0,.3,1) forwards}
+.ev-list li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start;position:relative}
+.ev-ic{width:36px;height:36px;border-radius:50%;background:var(--panel);border:1.5px solid var(--panel-line);display:grid;place-items:center;color:var(--panel-fg);transition:background .3s,border-color .3s}
+.ev-ic svg{width:18px;height:18px}
+.ev-list b{display:block;font-size:14px;line-height:1.25;margin-top:1px}
+.ev-list p{margin:2px 0 0;font-size:12.5px;line-height:1.4;color:var(--panel-muted)}
+.play .ev-list li{animation:fadeR .5s cubic-bezier(.2,.8,.2,1) both}
+.play .ev-list li:nth-of-type(1){animation-delay:.2s}
+.play .ev-list li:nth-of-type(2){animation-delay:.35s}
+.play .ev-list li:nth-of-type(3){animation-delay:.5s}
+.play .ev-list li:nth-of-type(4){animation-delay:.65s}
+.play .ev-list li .ev-ic{animation:icOn .4s both}
+.play .ev-list li:nth-of-type(1) .ev-ic{animation-delay:.6s}
+.play .ev-list li:nth-of-type(2) .ev-ic{animation-delay:1.6s}
+.play .ev-list li:nth-of-type(3) .ev-ic{animation-delay:2.6s}
+.play .ev-list li:nth-of-type(4) .ev-ic{animation-delay:3.6s}
+
+/* 3. Benefits verification */
+.vob{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px;align-items:center}
+.ins{aspect-ratio:1.586;max-width:100%;border-radius:14px;padding:12px 14px;background:linear-gradient(135deg,#F6F2EC,#E7E0D3);color:#121A2B;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 30px -18px rgba(0,0,0,.6);transform:rotate(-6deg);position:relative}
+.ins .tag{font-size:9px;letter-spacing:.22em;font-weight:700;color:#5A6170;display:flex;justify-content:space-between}
+.ins .chip-gold{width:26px;height:19px;border-radius:4px;background:linear-gradient(135deg,#E8C35A,#C9A23F)}
+.ins .ins-num{font-size:13px;font-weight:600;letter-spacing:.08em;font-variant-numeric:tabular-nums}
+.ins .meta{display:flex;gap:14px;font-size:9px;letter-spacing:.12em;color:#5A6170}
+.ins .meta span b{display:block;color:#121A2B;font-size:11px;letter-spacing:.04em}
+.ins .scan{position:absolute;left:0;right:0;top:0;height:3px;background:var(--blue);box-shadow:0 0 18px 4px var(--blue);opacity:0;border-radius:3px}
+.play .ins{animation:cardIn .7s cubic-bezier(.2,.9,.3,1.1) both}
+.play .ins .scan{animation:scan 1.1s .7s ease-in-out both}
+.free{display:inline-flex;align-self:start;font-size:10px;letter-spacing:.2em;font-weight:700;color:#121A2B;background:var(--yellow);border-radius:999px;padding:5px 10px;margin-bottom:10px}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.checks li{display:flex;align-items:center;gap:10px;font-size:13.5px;line-height:1.3}
+.checks svg{width:20px;height:20px;flex:none}
+.checks circle{fill:none;stroke:var(--panel-line);stroke-width:2}
+.checks path{fill:none;stroke:var(--green);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:14;stroke-dashoffset:14}
+.play .checks li{animation:fadeR .4s both}
+.play .checks li:nth-child(1){animation-delay:1.5s}
+.play .checks li:nth-child(2){animation-delay:1.9s}
+.play .checks li:nth-child(3){animation-delay:2.3s}
+.play .checks li:nth-child(4){animation-delay:2.7s}
+.play .checks li path{animation:draw .35s forwards}
+.play .checks li:nth-child(1) path{animation-delay:1.7s}
+.play .checks li:nth-child(2) path{animation-delay:2.1s}
+.play .checks li:nth-child(3) path{animation-delay:2.5s}
+.play .checks li:nth-child(4) path{animation-delay:2.9s}
+.play .checks li circle{animation:ringGreen .3s forwards}
+.play .checks li:nth-child(1) circle{animation-delay:1.7s}
+.play .checks li:nth-child(2) circle{animation-delay:2.1s}
+.play .checks li:nth-child(3) circle{animation-delay:2.5s}
+.play .checks li:nth-child(4) circle{animation-delay:2.9s}
+.summary{grid-column:1 / -1;display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--panel-line);border-radius:14px;padding:10px 14px;font-size:13px}
+.summary svg{width:18px;height:18px;color:var(--yellow);flex:none}
+.summary b{font-weight:600}
+.play .summary{animation:fadeUp .5s 3.3s both}
+
+/* 4. Start therapy */
+.start{display:flex;flex-direction:column;gap:14px}
+.wk-head{display:flex;justify-content:space-between;align-items:baseline}
+.wk-head b{font-size:14px}
+.wk-head small{font-size:11px;letter-spacing:.18em;font-weight:700;color:var(--yellow)}
+.wk{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.wk span{font-size:10.5px;letter-spacing:.16em;font-weight:700;color:var(--panel-muted);text-align:center}
+.day{height:92px;border-radius:10px;background:var(--panel);border:1px solid var(--panel-line);position:relative;overflow:hidden}
+.ses{position:absolute;left:5px;right:5px;border-radius:7px;background:var(--blue);padding:5px 6px;font-size:10px;font-weight:600;color:#fff;line-height:1.2}
+.ses.y{background:var(--yellow);color:#121A2B}
+.play .ses{animation:pop .5s cubic-bezier(.3,1.5,.4,1) both}
+.play .day:nth-child(6) .ses{animation-delay:.3s}
+.play .day:nth-child(7) .ses{animation-delay:.4s}
+.play .day:nth-child(8) .ses{animation-delay:.5s}
+.play .day:nth-child(9) .ses{animation-delay:.6s}
+.play .day:nth-child(10) .ses{animation-delay:.7s}
+.team{display:flex;align-items:center;gap:14px;border-top:1px solid var(--panel-line);padding-top:14px}
+.faces{display:flex}
+.face{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;box-shadow:0 0 0 3px var(--panel-2)}
+.face + .face{margin-left:-10px}
+.face.a{background:#9DB0FF;color:#121A2B}
+.face.b{background:#F6F2EC;color:#121A2B}
+.face.c{background:var(--yellow);color:#121A2B}
+.play .face{animation:pop .5s cubic-bezier(.3,1.6,.4,1) both}
+.play .face:nth-child(1){animation-delay:1s}
+.play .face:nth-child(2){animation-delay:1.12s}
+.play .face:nth-child(3){animation-delay:1.24s}
+.team p{margin:0;font-size:13px;line-height:1.4;color:var(--panel-muted)}
+.team p b{color:var(--panel-fg);font-weight:600}
+
+/* ---------- Steps rail ---------- */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:28px}
+.step{display:grid;grid-template-columns:52px minmax(0,1fr);gap:28px;position:relative}
+.step::after{content:"";position:absolute;left:25px;top:52px;bottom:-28px;width:2px;background:var(--line);transition:background .4s}
+.step:last-child::after{display:none}
+.step.done::after{background:var(--blue)}
+.num{width:52px;height:52px;border-radius:50%;border:2px solid var(--line);background:var(--bg);display:grid;place-items:center;font-weight:700;font-size:17px;position:relative;z-index:1;transition:background .35s,border-color .35s,color .35s,transform .35s}
+.step.on .num{background:var(--blue);border-color:var(--blue);color:#fff;transform:scale(1.06);box-shadow:0 0 0 8px var(--blue-soft)}
+.step.done .num{border-color:var(--blue);color:var(--blue)}
+.card{border:1px solid var(--line);border-radius:28px;padding:32px 34px;background:transparent;transition:background .35s,border-color .35s,box-shadow .35s;cursor:pointer;min-width:0}
+.card:hover{border-color:var(--blue)}
+.step.on .card{background:var(--paper);border-color:color-mix(in srgb,var(--blue) 45%,var(--line));box-shadow:0 24px 50px -36px rgba(18,26,43,.35)}
+.card h3{margin:0 0 10px;font-size:clamp(28px,3vw,44px);line-height:1.04;letter-spacing:-.025em;font-weight:500}
+.card > p{margin:0;font-size:18px;color:var(--muted);max-width:44ch}
+.meet{display:flex;gap:10px;align-items:baseline;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:14.5px}
+.meet b{font-size:10.5px;letter-spacing:.22em;font-weight:700;color:var(--blue);white-space:nowrap}
+.inline{display:none}
+
+@keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes typeShow{0%{opacity:0;max-height:0;padding-block:0}15%{opacity:1;max-height:40px;padding-block:12px}80%{opacity:1;max-height:40px;padding-block:12px}100%{opacity:0;max-height:0;padding-block:0;margin-top:-8px}}
+@keyframes dot{0%,100%{transform:none;opacity:.5}50%{transform:translateY(-3px);opacity:1}}
+@keyframes run{to{height:calc(100% - 28px)}}
+@keyframes icOn{to{background:var(--yellow);border-color:var(--yellow);color:#121A2B}}
+@keyframes fadeR{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes cardIn{from{opacity:0;transform:translate(-30px,20px) rotate(-16deg)}to{opacity:1;transform:rotate(-6deg)}}
+@keyframes scan{0%{opacity:0;top:0}15%{opacity:1}85%{opacity:1}100%{opacity:0;top:calc(100% - 3px)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes ringGreen{to{stroke:var(--green)}}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+
+/* ---------- Responsive ---------- */
+@media (max-width:980px){
+  .grid{grid-template-columns:1fr;gap:0}
+  .panel-col{display:none}
+  .inline{display:block;margin-top:20px;background:var(--panel);color:var(--panel-fg);border-radius:20px;padding:6px}
+  .inline .stage{height:auto;min-height:300px}
+  .inline .sc{position:relative;inset:auto}
+  .inline .split{padding:10px 6px 4px}
+  .contact-strip{display:block;position:sticky;bottom:max(12px,env(safe-area-inset-bottom,0px))}
+}
+@media (max-width:480px){
+  .wrap{padding-block:44px 64px}
+  .step{grid-template-columns:40px minmax(0,1fr);gap:14px}
+  .step::after{left:19px;top:40px}
+  .num{width:40px;height:40px;font-size:15px}
+  .card{padding:22px 18px;border-radius:22px}
+  .card p{font-size:16px}
+  .meet{flex-direction:column;gap:2px}
+  .vob{grid-template-columns:1fr;gap:12px}
+  .ins{max-width:200px}
+  .checks{grid-template-columns:1fr 1fr;gap:8px}
+  .checks li{font-size:12.5px}
+  .split{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .msg.typing{display:none}
+  .checks path{stroke-dashoffset:0}
+  .checks circle{stroke:var(--green)}
+  .ev-run{height:calc(100% - 28px)}
+  .ev-ic{background:var(--yellow)!important;color:#121A2B!important}
+}
+
+/* Mobile contact bar: the same person, always one tap away */
+.contact-strip{display:none;z-index:20;margin-top:24px}
+.contact-strip .contact{background:var(--panel);color:var(--panel-fg);border-radius:20px;padding:12px 14px;border-top:0;box-shadow:0 18px 40px -20px rgba(0,0,0,.5)}
+.contact-strip .c-who small{display:none}
+</style>
+
+<section class="wrap" id="getting-started">
+  <header class="head">
+    <div class="eyebrow">GETTING STARTED</div>
+    <h2>Four steps. One person with you the whole way.</h2>
+    <p>Most families start with a single text. From there, your family contact walks with you through the evaluation, insurance and your child's first day.</p>
+  </header>
+
+  <div class="grid">
+    <div class="panel-col">
+      <aside class="panel" id="panel" aria-live="polite" aria-label="What this step looks like">
+        <div class="p-top"><span class="p-step">STEP <span id="p-num">1</span> OF 4</span><div class="p-bar"><i id="p-bar"></i></div></div>
+        <h3 class="p-title" id="p-title">Talk to a person</h3>
+        <div class="stage" id="stage"></div>
+        <div class="split">
+          <div class="you"><b>YOU</b><p id="p-you"></p></div>
+          <div class="we"><b>WE</b><p id="p-we"></p></div>
+        </div>
+        <div class="contact" id="contact-desktop"></div>
+      </aside>
+    </div>
+
+    <div>
+      <ol class="steps" id="steps"></ol>
+      <div class="contact-strip"><div class="contact" id="contact-mobile"></div></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  // ---- Content. Everything the section says lives here. ----
+  var contact={initials:'MP', name:'Marcie Pena', role:'Your family contact, from first text to first day', phone:'(877) 771-5725', tel:'+18777715725'};
+
+  var steps=[
+    {title:'Talk to a person', body:'Call or request a tour. A real person texts you back.',
+     meet:'Your family contact.',
+     you:'Call, text, or tap Request a tour. That is all.',
+     we:'A real person texts you back, answers your questions and books your tour.',
+     scene:'chat'},
+    {title:'Evaluation, if needed', body:'We do it in-house. No separate waitlist.',
+     meet:'A licensed evaluator and your family contact.',
+     you:'Bring your child, your insurance card and any past reports.',
+     we:'Run a play-based visit and go over the results with you in plain language.',
+     scene:'eval'},
+    {title:'Benefits verified, free', body:'We call your insurance so you do not have to.',
+     meet:'Your family contact and our benefits team.',
+     you:'Send a photo of the front and back of your insurance card.',
+     we:'Call your plan and explain what is covered before anything starts.',
+     scene:'vob'},
+    {title:'Start therapy', body:'Meet your care team and begin with a plan built around your child.',
+     meet:'Your BCBA, your child’s therapist and your family contact.',
+     you:'Pick the days and times that work for your family.',
+     we:'Match your child with a BCBA and therapist and set their first goals with you.',
+     scene:'start'}
+  ];
+
+  // ---- Icons ----
+  var I={
+    phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>',
+    text:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>',
+    door:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M4 21h16M14 12h.01"/></svg>',
+    blocks:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/><rect x="8" y="3" width="8" height="8" rx="1.5"/></svg>',
+    talk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10h8M8 14h5M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg>',
+    clip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 13l2 2 4-4"/></svg>',
+    doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>'
+  };
+  var tick='<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9"/><path d="M6 10.5l2.6 2.6L14.2 7.5"/></svg>';
+
+  // ---- Scenes ----
+  function scene(kind){
+    if(kind==='chat') return '<div class="sc chat">'+
+      '<div class="chat-head"><span class="av">'+contact.initials+'</span><div><b>'+contact.name.split(' ')[0]+'</b><small>Texas ABA Centers</small></div><span class="live">REAL PERSON</span></div>'+
+      '<div class="msgs">'+
+        '<div class="msg me">Hi, I’d like to learn about ABA for my son.</div>'+
+        '<div class="msg them typing"><i></i><i></i><i></i></div>'+
+        '<div class="msg them">Hi! I’m '+contact.name.split(' ')[0]+' with Texas ABA Centers. I’d love to help. Is today or tomorrow better for a quick call?</div>'+
+        '<div class="msg me">Tomorrow after 3 works.</div>'+
+        '<div class="msg them">Perfect. I’ll call you then and walk you through every step.</div>'+
+      '</div></div>';
+    if(kind==='eval') return '<div class="sc">'+
+      '<div class="ev-head"><b>Your evaluation visit</b><small>IN-HOUSE</small></div>'+
+      '<ol class="ev-list"><span class="ev-run"></span>'+
+        '<li><span class="ev-ic">'+I.door+'</span><div><b>Welcome and settle in</b><p>Meet your evaluator. Your child gets time to explore the room.</p></div></li>'+
+        '<li><span class="ev-ic">'+I.blocks+'</span><div><b>Play-based observation</b><p>Your child plays while the evaluator watches and joins in.</p></div></li>'+
+        '<li><span class="ev-ic">'+I.talk+'</span><div><b>Your turn to talk</b><p>Share what you see at home: strengths, worries, routines.</p></div></li>'+
+        '<li><span class="ev-ic">'+I.clip+'</span><div><b>Results, together</b><p>We go over findings and next steps in plain language.</p></div></li>'+
+      '</ol></div>';
+    if(kind==='vob') return '<div class="sc vob">'+
+      '<div><span class="free">FREE · NO OBLIGATION</span>'+
+        '<div class="ins"><span class="scan"></span><div class="tag"><span>HEALTH PLAN</span><span>SAMPLE</span></div><span class="chip-gold"></span>'+
+        '<div class="ins-num">XJD 4821 0093</div><div class="meta"><span>MEMBER<b>Your child</b></span><span>GROUP<b>70412</b></span></div></div></div>'+
+      '<ul class="checks">'+
+        '<li>'+tick+'ABA therapy coverage</li>'+
+        '<li>'+tick+'Deductible and copay</li>'+
+        '<li>'+tick+'Prior authorization</li>'+
+        '<li>'+tick+'What you may owe</li>'+
+      '</ul>'+
+      '<div class="summary">'+I.doc+'<span><b>Plain-English summary</b> sent to you before anything starts.</span></div>'+
+      '</div>';
+    if(kind==='start'){
+      var days=['MON','TUE','WED','THU','FRI'], tops=[10,44,10,30,10], labs=['Session','Parent check-in','Session','Session','Session'];
+      var h='<div class="sc start"><div class="wk-head"><b>Your child’s first week</b><small>SAMPLE</small></div><div class="wk">';
+      days.forEach(function(d){h+='<span>'+d+'</span>'});
+      days.forEach(function(d,i){h+='<div class="day"><div class="ses'+(i===1?' y':'')+'" style="top:'+tops[i]+'px">'+labs[i]+'</div></div>'});
+      h+='</div><div class="team"><div class="faces"><span class="face a">BCBA</span><span class="face b">RBT</span><span class="face c">'+contact.initials+'</span></div>'+
+         '<p><b>Your care team.</b> A BCBA plans the goals, a therapist works with your child, and '+contact.name.split(' ')[0]+' stays your point of contact.</p></div></div>';
+      return h;
+    }
+  }
+
+  // ---- Contact block (desktop panel + mobile sticky bar) ----
+  var contactHTML='<span class="c-av">'+contact.initials+'</span>'+
+    '<div class="c-who"><b>'+contact.name+'</b><small>'+contact.role+'</small></div>'+
+    '<div class="c-acts"><a class="c-btn gold" href="tel:'+contact.tel+'">'+I.phone+contact.phone+'</a><a class="c-btn" href="sms:'+contact.tel+'">'+I.text+'Text</a></div>';
+  document.getElementById('contact-desktop').innerHTML=contactHTML;
+  document.getElementById('contact-mobile').innerHTML=contactHTML;
+
+  // ---- Steps ----
+  var list=document.getElementById('steps');
+  steps.forEach(function(s,i){
+    var li=document.createElement('li'); li.className='step'; li.dataset.i=i;
+    li.innerHTML='<span class="num" aria-hidden="true">'+(i+1)+'</span>'+
+      '<div class="card" role="button" tabindex="0" aria-label="Step '+(i+1)+': '+s.title+'. Show what this looks like.">'+
+        '<h3>'+s.title+'</h3><p>'+s.body+'</p>'+
+        '<div class="meet"><b>WHO YOU MEET</b><span>'+s.meet+'</span></div>'+
+        '<div class="inline"><div class="stage">'+scene(s.scene)+'</div>'+
+          '<div class="split"><div class="you"><b>YOU</b><p>'+s.you+'</p></div><div class="we"><b>WE</b><p>'+s.we+'</p></div></div></div>'+
+      '</div>';
+    var card=li.querySelector('.card');
+    card.addEventListener('click',function(){setActive(i,true)});
+    card.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();setActive(i,true)}});
+    list.appendChild(li);
+  });
+
+  // ---- Panel state ----
+  var stage=document.getElementById('stage'), cur=-1, lockUntil=0;
+  var stepsEls=[].slice.call(document.querySelectorAll('.step'));
+  function setActive(i,fromClick){
+    if(fromClick)lockUntil=Date.now()+900;
+    if(i===cur)return; cur=i; var s=steps[i];
+    stepsEls.forEach(function(el,k){el.classList.toggle('on',k===i);el.classList.toggle('done',k<i)});
+    document.getElementById('p-num').textContent=i+1;
+    document.getElementById('p-bar').style.width=((i+1)/steps.length*100)+'%';
+    document.getElementById('p-title').textContent=s.title;
+    document.getElementById('p-you').textContent=s.you;
+    document.getElementById('p-we').textContent=s.we;
+    stage.innerHTML=scene(s.scene);
+    var sc=stage.firstChild; void sc.offsetWidth; sc.classList.add('play');
+  }
+  setActive(0);
+
+  // Scrolling the cards drives the panel (desktop).
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      if(Date.now()<lockUntil)return;
+      entries.forEach(function(e){if(e.isIntersecting)setActive(+e.target.dataset.i)});
+    },{rootMargin:'-45% 0px -45% 0px'});
+    stepsEls.forEach(function(el){io.observe(el)});
+
+    // Mobile: each inline scene plays when its card scrolls into view.
+    var io2=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        var sc=e.target.querySelector('.sc'); if(!sc)return;
+        if(e.isIntersecting){sc.classList.remove('play');void sc.offsetWidth;sc.classList.add('play')}
+      });
+    },{threshold:.45});
+    document.querySelectorAll('.inline .stage').forEach(function(el){io2.observe(el)});
+  }
+})();
+</script>
