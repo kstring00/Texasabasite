@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { VideoHero } from '@/components/hero/VideoHero';
-import { Paths } from '@/components/site/acts/Paths';
+import { OneNextStep } from '@/components/site/acts/OneNextStep';
 import { GettingStarted } from '@/components/getting-started/GettingStarted';
 import { Locations } from '@/components/locations/Locations';
 import { ServiceExplorer } from '@/components/site/acts/ServiceExplorer';
@@ -9,7 +9,6 @@ import { InsuranceExplainer } from '@/components/site/acts/InsuranceExplainer';
 import { Humans } from '@/components/site/acts/Humans';
 import { Closing } from '@/components/site/acts/Closing';
 import { Section } from '@/components/site/Section';
-import { Threshold } from '@/components/site/OpenWorld';
 import { EventsThisMonth } from '@/components/site/EventsThisMonth';
 import { FromTheBlog } from '@/components/site/FromTheBlog';
 
@@ -25,8 +24,7 @@ export default function HomePage() {
   return (
     <>
       <VideoHero />
-      <Paths />
-      <Threshold from="paper" to="paper" className="hidden" />
+      <OneNextStep />
 
       <GettingStarted />
       <CommonGroundSection />

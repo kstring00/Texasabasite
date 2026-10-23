@@ -51,7 +51,7 @@ export function CgSubNav() {
       ref={navRef}
       aria-label="Common Ground"
       className={cn(
-        'sticky top-[var(--header-h)] z-30 h-14 border-b border-line transition-[background-color,box-shadow] duration-300',
+        'sticky top-[var(--nav-offset)] z-30 h-14 border-b border-line transition-[top,background-color,box-shadow] duration-[250ms] ease-out',
         scrolled ? 'bg-paper/85 shadow-[0_8px_24px_-20px_rgb(23_38_56/0.4)] backdrop-blur-[12px]' : 'bg-paper',
       )}
     >

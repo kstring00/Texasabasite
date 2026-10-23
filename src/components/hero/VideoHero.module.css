@@ -7,7 +7,7 @@
 .poster { z-index: 0; }
 .scrim { position: absolute; inset: 0; z-index: 1; pointer-events: none; will-change: opacity;
   background: linear-gradient(90deg, rgba(10, 14, 40, 0.55) 0%, transparent 55%), linear-gradient(180deg, transparent 55%, rgba(10, 14, 40, 0.55) 100%); }
-.copy { position: absolute; left: 0; right: 0; bottom: max(10vh, 72px); z-index: 2; padding-inline: max(20px, 3.3vw); will-change: transform, opacity; }
+.copy { position: absolute; left: 0; right: 0; bottom: max(10vh, 72px); z-index: 2; will-change: transform, opacity; }
 .inner { max-width: 40vw; min-width: min(100%, 560px); }
 .h1 { margin: 0; font-family: var(--font-hero); font-weight: 400; font-size: clamp(3.25rem, 7.5vw, 7rem); line-height: 0.95; letter-spacing: -0.02em; color: #fff; text-wrap: balance; }
 .word { display: inline-block; opacity: 0; transform: translateY(24px); }

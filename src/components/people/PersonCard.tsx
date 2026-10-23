@@ -23,7 +23,7 @@ export function PersonCard({ person, centerId, place, headingTag: H = 'h3', clas
       <p className="font-sans text-[length:var(--t-base)] text-body">{person.plainRole}</p>
       {centerName && !person.centers.includes('all') && <p className="chip self-start">{centerName}</p>}
       <div className="mt-auto flex flex-wrap gap-2 pt-1">
-        <a href={`tel:${MAIN_LINE.tel}`} className="btn-primary min-h-11 px-4 py-2 text-[14px]" onClick={() => track({ name: 'call_tap', center: centerId ?? 'main', place: `${place}-${person.id}` })}>
+        <a href={`tel:${MAIN_LINE.tel}`} className="btn-primary min-h-11 max-w-full whitespace-normal px-4 py-2 text-left text-[14px]" onClick={() => track({ name: 'call_tap', center: centerId ?? 'main', place: `${place}-${person.id}` })}>
           <Phone className="h-4 w-4" aria-hidden /> Call {MAIN_LINE.display} · ask for {first}
         </a>
         <Link href={messageHref(person, centerId)} className="btn-secondary min-h-11 px-4 py-2 text-[14px]">

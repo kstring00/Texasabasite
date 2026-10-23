@@ -58,6 +58,20 @@ export function CgLanding() {
           </RevealGroup>
         </section>
       ))}
+
+      <section aria-labelledby="cg-tour" className="arch bg-ink p-8 pt-16 text-paper sm:p-12 sm:pt-20">
+        <p className="font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em] text-butter">When you&rsquo;re ready</p>
+        <h2 id="cg-tour" className="h2 mt-3 text-paper">Come see a center.</h2>
+        <p className="mt-3 max-w-[52ch] font-sans text-[length:var(--t-base)] text-paper/85">Forty-five minutes. No paperwork. No decision that day.</p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href="/request-a-tour" className="btn-sun">
+            Request a tour <ArrowUpRight className="h-5 w-5" aria-hidden />
+          </Link>
+          <a href={`tel:${CG_PHONE.tel}`} className="btn border border-paper/30 text-paper hover:bg-paper hover:text-ink">
+            <Phone className="h-4 w-4" aria-hidden /> {CG_PHONE.display}
+          </a>
+        </div>
+      </section>
     </div>
   );
 }

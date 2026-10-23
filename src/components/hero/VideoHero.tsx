@@ -153,7 +153,7 @@ export function VideoHero() {
       <motion.div className={styles.scrim} style={reduce ? undefined : { opacity: scrimO }} aria-hidden="true" />
 
       <motion.div className={styles.copy} style={reduce ? undefined : { y: copyY, opacity: copyO }}>
-        <div className={styles.inner}>
+        <div className={`wrap`}><div className={styles.inner}>
           <h1 id="hero-title" className={styles.h1}>
             <span className={styles.word}>A</span> <span className={styles.word}>brighter</span>
             <br />
@@ -168,7 +168,7 @@ export function VideoHero() {
               Find a center
             </Link>
           </motion.div>
-        </div>
+        </div></div>
       </motion.div>
     </section>
   );
