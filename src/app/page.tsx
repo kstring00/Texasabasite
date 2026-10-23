@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Hero } from '@/components/hero/Hero';
 import { Paths } from '@/components/site/acts/Paths';
 import { Journey } from '@/components/site/acts/Journey';
-import { Places } from '@/components/site/acts/Places';
+import { Locations } from '@/components/locations/Locations';
 import { ServiceExplorer } from '@/components/site/acts/ServiceExplorer';
 import { CommonGroundFeature } from '@/components/site/acts/CommonGroundFeature';
 import { InsuranceExplainer } from '@/components/site/acts/InsuranceExplainer';
@@ -34,9 +34,7 @@ export default function HomePage() {
         <Journey compact />
       </Section>
 
-      <Section id="centers" tone="tint" eyebrow="Six centers" title={<>Closer than you <span className="editorial text-cobalt">think.</span></>} lede="Houston, Dallas–Fort Worth, and Austin. Every center does evaluations and therapy, so there is one front door.">
-        <Places />
-      </Section>
+      <Locations />
 
       <Section id="services" eyebrow="What care looks like" title={<>Six services. <span className="editorial text-cobalt">One</span> plan, with you in it.</>} lede="ABA stands for Applied Behavior Analysis. A trained therapist helps your child learn the skills they want and need, in small steps, with lots of encouragement. Here it is play-based, neurodiversity-affirming, and built with you in the room.">
         <ServiceExplorer />

@@ -1,0 +1,286 @@
+<title>Texas ABA Centers Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap">
+<style>
+/* Layout: locations section — a real Texas outline on the left with leader-line labels, the center card on the right, chips grouped by metro below it. */
+:root{
+  --bg:#F6F2EC; --ink:#121A2B; --muted:#5A6170; --line:#D9D2C7; --dot:#C9C1B3; --land:#EFE9DF;
+  --blue:#2F4EE8; --blue-soft:rgba(47,78,232,.14); --yellow:#E8C35A; --paper:#FFFDF9;
+  --card:#121A2B; --card-fg:#F6F2EC; --card-muted:#AEB4C2; --card-line:rgba(255,255,255,.18);
+  --display:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#0F1420; --ink:#F3EEE6; --muted:#B4B9C5; --line:#2A3144; --dot:#2E3650; --land:#161C2B;
+  --blue:#4D68FF; --blue-soft:rgba(77,104,255,.2); --yellow:#E9C45E; --paper:#161C2B;
+  --card:#1A2238; --card-fg:#F3EEE6; --card-muted:#AEB4C2; --card-line:rgba(255,255,255,.14); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0F1420; --ink:#F3EEE6; --muted:#B4B9C5; --line:#2A3144; --dot:#2E3650; --land:#161C2B;
+  --blue:#4D68FF; --blue-soft:rgba(77,104,255,.2); --yellow:#E9C45E; --paper:#161C2B;
+  --card:#1A2238; --card-fg:#F3EEE6; --card-muted:#AEB4C2; --card-line:rgba(255,255,255,.14); color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--display);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-radius:999px}
+
+.wrap{max-width:1360px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:56px 72px}
+.head{max-width:62ch;margin-bottom:36px}
+.head .eyebrow{font-size:12px;letter-spacing:.3em;font-weight:700;color:var(--blue);margin-bottom:14px}
+.head h2{margin:0 0 12px;font-size:clamp(34px,4.4vw,56px);line-height:1.02;letter-spacing:-.03em;font-weight:500;text-wrap:balance}
+.head p{margin:0;color:var(--muted);font-size:18px}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;align-items:center}
+
+/* ---------- Map ---------- */
+.map{position:relative;min-width:0}
+.map svg{width:100%;height:auto;display:block;overflow:visible}
+.land{fill:url(#dots);stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.land-base{fill:var(--land)}
+.halo{fill:var(--blue-soft);transition:opacity .3s}
+.leader{stroke:var(--ink);stroke-width:1.2;opacity:.45;transition:stroke .25s,opacity .25s}
+.pin{cursor:pointer}
+.pin circle.dot{fill:var(--ink);stroke:var(--bg);stroke-width:2.5;transition:fill .25s,r .25s}
+.pin circle.ring{fill:none;stroke:var(--yellow);stroke-width:2.5;opacity:0;transform-box:fill-box;transform-origin:center}
+.pin rect{fill:var(--paper);stroke:var(--line);stroke-width:1.2;transition:fill .25s,stroke .25s,transform .25s;transform-box:fill-box;transform-origin:center}
+.pin text{font-family:var(--display);font-size:11.5px;font-weight:700;letter-spacing:.14em;fill:var(--ink);text-transform:uppercase;transition:fill .25s;pointer-events:none}
+.pin:hover rect{transform:translateY(-2px);stroke:var(--blue)}
+.pin:hover circle.dot{fill:var(--blue)}
+.pin.on circle.dot{fill:var(--blue)}
+.pin.on circle.ring{opacity:1;animation:pulse 2.2s ease-out infinite}
+.pin.on rect{fill:var(--blue);stroke:var(--blue)}
+.pin.on text{fill:#fff}
+.pin.on + .leader,.leader.on{stroke:var(--blue);opacity:1}
+.metro-label{font-family:var(--display);font-size:9.5px;font-weight:700;letter-spacing:.22em;fill:var(--muted)}
+.compass{font-size:10px;letter-spacing:.2em;fill:var(--muted);font-weight:600}
+@keyframes pulse{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.9);opacity:0}}
+
+/* ---------- Card ---------- */
+.side{display:flex;flex-direction:column;gap:22px;min-width:0}
+.card{background:var(--card);color:var(--card-fg);border-radius:120px 120px 28px 28px;padding:56px 48px 44px;position:relative;overflow:hidden;min-height:440px}
+.card::before{content:"";position:absolute;inset:auto -60px -120px auto;width:260px;height:260px;border-radius:50%;background:var(--blue);opacity:.18;filter:blur(40px);pointer-events:none}
+.card .metro{font-size:12px;letter-spacing:.3em;font-weight:700;color:var(--yellow)}
+.card h3{margin:10px 0 22px;font-size:clamp(44px,5vw,76px);line-height:.95;letter-spacing:-.03em;font-weight:500}
+.card .rows{display:grid;gap:10px;font-size:17px}
+.card .row{display:flex;gap:12px;align-items:flex-start}
+.card .row svg{width:18px;height:18px;flex:none;margin-top:5px;color:var(--yellow)}
+.card .serves{color:var(--card-muted);font-size:16px;margin:16px 0 26px;max-width:40ch}
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:14px 24px;font-weight:600;font-size:15px;border:1.5px solid transparent;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.btn.gold{background:var(--yellow);color:#121A2B}
+.btn.gold:hover{transform:translateY(-2px);box-shadow:0 14px 30px -12px var(--yellow)}
+.btn.outline{border-color:var(--card-line);color:var(--card-fg)}
+.btn.outline:hover{background:rgba(255,255,255,.06);transform:translateY(-2px)}
+.dir{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;margin-top:16px;color:var(--card-fg)}
+.dir svg{width:16px;height:16px}
+.page-link{display:inline-block;margin-top:28px;font-size:14px;letter-spacing:.22em;font-weight:700;color:var(--yellow);text-transform:uppercase}
+.page-link:hover{text-decoration:underline;text-underline-offset:5px}
+.fade{animation:fadeUp .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ---------- Center index ---------- */
+.index{border-top:1.5px solid var(--ink)}
+.block{display:grid;grid-template-columns:132px minmax(0,1fr);border-bottom:1px solid var(--line)}
+.block-head{padding:16px 12px 16px 0;display:flex;flex-direction:column;gap:2px}
+.block-head b{font-size:11px;letter-spacing:.22em;font-weight:700}
+.block-head span{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.rows-list{list-style:none;margin:0;padding:0}
+.rows-list li + li{border-top:1px solid var(--line)}
+.row-btn{position:relative;width:100%;display:grid;grid-template-columns:14px minmax(0,1fr) auto;align-items:center;gap:14px;padding:13px 16px;text-align:left;overflow:hidden;border-radius:0;isolation:isolate}
+.row-btn::before{content:"";position:absolute;inset:0;background:var(--blue);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.7,0,.2,1);z-index:-1}
+.row-btn .pip{width:10px;height:10px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 3px var(--bg);transition:background .3s,box-shadow .3s}
+.row-btn .nm{font-size:22px;font-weight:500;letter-spacing:-.015em;transition:color .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.row-btn .go{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.18em;font-weight:700;color:var(--muted);transition:color .3s}
+.row-btn .go svg{width:18px;height:18px;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.row-btn .go em{font-style:normal;opacity:0;transform:translateX(8px);transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.row-btn:hover .nm,.row-btn.peek .nm{transform:translateX(6px)}
+.row-btn:hover .pip,.row-btn.peek .pip{background:var(--blue)}
+.row-btn:hover .go svg,.row-btn.peek .go svg{transform:translateX(4px)}
+.row-btn.on::before{transform:scaleX(1)}
+.row-btn.on .nm{color:#fff;transform:translateX(6px)}
+.row-btn.on .pip{background:var(--yellow);box-shadow:0 0 0 3px var(--blue),0 0 0 6px rgba(232,195,90,.35)}
+.row-btn.on .go{color:#fff}
+.row-btn.on .go em{opacity:1;transform:none}
+.row-btn.on .go svg{transform:rotate(-45deg)}
+.row-btn:focus-visible{outline-offset:-3px;border-radius:4px}
+.pin.peek circle.dot{fill:var(--blue)}
+.pin.peek rect{stroke:var(--blue);transform:translateY(-2px)}
+.pin.peek + .leader{opacity:1}
+
+@media (max-width:980px){
+  .grid{grid-template-columns:1fr;gap:28px}
+  .map{max-width:600px;margin:0 auto}
+  .card{border-radius:80px 80px 24px 24px;padding:44px 28px 36px;min-height:0}
+}
+@media (max-width:480px){
+  .wrap{padding-block:40px 56px}
+  .card{border-radius:60px 60px 20px 20px;padding:40px 22px 30px}
+  .actions .btn{flex:1 1 100%;justify-content:center}
+  .pin text{font-size:12.5px}
+  .block{grid-template-columns:1fr}
+  .block-head{flex-direction:row;align-items:baseline;gap:10px;padding:14px 0 6px}
+  .row-btn{padding:12px 10px}
+  .row-btn .nm{font-size:20px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<section class="wrap" id="locations">
+  <div class="head">
+    <div class="eyebrow">LOCATIONS</div>
+    <h2>Six centers across Texas. One front door.</h2>
+    <p>Pick the center closest to you. Every one of them does evaluations and therapy, so wherever you start, you start in the right place.</p>
+  </div>
+
+  <div class="grid">
+    <div class="map">
+      <svg viewBox="0 0 670 530" role="img" aria-label="Map of Texas showing six Texas ABA Centers locations" id="txmap">
+        <defs>
+          <pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="7" cy="7" r="1.7" fill="var(--dot)"/></pattern>
+        </defs>
+        <!-- Texas, projected from real coordinates -->
+        <path class="land-base" d="M162.4 20 L283.4 20 L283.4 110.1 L295.3 111.9 L307.3 117.5 L319.2 118.4 L331.1 126.8 L341.1 133.7 L355 137 L364.9 143 L378.9 140.7 L388.8 149.1 L400.7 144.4 L410.7 140.7 L426.6 147.7 L442.5 143 L458.4 146.3 L474.4 140.7 L490.3 152.8 L503 152.8 L520.5 152.8 L520.5 205.7 L520.5 229.4 L532 252.1 L540 270.7 L536 293.9 L534 314.8 L528.1 332 L520.1 335.7 L506.2 342.7 L492.3 354.3 L472.4 368.2 L450.5 382.1 L430.6 396 L416.7 407.6 L400.7 421.6 L390.8 440.1 L386.8 461 L390.8 484.2 L396.8 507.5 L384.8 509.8 L366.9 505.1 L347 495.9 L321.2 486.6 L311.2 468 L304.1 447.1 L301.3 428.5 L279.4 405.3 L261.5 382.1 L251.6 358.9 L241.6 347.3 L227.7 332 L205.8 328.7 L187.9 335.7 L176 347.3 L168 358.9 L156.1 351.9 L146.1 340.3 L130.2 324.1 L108.3 307.8 L94.4 289.3 L86.4 270.7 L64.6 254.4 L24.8 239.1 L20 228.9 L161.6 228.9 Z"/>
+        <path class="land" d="M162.4 20 L283.4 20 L283.4 110.1 L295.3 111.9 L307.3 117.5 L319.2 118.4 L331.1 126.8 L341.1 133.7 L355 137 L364.9 143 L378.9 140.7 L388.8 149.1 L400.7 144.4 L410.7 140.7 L426.6 147.7 L442.5 143 L458.4 146.3 L474.4 140.7 L490.3 152.8 L503 152.8 L520.5 152.8 L520.5 205.7 L520.5 229.4 L532 252.1 L540 270.7 L536 293.9 L534 314.8 L528.1 332 L520.1 335.7 L506.2 342.7 L492.3 354.3 L472.4 368.2 L450.5 382.1 L430.6 396 L416.7 407.6 L400.7 421.6 L390.8 440.1 L386.8 461 L390.8 484.2 L396.8 507.5 L384.8 509.8 L366.9 505.1 L347 495.9 L321.2 486.6 L311.2 468 L304.1 447.1 L301.3 428.5 L279.4 405.3 L261.5 382.1 L251.6 358.9 L241.6 347.3 L227.7 332 L205.8 328.7 L187.9 335.7 L176 347.3 L168 358.9 L156.1 351.9 L146.1 340.3 L130.2 324.1 L108.3 307.8 L94.4 289.3 L86.4 270.7 L64.6 254.4 L24.8 239.1 L20 228.9 L161.6 228.9 Z"/>
+
+        <!-- metro halos -->
+        <circle class="halo" cx="460" cy="337" r="30"/>
+        <circle class="halo" cx="410" cy="192" r="24"/>
+        <circle class="halo" cx="373" cy="309" r="16"/>
+
+        <!-- pins are injected here by script, from the same data as the card -->
+        <g id="pins"></g>
+
+        <text class="compass" x="40" y="500">N ↑</text>
+      </svg>
+    </div>
+
+    <div class="side">
+      <article class="card" id="card" aria-live="polite">
+        <div class="metro" id="c-metro">HOUSTON</div>
+        <h3 id="c-name">Pearland</h3>
+        <div class="rows">
+          <div class="row" id="c-addr-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/></svg><span id="c-addr"></span></div>
+          <div class="row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span>(877) 771-5725</span></div>
+        </div>
+        <p class="serves" id="c-serves"></p>
+        <div class="actions">
+          <a class="btn gold" href="#tour" id="c-tour">Request a tour <span aria-hidden="true">→</span></a>
+          <a class="btn outline" href="tel:+18777715725" id="c-call"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><span id="c-call-text">Call Pearland</span></a>
+        </div>
+        <a class="dir" id="c-dir" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 21 3l-8 18-2-8-8-2Z"/></svg>Get directions</a>
+        <br>
+        <a class="page-link" id="c-page" href="#">Visit the Pearland page ↗</a>
+      </article>
+
+      <nav class="index" id="index" aria-label="Choose a center"></nav>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  // One data source feeds the map, the card and the chips. Fill in the missing addresses; the card hides the line when empty.
+  var centers=[
+    {id:'pearland',  name:'Pearland',   metro:'HOUSTON', metroKey:'Houston',            x:470.8,y:342.2, label:[556,326,'start'],   address:'8524 Broadway St., Suite 100, Pearland, TX 77584', serves:'Friendswood, League City, Manvel, Alvin and nearby.'},
+    {id:'sugarland', name:'Sugar Land', metro:'HOUSTON', metroKey:'Houston',            x:457.2,y:339.4, label:[462,404,'middle'], address:'', serves:'Missouri City, Stafford, Richmond, Rosenberg and nearby.'},
+    {id:'katy',      name:'Katy',       metro:'HOUSTON', metroKey:'Houston',            x:449.7,y:331.5, label:[430,372,'end'],   address:'', serves:'Cypress, Fulshear, Brookshire, Richmond and nearby.'},
+    {id:'plano',     name:'Plano',      metro:'DALLAS–FORT WORTH', metroKey:'Dallas–Fort Worth', x:414.7,y:181.6, label:[470,176,'start'], address:'', serves:'Frisco, Allen, McKinney, Richardson and nearby.'},
+    {id:'cedarhill', name:'Cedar Hill', metro:'DALLAS–FORT WORTH', metroKey:'Dallas–Fort Worth', x:404.3,y:201.5, label:[470,214,'start'], address:'', serves:'DeSoto, Duncanville, Midlothian, Mansfield and nearby.'},
+    {id:'austin',    name:'Austin',     metro:'AUSTIN',  metroKey:'Austin',             x:373.3,y:309.2, label:[338,318,'end'],   address:'', serves:'Round Rock, Cedar Park, Pflugerville, Kyle and nearby.'}
+  ];
+  var NS='http://www.w3.org/2000/svg';
+  var pins=document.getElementById('pins'), index=document.getElementById('index');
+
+  // Leader lines first (under the pins), then pins + label pills.
+  centers.forEach(function(c){
+    var lx=c.label[0], ly=c.label[1], anchor=c.label[2];
+    var w=c.name.length*8.6+28, h=26;
+    var rx=anchor==='end'?lx-w:anchor==='middle'?lx-w/2:lx;
+    var tx=rx+w/2;
+    // leader ends at the nearest edge of the pill
+    var ex=anchor==='end'?rx+w:anchor==='middle'?tx:rx, ey=anchor==='middle'?(ly<c.y?ly+h/2:ly-h/2):ly;
+    if(anchor==='middle')ex=tx;
+    var line=document.createElementNS(NS,'line');
+    line.setAttribute('class','leader'); line.dataset.id=c.id;
+    line.setAttribute('x1',c.x);line.setAttribute('y1',c.y);line.setAttribute('x2',ex);line.setAttribute('y2',ey);
+    pins.appendChild(line);
+  });
+  centers.forEach(function(c){
+    var lx=c.label[0], ly=c.label[1], anchor=c.label[2];
+    var w=c.name.length*8.6+28, h=26;
+    var rx=anchor==='end'?lx-w:anchor==='middle'?lx-w/2:lx;
+    var g=document.createElementNS(NS,'g');
+    g.setAttribute('class','pin'); g.dataset.id=c.id; g.setAttribute('tabindex','0'); g.setAttribute('role','button');
+    g.setAttribute('aria-label',c.name+' center');
+    g.innerHTML='<circle class="ring" cx="'+c.x+'" cy="'+c.y+'" r="9"/>'+
+      '<circle class="dot" cx="'+c.x+'" cy="'+c.y+'" r="5.5"/>'+
+      '<rect x="'+rx+'" y="'+(ly-h/2)+'" width="'+w+'" height="'+h+'" rx="13"/>'+
+      '<text x="'+(rx+w/2)+'" y="'+(ly+4)+'" text-anchor="middle">'+c.name+'</text>';
+    g.addEventListener('click',function(){select(c.id)});
+    g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();select(c.id)}});
+    pins.appendChild(g);
+  });
+
+  // Index: one block per metro, one row per center.
+  var byMetro={}, order=[];
+  centers.forEach(function(c){if(!byMetro[c.metroKey]){byMetro[c.metroKey]=[];order.push(c.metroKey)}byMetro[c.metroKey].push(c)});
+  var arrow='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  order.forEach(function(m){
+    var list=byMetro[m];
+    var block=document.createElement('div'); block.className='block';
+    block.innerHTML='<div class="block-head"><b>'+m.toUpperCase()+'</b><span>'+list.length+(list.length>1?' centers':' center')+'</span></div><ul class="rows-list"></ul>';
+    list.forEach(function(c){
+      var li=document.createElement('li');
+      li.innerHTML='<button type="button" class="row-btn" data-id="'+c.id+'" id="row-'+c.id+'"><span class="pip"></span><span class="nm">'+c.name+'</span><span class="go"><em>VIEWING</em>'+arrow+'</span></button>';
+      var b=li.firstChild;
+      b.addEventListener('click',function(){select(c.id)});
+      b.addEventListener('mouseenter',function(){peek(c.id)});
+      b.addEventListener('mouseleave',function(){peek(null)});
+      b.addEventListener('focus',function(){peek(c.id)});
+      b.addEventListener('blur',function(){peek(null)});
+      block.querySelector('.rows-list').appendChild(li);
+    });
+    index.appendChild(block);
+  });
+
+  // Hovering a row lights its pin; hovering a pin lights its row.
+  function peek(id){
+    document.querySelectorAll('.pin,.row-btn').forEach(function(el){el.classList.toggle('peek',!!id&&el.dataset.id===id)});
+  }
+  document.querySelectorAll('.pin').forEach(function(p){
+    p.addEventListener('mouseenter',function(){peek(p.dataset.id)});
+    p.addEventListener('mouseleave',function(){peek(null)});
+  });
+
+  // Up/Down arrows move through the index.
+  index.addEventListener('keydown',function(e){
+    if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return;
+    var btns=[].slice.call(index.querySelectorAll('.row-btn'));
+    var i=btns.indexOf(document.activeElement); if(i<0)return;
+    e.preventDefault();
+    var n=btns[(i+(e.key==='ArrowDown'?1:-1)+btns.length)%btns.length];
+    n.focus(); select(n.dataset.id);
+  });
+
+  var card=document.getElementById('card');
+  function select(id){
+    var c=centers.find(function(x){return x.id===id});
+    document.querySelectorAll('.pin,.row-btn,.leader').forEach(function(el){el.classList.toggle('on',el.dataset.id===id)});
+    document.querySelectorAll('.row-btn').forEach(function(b){b.setAttribute('aria-current',b.dataset.id===id?'true':'false')});
+    card.classList.remove('fade');void card.offsetWidth;card.classList.add('fade');
+    document.getElementById('c-metro').textContent=c.metro;
+    document.getElementById('c-name').textContent=c.name;
+    document.getElementById('c-addr').textContent=c.address;
+    document.getElementById('c-addr-row').hidden=!c.address;
+    document.getElementById('c-serves').textContent='Serves '+c.serves;
+    document.getElementById('c-call-text').textContent='Call '+c.name;
+    document.getElementById('c-page').textContent='Visit the '+c.name+' page ↗';
+    document.getElementById('c-page').href='/locations/'+c.id;
+    var dir=document.getElementById('c-dir');
+    dir.hidden=!c.address;
+    dir.href='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(c.address);
+  }
+  select('pearland');
+})();
+</script>
