@@ -2,69 +2,79 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { heroContent as c } from './hero.content';
-import { GraduationScene } from './GraduationScene';
-import { useParallax } from './useParallax';
+import { HeroCollage, makeConfetti } from './HeroCollage';
+import { useParallax, type ParallaxLayer } from './useParallax';
 import { track } from '@/lib/site/analytics';
 import styles from './Hero.module.css';
 
-const PhoneIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+const PhoneIcon = ({ size = 22 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" />
   </svg>
 );
 
 /**
- * The graduation hero. Copy left, scene right. "next." fires the moment; "life" wakes the milestones.
- * CSS keyframes and one small requestAnimationFrame loop, no animation library.
+ * The final homepage hero: copy left, photo collage with the graduation cap right.
+ * CSS keyframes for the choreography; one rAF loop for parallax; no animation library.
  */
 export function Hero() {
   const heroRef = useRef<HTMLElement>(null);
-  const d1 = useRef<SVGGElement>(null);
-  const d2 = useRef<SVGGElement>(null);
-  const d3 = useRef<SVGGElement>(null);
-  const [phase, setPhase] = useState<{ turn: boolean; turned: boolean; burst: boolean; idle: boolean }>({ turn: false, turned: false, burst: false, idle: false });
+  const far = useRef<HTMLDivElement>(null);
+  const a = useRef<HTMLDivElement>(null);
+  const b = useRef<HTMLDivElement>(null);
+  const cap = useRef<HTMLDivElement>(null);
+  const near = useRef<HTMLDivElement>(null);
+  const layersRef = useRef<ParallaxLayer[]>([
+    { ref: far, px: 6 },
+    { ref: a, px: 10 },
+    { ref: b, px: 12 },
+    { ref: cap, px: 16 },
+    { ref: near, px: 20 },
+  ]);
+
+  const [confetti, setConfetti] = useState<ReturnType<typeof makeConfetti>>([]);
+  const [state, setState] = useState({ turn: false, turned: false, burst: false, idle: false, reduce: false, mounted: false });
   const firing = useRef(false);
   const timers = useRef<number[]>([]);
-  const [reduce, setReduce] = useState(false);
 
   const celebrate = useCallback(() => {
     if (firing.current) return;
     firing.current = true;
-    setPhase((p) => ({ ...p, burst: false, turned: false }));
-    // next frame: start the turn and the burst (the reference forces a reflow between the two)
-    requestAnimationFrame(() => setPhase((p) => ({ ...p, burst: true, turn: true })));
-    timers.current.push(window.setTimeout(() => setPhase((p) => ({ ...p, turn: false, turned: true })), 1600));
+    setConfetti(makeConfetti());
+    setState((s) => ({ ...s, burst: false, turned: false }));
+    requestAnimationFrame(() => setState((s) => ({ ...s, burst: true, turn: true })));
+    timers.current.push(window.setTimeout(() => setState((s) => ({ ...s, turn: false, turned: true })), 1600));
     timers.current.push(
       window.setTimeout(() => {
-        setPhase((p) => ({ ...p, burst: false }));
+        setState((s) => ({ ...s, burst: false }));
         firing.current = false;
-      }, 2300),
+      }, 2000),
     );
   }, []);
 
   useEffect(() => {
-    const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setReduce(prefersReduce);
-    if (prefersReduce) {
-      setPhase({ turn: false, turned: true, burst: false, idle: false });
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      setState({ turn: false, turned: true, burst: false, idle: false, reduce: true, mounted: true });
       return;
     }
+    setState((s) => ({ ...s, mounted: true }));
     const pending = timers.current;
-    pending.push(window.setTimeout(celebrate, 1500));
-    pending.push(window.setTimeout(() => setPhase((p) => ({ ...p, idle: true })), 3400));
+    pending.push(window.setTimeout(celebrate, 1450));
+    pending.push(window.setTimeout(() => setState((s) => ({ ...s, idle: true })), 2600));
     return () => pending.forEach((t) => window.clearTimeout(t));
   }, [celebrate]);
 
-  useParallax(heroRef, [d1, d2, d3], { enabled: !reduce });
+  useParallax(heroRef, layersRef.current, { enabled: state.mounted && !state.reduce });
 
-  const cls = [styles.hero, phase.turn && styles.turn, phase.turned && styles.turned, phase.burst && styles.burst, phase.idle && styles.idle].filter(Boolean).join(' ');
+  const cls = [styles.hero, state.mounted && styles.mounted, state.turn && styles.turn, state.turned && styles.turned, state.burst && styles.burst, state.idle && styles.idle, state.reduce && styles.still].filter(Boolean).join(' ');
 
   return (
     <section ref={heroRef} className={cls} id="hero" aria-labelledby="hero-title">
       <div className={styles.copy}>
         <p className={styles.eyebrow}>
           <i aria-hidden="true" />
-          {c.eyebrow}
+          <span>{c.eyebrow}</span>
         </p>
         <h1 className={styles.h1} id="hero-title">
           <span className={styles.ln}>
@@ -72,16 +82,15 @@ export function Hero() {
           </span>
           <span className={styles.ln}>
             <span className={styles.w}>
-              {c.headline.line2Prefix}
-              <span className={styles.wLife}>{c.headline.line2Word}</span>
+              of <span className={styles.wLife}>life</span>
             </span>
           </span>
           <span className={styles.ln}>
-            <span className={styles.w}>{c.headline.line3Prefix}</span>{' '}
-            <button type="button" className={`${styles.w} ${styles.wNext}`} onMouseEnter={celebrate} onClick={celebrate} title="See it again" aria-label={`${c.headline.line3Word} See the graduation moment again`}>
-              {c.headline.line3Word}
+            <span className={styles.w}>{c.headline.line3}</span>{' '}
+            <button type="button" className={styles.wNext} onMouseEnter={celebrate} onClick={celebrate} aria-label={`${c.headline.word} See the graduation moment again`}>
+              {c.headline.word}
               <svg viewBox="0 0 220 24" preserveAspectRatio="none" aria-hidden="true">
-                <path d="M4 16 C 50 4, 120 22, 216 8" />
+                <path d="M4 18 C 50 10, 120 22, 216 4" pathLength={1} />
               </svg>
             </button>
           </span>
@@ -91,11 +100,14 @@ export function Hero() {
           <strong>{c.lede.strong}</strong>
           {c.lede.after}
         </p>
+        <p className="sr-only">
+          {c.milestonesIntro} {c.milestones.join(', ')}.
+        </p>
         <div className={styles.cta}>
           <a className={`${styles.btn} ${styles.solid}`} href={c.primaryCta.href}>
-            {c.primaryCta.label}{' '}
+            {c.primaryCta.label}
             <span className={styles.arrow} aria-hidden="true">
-              ↓
+              →
             </span>
           </a>
           <a className={`${styles.btn} ${styles.ghost}`} href={c.secondaryCta.href} onClick={() => track({ name: 'call_tap', center: 'main', place: 'hero' })}>
@@ -116,10 +128,7 @@ export function Hero() {
         </p>
       </div>
 
-      <div className={styles.stage} aria-hidden="true">
-        <GraduationScene milestones={c.milestones} layers={[d1, d2, d3]} onCapClick={celebrate} />
-        <div className={styles.caption}>{c.caption}</div>
-      </div>
+      <HeroCollage layers={{ far, a, b, cap, near }} confetti={confetti} onCapClick={celebrate} />
     </section>
   );
 }

@@ -14,7 +14,7 @@ import { EventsThisMonth } from '@/components/site/EventsThisMonth';
 import { FromTheBlog } from '@/components/site/FromTheBlog';
 
 export const metadata: Metadata = {
-  title: 'ABA Therapy & Autism Evaluations in Texas, No Long Waitlist | Texas ABA Centers',
+  title: { absolute: 'Autism Evaluations & ABA Therapy in Texas | Texas ABA Centers' },
   description:
     'Autism evaluations and ABA therapy across Texas: six centers in Austin, Cedar Hill, Katy, Pearland, Plano and Sugar Land, free benefits checks, and a real person who texts you back. Request a tour.',
   alternates: { canonical: '/' },
@@ -24,9 +24,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <div className="wrap-wide">
-        <Hero />
-      </div>
+      <Hero />
       <Paths />
       <Threshold from="paper" to="paper" className="hidden" />
 
