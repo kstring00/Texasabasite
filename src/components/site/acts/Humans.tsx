@@ -28,7 +28,7 @@ export function Humans() {
         <div className="col-span-12 lg:col-span-6 lg:col-start-7">
           {people.length > 0 && (
             <Reveal>
-              <PeopleCards people={people} />
+              <PeopleCards people={people} compact />
             </Reveal>
           )}
           <Reveal delay={0.1}>

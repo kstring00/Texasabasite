@@ -74,16 +74,16 @@ export function Header() {
           'top-0 z-40 w-full transition-[height,background-color,border-color] duration-300 motion-safe:animate-[nav-in_0.5s_ease-out_both]',
           home ? 'fixed' : 'sticky',
           home && !reduce && 'motion-safe:[animation-delay:1.3s]',
-          scrolled ? 'h-[76px] border-b border-paper/10 bg-ink/70 backdrop-blur-[12px]' : 'h-[88px] border-b border-transparent bg-transparent lg:h-[108px]',
+          scrolled ? 'h-[76px] border-b border-paper/10 bg-ink/[0.94] backdrop-blur-[12px]' : 'h-[88px] border-b border-transparent bg-transparent lg:h-[108px]',
           text,
         )}
       >
-        <div className="mx-auto flex h-full w-full max-w-[1680px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-[max(52px,3.3vw)]">
+        <div className="mx-auto flex h-full w-full min-w-0 max-w-[1680px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-[max(52px,3.3vw)]">
           <Link href="/" className="inline-flex min-h-[44px] shrink-0 items-center rounded-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-butter/60" aria-label="Texas ABA Centers home">
             <Logo className={cn(light && 'brightness-0 invert')} />
           </Link>
 
-          <nav className="hidden items-center gap-10 min-[1100px]:flex" aria-label="Main">
+          <nav className="hidden items-center gap-8 min-[1280px]:flex xl:gap-10" aria-label="Main">
             {primary.map((n) => {
               const active = pathname === n.href || pathname.startsWith(n.href + '/');
               if (n.mega) return <MegaMenu key={n.href} href={n.href} label={n.label} active={active} />;
