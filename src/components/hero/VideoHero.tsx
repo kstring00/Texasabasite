@@ -157,7 +157,7 @@ export function VideoHero() {
           <h1 id="hero-title" className={styles.h1}>
             <span className={styles.word}>A</span> <span className={styles.word}>brighter</span>
             <br />
-            <span className={styles.next}>next.</span>
+            <span className={styles.next}>tomorrow.</span>
           </h1>
           <p className={styles.sub}>ABA therapy for children with autism — centers across Texas.</p>
           <motion.div style={reduce ? undefined : { y: ctaY }}>
