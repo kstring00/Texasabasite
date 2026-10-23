@@ -1,3 +1,26 @@
+/* Self-hosted, preloaded in the root layout. Latin subsets only; swap so text never waits. */
+@font-face {
+  font-family: 'Bricolage Grotesque Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url(/fonts/bricolage.woff2) format('woff2-variations');
+}
+@font-face {
+  font-family: 'DM Sans Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 1000;
+  src: url(/fonts/dm-sans.woff2) format('woff2-variations');
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 400;
+  src: url(/fonts/instrument-serif-italic.woff2) format('woff2');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,66 +31,85 @@
    ───────────────────────────────────────────────────────────── */
 @layer base {
   :root {
-    /* Pulled from the Texas ABA Centers mark: navy wordmark, red→plum hearts. */
-    --ink: 26 46 82;        /* deep grounded navy */
-    --paper: 251 248 243;   /* warm cream */
-    --card: 255 255 255;
-    --line: 227 221 212;
-    --sun: 242 181 76;      /* one accent that feels like sunlight */
-    --rose: 226 40 58;      /* brand red, used sparingly */
-    --plum: 112 48 104;
-    --body: 52 54 59;
-    --soft: 110 114 122;
+    /* ── Open World palette ───────────────────────────────── */
+    --ink: 23 38 56;          /* Deep Ink      #172638 */
+    --paper: 247 243 235;     /* Warm Canvas   #F7F3EB */
+    --cobalt: 51 73 232;      /* Electric Cobalt #3349E8, the brand anchor */
+    --persimmon: 242 124 97;  /* #F27C61 */
+    --butter: 242 207 104;    /* #F2CF68 */
+    --lavender: 220 207 240;  /* #DCCFF0 */
+    --sage: 189 215 198;      /* #BDD7C6 */
 
-    --header-h: 4.25rem;
-    --radius: 1rem;
+    /* Derived surfaces */
+    --card: 255 252 247;
+    --line: 214 207 196;
+    --body: 45 58 76;
+    --soft: 88 97 112;
 
-    /* Fonts are set on <html> by the layout (fontsource). */
-    --font-serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
-    --font-sans: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
-    --font-display: var(--font-serif);
+    /* Aliases kept for existing components */
+    --sun: var(--butter);
+    --rose: var(--persimmon);
+    --plum: var(--cobalt);
+
+    --header-h: 4.5rem;
+    --radius: 1.25rem;
+    --portal: 9999px 9999px 1.25rem 1.25rem;
+
+    --font-display: 'Bricolage Grotesque Variable', 'Helvetica Neue', Arial, sans-serif;
+    --font-sans: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-editorial: 'Instrument Serif', Georgia, serif;
+    --font-serif: var(--font-display);
     --font-body: var(--font-sans);
 
-    /* Common Ground legacy variables */
-    --brand-navy: #1a2e52;
-    --brand-red: #e2283a;
+    /* Fluid type scale (clamp): utility → display */
+    --t-xs: clamp(0.8rem, 0.78rem + 0.1vw, 0.875rem);
+    --t-sm: clamp(0.9rem, 0.86rem + 0.2vw, 1rem);
+    --t-base: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+    --t-lg: clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
+    --t-xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+    --t-2xl: clamp(2rem, 1.6rem + 2vw, 3rem);
+    --t-3xl: clamp(2.6rem, 1.9rem + 3.4vw, 4.5rem);
+    --t-hero: clamp(3rem, 1.6rem + 7vw, 8.5rem);
+
+    /* Fluid space */
+    --s-1: clamp(0.5rem, 0.4rem + 0.4vw, 0.75rem);
+    --s-2: clamp(1rem, 0.8rem + 0.8vw, 1.5rem);
+    --s-3: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);
+    --s-4: clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
+    --s-5: clamp(4rem, 2.6rem + 5.5vw, 8rem);
+
+    /* Common Ground legacy variables (still read by mounted pages) */
+    --brand-navy: #172638;
+    --brand-red: #f27c61;
     --brand-burgundy: #8b2442;
-    --brand-plum: #703068;
+    --brand-plum: #3349e8;
     --brand-purple: #32175a;
-    --brand-muted: #6e727a;
-    --brand-warm: #c5c2cf;
+    --brand-muted: #687180;
+    --brand-warm: #dccff0;
     --brand-teal: #0F6E56;
 
     color-scheme: light;
   }
 
-  :root[data-theme='dark'] {
-    --ink: 236 232 224;
-    --paper: 22 25 36;
-    --card: 31 35 50;
-    --line: 58 63 82;
-    --sun: 247 196 108;
-    --rose: 240 96 110;
-    --plum: 186 128 178;
-    --body: 221 217 210;
-    --soft: 160 164 176;
-    color-scheme: dark;
+  /* Common Ground zone: the serene lavender shift. */
+  [data-zone='families'] {
+    --paper: 240 236 246;
+    --card: 250 248 253;
+    --line: 212 203 228;
   }
 
-  /* Auto dark mode is opt-in: set NEXT_PUBLIC_AUTO_DARK=1 and add data-theme="auto" on <html>. */
-  @media (prefers-color-scheme: dark) {
-    :root[data-theme='auto'] {
-      --ink: 236 232 224;
-      --paper: 22 25 36;
-      --card: 31 35 50;
-      --line: 58 63 82;
-      --sun: 247 196 108;
-      --rose: 240 96 110;
-      --plum: 186 128 178;
-      --body: 221 217 210;
-      --soft: 160 164 176;
-      color-scheme: dark;
-    }
+  :root[data-theme='dark'] {
+    --ink: 236 232 224;
+    --paper: 18 24 34;
+    --card: 28 36 50;
+    --line: 58 68 88;
+    --body: 220 216 208;
+    --soft: 160 166 178;
+    --butter: 247 214 120;
+    --persimmon: 245 140 116;
+    --lavender: 120 100 160;
+    --sage: 110 150 125;
+    color-scheme: dark;
   }
 
   html {
@@ -84,69 +126,91 @@
     background-color: rgb(var(--paper));
     color: rgb(var(--body));
     font-family: var(--font-sans);
-    font-size: 1.125rem;
-    line-height: 1.65;
+    font-size: var(--t-base);
+    line-height: 1.6;
     overflow-x: hidden;
   }
 
   h1, h2, h3 {
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
     color: rgb(var(--ink));
-    letter-spacing: -0.01em;
-    font-variation-settings: 'opsz' 72, 'SOFT' 50, 'WONK' 0;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
     text-wrap: balance;
   }
-  h4, h5, h6 { color: rgb(var(--ink)); }
+  h4, h5, h6 { color: rgb(var(--ink)); font-family: var(--font-display); letter-spacing: -0.01em; }
 
   :focus-visible {
-    outline: 3px solid rgb(var(--sun));
+    outline: 3px solid rgb(var(--cobalt));
     outline-offset: 3px;
     border-radius: 0.5rem;
   }
 
-  ::selection { background: rgb(var(--sun) / 0.35); }
+  ::selection { background: rgb(var(--butter) / 0.6); }
 
   img { height: auto; }
 }
 
 @layer components {
-  .wrap { @apply mx-auto w-full max-w-wrap px-4 sm:px-6 lg:px-8; }
+  .wrap { @apply mx-auto w-full max-w-wrap px-5 sm:px-8 lg:px-12; }
+  .wrap-wide { @apply mx-auto w-full max-w-[100rem] px-5 sm:px-8 lg:px-12; }
 
+  /* Buttons: pill, confident, one accent. */
   .btn {
-    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-base font-semibold transition-all duration-200
-      focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sun/60 active:scale-[0.98];
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 font-sans text-[length:var(--t-sm)] font-semibold tracking-tight transition-[transform,background-color,color,box-shadow] duration-300 ease-out
+      focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cobalt/40 active:scale-[0.97];
   }
-  .btn-primary { @apply btn bg-ink text-paper shadow-lift hover:bg-ink/90 hover:shadow-card-hover; }
-  .btn-secondary { @apply btn border border-ink/20 bg-card text-ink hover:border-ink/40 hover:bg-ink/5; }
-  .btn-ghost { @apply btn text-ink hover:bg-ink/5; }
-  .btn-sun { @apply btn bg-sun text-ink shadow-lift hover:brightness-105; }
-  .btn-accent { @apply btn bg-accent text-accent-foreground hover:bg-accent-dark; }
+  .btn-primary { @apply btn bg-cobalt text-white shadow-[0_10px_30px_-12px_rgb(51_73_232/0.7)] hover:bg-ink hover:shadow-[0_14px_34px_-12px_rgb(23_38_56/0.6)]; }
+  .btn-secondary { @apply btn border border-ink/25 bg-transparent text-ink hover:border-ink hover:bg-ink hover:text-paper; }
+  .btn-ghost { @apply btn text-ink hover:bg-ink/[0.06]; }
+  .btn-sun { @apply btn bg-butter text-ink hover:bg-ink hover:text-paper; }
+  .btn-paper { @apply btn bg-paper text-ink hover:bg-butter; }
+  .btn-accent { @apply btn bg-persimmon text-ink hover:bg-ink hover:text-paper; }
 
-  .eyebrow { @apply text-xs font-bold uppercase tracking-[0.18em] text-plum; }
-  .h1 { @apply font-serif text-4xl leading-[1.08] text-ink sm:text-5xl lg:text-6xl; }
-  .h2 { @apply font-serif text-3xl leading-tight text-ink sm:text-4xl; }
-  .h3 { @apply font-serif text-xl leading-snug text-ink sm:text-2xl; }
-  .lede { @apply text-lg leading-relaxed text-body sm:text-xl; }
-  .card { @apply rounded-3xl border border-line bg-card p-6 shadow-card transition-all duration-300; }
-  .card-hover { @apply hover:-translate-y-1 hover:shadow-card-hover; }
-  .chip { @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-3 py-1 text-sm font-semibold text-ink; }
-  .prose-site { @apply text-body [&_a]:font-semibold [&_a]:text-ink [&_a]:underline [&_a]:underline-offset-4 [&_h2]:mt-10 [&_h2]:text-2xl [&_h3]:mt-8 [&_h3]:text-xl [&_li]:my-1 [&_p]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6; }
+  .eyebrow { @apply font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em] text-cobalt; }
+  .h1 { @apply font-display text-[length:var(--t-3xl)] leading-[0.98] text-ink; }
+  .h2 { @apply font-display text-[length:var(--t-2xl)] leading-[1.02] text-ink; }
+  .h3 { @apply font-display text-[length:var(--t-xl)] leading-[1.08] text-ink; }
+  .display { @apply font-display text-[length:var(--t-hero)] leading-[0.92] tracking-[-0.04em] text-ink; }
+  .editorial { font-family: var(--font-editorial); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+  .lede { @apply font-sans text-[length:var(--t-lg)] leading-[1.45] text-body; }
+  .card { @apply rounded-[var(--radius)] border border-line bg-card p-6 transition-all duration-300; }
+  .card-hover { @apply hover:-translate-y-1 hover:border-ink/40; }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full border border-ink/20 bg-transparent px-3 py-1 font-sans text-[length:var(--t-sm)] font-semibold text-ink; }
+  .prose-site { @apply text-body [&_a]:font-semibold [&_a]:text-cobalt [&_a]:underline [&_a]:underline-offset-4 [&_h2]:mt-12 [&_h2]:text-[length:var(--t-xl)] [&_h3]:mt-8 [&_h3]:text-[length:var(--t-lg)] [&_li]:my-1 [&_p]:my-5 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-ink; }
 
   .input-field {
-    @apply w-full rounded-2xl border border-line bg-card px-4 py-3 text-base text-ink placeholder:text-soft
-      focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/15;
+    @apply w-full rounded-2xl border border-ink/25 bg-card px-4 py-3.5 font-sans text-[length:var(--t-base)] text-ink placeholder:text-soft transition-[border-color,box-shadow] duration-200
+      focus:border-cobalt focus:outline-none focus:ring-4 focus:ring-cobalt/15;
   }
-  .label { @apply mb-2 block text-sm font-semibold text-ink; }
+  .label { @apply mb-2 block font-sans text-[length:var(--t-sm)] font-semibold text-ink; }
+
+  /* Open World primitives */
+  .portal { border-radius: var(--portal); overflow: hidden; }
+    .arch { border-radius: clamp(3rem, 12vw, 7rem) clamp(3rem, 12vw, 7rem) var(--radius) var(--radius); overflow: hidden; }
+  .portal-down { border-radius: 1.25rem 1.25rem 9999px 9999px; overflow: hidden; }
+  .portal-full { border-radius: 9999px; overflow: hidden; }
+  .section-pad { padding-block: var(--s-5); }
+  .hairline { @apply border-t border-ink/15; }
+  .num { font-family: var(--font-display); letter-spacing: -0.05em; }
 
   /* Common Ground legacy classes (kept so mounted pages keep working) */
   .page-shell { @apply space-y-8 md:space-y-10; }
   .page-header { @apply space-y-3; }
-  .page-title { @apply text-2xl font-bold text-ink sm:text-3xl md:text-[2rem]; }
-  .page-description { @apply max-w-3xl text-sm leading-relaxed text-soft sm:text-base; }
+  .page-title { @apply font-display text-[length:var(--t-xl)] font-semibold text-ink; }
+  .page-description { @apply max-w-3xl text-[length:var(--t-sm)] leading-relaxed text-soft sm:text-[length:var(--t-base)]; }
+  .section-title { @apply font-display text-[length:var(--t-lg)] font-semibold text-ink; }
+  .btn-outline { @apply btn-secondary; }
 }
 
-/* First-visit intro: overlay exists in server HTML, only shown when the inline script opts in. */
-html:not([data-intro]) [data-intro-overlay] { display: none; }
+/* Hero portal: CSS so it opens before JavaScript arrives. */
+@keyframes portal-open { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes horizon { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* Reveals: visible by default; hidden only by JS for elements below the fold. */
+.rv-hidden { opacity: 0; transform: translateY(18px); }
+.rv-anim { transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+@media (prefers-reduced-motion: reduce) { .rv-hidden { opacity: 1; transform: none; } .rv-anim { transition: none; } }
 
 /* Page transitions (Next experimental View Transitions). Calm cross-fade, no slide. */
 ::view-transition-old(root) { animation: 160ms ease-out both vt-out; }
@@ -159,7 +223,8 @@ html:not([data-intro]) [data-intro-overlay] { display: none; }
 
 /* Photography treatment: soft corners, warm grade, so mixed sources feel like one family. */
 .photo { @apply overflow-hidden rounded-3xl; }
-.photo img { filter: saturate(0.92) sepia(0.08) contrast(1.02); }
+.photo img { filter: saturate(0.9) sepia(0.1) contrast(1.03); }
+.photo { @apply portal; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -14,9 +14,11 @@ export const metadata: Metadata = {
 
 export default function FamiliesLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SupportShell>
-      <HomeBaseActivityTracker />
-      {children}
-    </SupportShell>
+    <div data-zone="families">
+      <SupportShell>
+        <HomeBaseActivityTracker />
+        {children}
+      </SupportShell>
+    </div>
   );
 }

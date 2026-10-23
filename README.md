@@ -96,11 +96,17 @@ Vercel Analytics plus custom events: `tour_request_submit` (center), `call_tap` 
 
 The original Common Ground codebase lives here unchanged in substance. Its routes moved from `/support/*` to `/families/*` (old URLs redirect). Three hub pages were added on top and read from the site data: While You Wait, Parent Pulse (demo UI over the existing bandwidth check, device-only), and Your Care Team. The voice guide is in `docs-common-ground-voice.md`.
 
-## Design system
+## Design system: Open World
 
-Tokens are CSS variables in `src/app/globals.css` (`--ink`, `--paper`, `--sun`, `--plum`, `--rose`, …) with a dark set. Dark mode is opt-in (`<html data-theme="dark">`) because the Common Ground pages still hard-code light surfaces. Fonts: Fraunces (serif, headlines) and Plus Jakarta Sans (UI), self-hosted via fontsource. Body text is 18px.
+Read `docs/REDESIGN-NOTES.md` first. The short version:
 
-Motion lives in `src/components/site/motion.tsx` (fade-ups, staggers) and `FirstVisitIntro.tsx` (the flower-mark loading screen: once per session, budgeted to end 1.2s after navigation start, tap to skip, skipped entirely under `prefers-reduced-motion`). Page transitions use Next's experimental View Transitions flag with a 200ms cross-fade.
+- **Tokens** are CSS variables in `src/app/globals.css`: `--ink`, `--paper`, `--cobalt`, `--persimmon`, `--butter`, `--lavender`, `--sage`, plus derived `--card`, `--line`, `--body`, `--soft`. Fluid type (`--t-xs` to `--t-hero`) and space (`--s-1` to `--s-5`) scales use `clamp()`. Tailwind reads them (`bg-cobalt`, `text-[length:var(--t-lg)]`). Note the `length:` hint: without it Tailwind treats a CSS variable as a color.
+- **Shapes** live in `src/components/site/OpenWorld.tsx`: `Portal` (arch mask), `.arch` (wide arch for panels), `OpenWorldMark`, `Threshold`, `Doorway` (the honest placeholder for missing photos).
+- **Type**: Bricolage Grotesque (display), DM Sans (UI), Instrument Serif italic for one word per headline. Self-hosted in `public/fonts`, preloaded in the root layout, `font-display: swap`. Body 18px.
+- **Primitives**: `Section` (tones: paper, card, tint, ink, cobalt, lavender, sage, butter; `titleAs="h1"` on the first section of a page), `Reveal`/`RevealGroup`/`RevealItem` in `motion.tsx` (visible by default; see the notes), buttons in `globals.css` (`btn-primary`, `btn-secondary`, `btn-sun`, `btn-paper`, `btn-ghost`).
+- **Acts**: the homepage sections are components in `src/components/site/acts/` and are reused on inner pages (Journey on Getting Started, Places on Locations, ServiceExplorer on Services, InsuranceExplainer on Insurance, Closing everywhere).
+- **Common Ground zone**: wrap with `data-zone="families"` to shift the canvas to lavender.
+- Dark mode tokens are defined and opt-in (`<html data-theme="dark">`).
 
 ## Logins and services
 

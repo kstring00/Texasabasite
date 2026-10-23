@@ -28,17 +28,17 @@ export default async function RequestTourPage({ searchParams }: { searchParams: 
       <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr] lg:items-start">
         <TourForm defaultCenter={center?.slug} about={sp.about} />
         <aside className="space-y-6 lg:sticky lg:top-24">
-          <div className="card">
-            <p className="eyebrow">What happens on a tour</p>
+          <div className="arch bg-butter p-7 pt-12">
+            <p className="eyebrow text-ink/70">What happens on a tour</p>
             <ol className="mt-3 space-y-3">
               {[`You arrive. ${tour.whatToBring}`, ...tour.whatHappens, tour.whatsNext].map((t, i) => (
                 <li key={t} className="flex gap-3 text-base text-body">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink text-sm font-bold text-paper">{i + 1}</span>
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink font-display text-sm font-bold text-paper">{i + 1}</span>
                   <span>{t}</span>
                 </li>
               ))}
             </ol>
-            <p className="mt-4 text-sm text-soft">{tour.howLong}</p>
+            <p className="mt-4 font-sans text-[length:var(--t-sm)] text-ink/70">{tour.howLong}</p>
           </div>
           {people.length > 0 && (
             <div>

@@ -2,28 +2,28 @@ import Image from 'next/image';
 import { MessageSquareText, Phone } from 'lucide-react';
 import { type Person } from '@/data/people';
 import { site } from '@/data/site';
-import { FlowerMark } from './Logo';
+import { OpenWorldMark } from './OpenWorld';
 
 /** Renders nothing if no real people exist. */
 export function PeopleCards({ people, compact }: { people: Person[]; compact?: boolean }) {
   if (people.length === 0) return null;
   return (
-    <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <ul className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
       {people.map((p) => {
         const phone = p.phone ?? site.phone;
         return (
-          <li key={p.id} className="card flex gap-4">
+          <li key={p.id} className="flex gap-5 border-t border-ink/15 pt-5">
             {p.photo ? (
               <div className="photo h-20 w-20 shrink-0 rounded-2xl">
                 <Image src={p.photo} alt={`${p.name}, ${p.title}`} width={80} height={80} className="h-20 w-20 object-cover" />
               </div>
             ) : (
-              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-ink/5" aria-hidden>
-                <FlowerMark className="h-10 w-10 opacity-60" id={`p-${p.id}`} title="" />
+              <div className="portal flex h-24 w-20 shrink-0 items-end justify-center bg-lavender pb-2" aria-hidden>
+                <OpenWorldMark className="h-8 w-10" tone="ink" />
               </div>
             )}
             <div className="min-w-0">
-              <p className="font-sans text-lg font-bold text-ink">{p.name}</p>
+              <p className="font-display text-[length:var(--t-xl)] leading-tight text-ink">{p.name}</p>
               <p className="text-sm text-soft">
                 {p.title}
                 {p.credentials ? `, ${p.credentials}` : ''}

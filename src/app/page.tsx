@@ -1,21 +1,17 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import { locations } from '@/data/locations';
-import { peopleForRegion } from '@/data/people';
-import { site } from '@/data/site';
+import { Opening } from '@/components/site/acts/Opening';
+import { Paths } from '@/components/site/acts/Paths';
+import { Journey } from '@/components/site/acts/Journey';
+import { Places } from '@/components/site/acts/Places';
+import { ServiceExplorer } from '@/components/site/acts/ServiceExplorer';
+import { CommonGroundFeature } from '@/components/site/acts/CommonGroundFeature';
+import { InsuranceExplainer } from '@/components/site/acts/InsuranceExplainer';
+import { Humans } from '@/components/site/acts/Humans';
+import { Closing } from '@/components/site/acts/Closing';
 import { Section } from '@/components/site/Section';
-import { CenterFinder } from '@/components/site/CenterFinder';
-import { TourButton, CallButton } from '@/components/site/Buttons';
-import { StepPath } from '@/components/site/StepPath';
-import { LocationCard } from '@/components/site/LocationCard';
-import { PeopleCards } from '@/components/site/PeopleCards';
-import { FinalCta } from '@/components/site/FinalCta';
-import { ServicesStrip, InsuranceStrip, CommonGroundBridge } from '@/components/site/HomeSections';
+import { Threshold } from '@/components/site/OpenWorld';
 import { EventsThisMonth } from '@/components/site/EventsThisMonth';
 import { FromTheBlog } from '@/components/site/FromTheBlog';
-import { Hero } from '@/components/site/Hero';
-import { Reveal, RevealGroup, RevealItem } from '@/components/site/motion';
 
 export const metadata: Metadata = {
   title: 'ABA Therapy & Autism Evaluations in Texas, No Long Waitlist | Texas ABA Centers',
@@ -24,65 +20,36 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 };
 
+/** The homepage as a story in nine acts. */
 export default function HomePage() {
-  const people = peopleForRegion('all');
   return (
     <>
-      <Hero>
-        <Reveal>
-          <p className="eyebrow">Texas ABA Centers</p>
-          <h1 className="h1 mt-3">{site.tagline}</h1>
-        </Reveal>
-        <Reveal delay={0.08}>
-          <p className="lede mt-5 max-w-2xl">
-            See your nearest center, meet the people who will be with your child, and know what the first visit looks like before you ever walk in.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <TourButton size="lg" />
-            <CallButton place="hero" variant="ghost" />
-          </div>
-        </Reveal>
-        <Reveal delay={0.16}>
-          <CenterFinder className="mt-8" compact />
-        </Reveal>
-      </Hero>
+      <Opening />
+      <Paths />
+      <Threshold from="paper" to="paper" className="hidden" />
 
-      <Section eyebrow="How it works" title="Your path from first worry to first day." lede="Five steps. Each one says who you meet and how long it takes. No step is a surprise.">
-        <StepPath />
-        <Link href="/getting-started" className="mt-10 inline-flex items-center gap-2 text-base font-semibold text-ink underline-offset-4 hover:underline">
-          Every step in detail <ArrowRight className="h-4 w-4" aria-hidden />
-        </Link>
+      <Section id="journey" eyebrow="The journey" title={<>From first worry to first day, in <span className="editorial text-cobalt">five</span> steps.</>} lede="Each step says who you meet, how long it usually takes, and what to bring. No step is a surprise.">
+        <Journey compact />
       </Section>
 
-      <Section id="centers" tone="tint" eyebrow="Six centers" title="Centers across Texas." lede="Houston, Dallas–Fort Worth, and Austin. Every center does evaluations and therapy, so there is one front door.">
-        <RevealGroup as="ul" className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {locations.map((l, i) => (
-            <RevealItem as="li" key={l.slug}>
-              <LocationCard location={l} index={i} />
-            </RevealItem>
-          ))}
-        </RevealGroup>
+      <Section id="centers" tone="tint" eyebrow="Six centers" title={<>Closer than you <span className="editorial text-cobalt">think.</span></>} lede="Houston, Dallas–Fort Worth, and Austin. Every center does evaluations and therapy, so there is one front door.">
+        <Places />
       </Section>
 
-      <CommonGroundBridge />
+      <Section id="services" eyebrow="What care looks like" title={<>Six services. <span className="editorial text-cobalt">One</span> plan, with you in it.</>} lede="ABA stands for Applied Behavior Analysis. A trained therapist helps your child learn the skills they want and need, in small steps, with lots of encouragement. Here it is play-based, neurodiversity-affirming, and built with you in the room.">
+        <ServiceExplorer />
+      </Section>
 
-      <ServicesStrip />
+      <CommonGroundFeature />
 
-      <InsuranceStrip />
+      <Section id="insurance" eyebrow="Insurance & cost" title={<>Know the cost <span className="editorial text-cobalt">before</span> you commit.</>} lede="Five words decide what therapy costs you. Here they are, one illustrative year at a time. We verify your real benefits for free.">
+        <InsuranceExplainer />
+      </Section>
 
+      <Humans />
       <EventsThisMonth />
-
       <FromTheBlog />
-
-      {people.length > 0 && (
-        <Section id="people" eyebrow="Your people" title="A name, not a call center." lede="These are the people who answer when you reach out. They text back.">
-          <Reveal>
-            <PeopleCards people={people} />
-          </Reveal>
-        </Section>
-      )}
-
-      <FinalCta />
+      <Closing />
     </>
   );
 }

@@ -6,7 +6,8 @@ import { site } from '@/data/site';
 import { Section } from '@/components/site/Section';
 import { EventCard } from '@/components/site/EventCard';
 import { EventsFilter } from '@/components/site/EventsFilter';
-import { FinalCta } from '@/components/site/FinalCta';
+import Link from 'next/link';
+import { Closing as FinalCta } from '@/components/site/acts/Closing';
 
 export const metadata: Metadata = {
   title: 'Family Events at Texas ABA Centers',
@@ -40,10 +41,30 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
             />
           </div>
         ) : (
-          <div className="mt-8 card">
-            <p className="text-base text-body">
-              No events are listed yet{center ? ' for this center' : ''}. When a center schedules a parent night, it appears here and on that center&rsquo;s page. Until then, call {site.phone.display} and ask what is coming up.
-            </p>
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+            <div className="arch bg-ink p-6 pt-12 text-paper lg:col-span-1">
+              <p className="font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.18em] text-butter">Nothing on the calendar yet</p>
+              <p className="mt-3 font-sans text-[length:var(--t-base)] text-paper/85">
+                When a center schedules a parent night, it appears here and on that center&rsquo;s page. Until then, call {site.phone.display} and ask what is coming up{center ? ' at this center' : ''}.
+              </p>
+            </div>
+            <div className="rounded-[var(--radius)] border border-ink/15 p-6 lg:col-span-2">
+              <p className="eyebrow">Meanwhile, three things that are open now</p>
+              <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+                {[
+                  ['/families/connect', 'Parent circles', 'Moderated groups, pilots forming now.'],
+                  ['/families/while-you-wait', 'While you wait', 'For the weeks before day one.'],
+                  ['/blog', 'The blog', 'Short, practical, plain words.'],
+                ].map(([href, t, d]) => (
+                  <li key={href}>
+                    <Link href={href} className="group block rounded-2xl border border-ink/10 p-4 transition hover:border-ink">
+                      <span className="block font-display text-[length:var(--t-lg)] text-ink">{t}</span>
+                      <span className="block font-sans text-[length:var(--t-sm)] text-soft">{d}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
       </Section>
