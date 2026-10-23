@@ -1,0 +1,22 @@
+/* Rows in the Locations index style: hairline dividers, blue sweep on select, arrow that tips. */
+.rows { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid rgb(var(--ink)); }
+.rows li + li { border-top: 1px solid rgb(var(--line)); }
+.row { position: relative; width: 100%; min-height: 56px; display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 14px 16px; text-align: left; overflow: hidden; border: 0; border-radius: 0; background: none; color: rgb(var(--ink)); font: inherit; cursor: pointer; isolation: isolate; }
+.row::before { content: ''; position: absolute; inset: 0; background: rgb(var(--cobalt)); transform: scaleX(0); transform-origin: left; transition: transform 0.5s cubic-bezier(0.7, 0, 0.2, 1); z-index: -1; }
+.pip { width: 10px; height: 10px; border-radius: 50%; background: rgb(var(--ink)); box-shadow: 0 0 0 3px rgb(var(--paper)); transition: background 0.3s, box-shadow 0.3s; }
+.nm { font-family: var(--font-display); font-size: 20px; font-weight: 500; letter-spacing: -0.015em; transition: color 0.3s, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.sub { display: block; margin-top: 2px; font-family: var(--font-sans); font-size: 14px; font-weight: 400; color: rgb(var(--soft)); transition: color 0.3s; }
+.go { display: flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: 0.18em; font-weight: 700; color: rgb(var(--soft)); transition: color 0.3s; }
+.go svg { width: 18px; height: 18px; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.row:hover .nm { transform: translateX(6px); }
+.row:hover .pip { background: rgb(var(--cobalt)); }
+.row:hover .go svg { transform: translateX(4px); }
+.row.on::before { transform: scaleX(1); }
+.row.on .nm, .row.on .sub, .row.on .go { color: #fff; transform: translateX(6px); }
+.row.on .pip { background: rgb(var(--butter)); box-shadow: 0 0 0 3px rgb(var(--cobalt)), 0 0 0 6px rgb(var(--butter) / 0.35); }
+.row.on .go svg { transform: rotate(-45deg); }
+.row:focus-visible { outline: 3px solid rgb(var(--butter)); outline-offset: -3px; border-radius: 4px; }
+.metro { padding: 14px 16px 6px; font-size: 11px; letter-spacing: 0.22em; font-weight: 700; color: rgb(var(--soft)); }
+.fade { animation: fadeUp 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .fade { animation: none; } .row::before, .nm, .go svg, .pip { transition: none; } }

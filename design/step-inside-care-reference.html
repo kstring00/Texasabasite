@@ -1,0 +1,687 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Step Inside Care</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: a quiet editorial header above a full-width "model table"; the miniature is the hero.
+   Info panel slides over the table's right edge (bottom sheet on phones). */
+:root{
+  --bg:#EFE9DF;          /* warm plaster */
+  --bg-2:#E6DFD2;
+  --fg:#2A2521;
+  --fg-2:#6B625A;
+  --line:#D8CFC0;
+  --accent:#1F5F5B;      /* deep teal */
+  --accent-ink:#F4F1EA;
+  --accent-soft:#D9E7E3;
+  --card:#F7F3EC;
+  /* model materials */
+  --ground:#DCD3C3;
+  --ground-2:#CFC4B1;
+  --plaster:#F3EDE2;
+  --plaster-in:#EDE6D8;
+  --corridor:#D7CDBC;
+  --wood:#B98A5E;
+  --wood-2:#8E6A47;
+  --teal:#2E6E69;
+  --sage:#8FA98B;
+  --mustard:#D9A441;
+  --mat:#7F9BB3;
+  --clay:#C98B6B;
+  --charcoal:#4A4541;
+  --cream:#EFE7DA;
+  --tile:#E4DCCF;
+  --shadow:rgba(40,30,20,.16);
+  --f-display:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --f-body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1D1A17; --bg-2:#24201C; --fg:#EFE8DC; --fg-2:#A69D91; --line:#3A342E;
+    --accent:#86C8C0; --accent-ink:#13201F; --accent-soft:#223532; --card:#272320;
+    --ground:#2D2823; --ground-2:#241F1B; --plaster:#D8D0C2; --plaster-in:#CFC6B7; --corridor:#8F8575;
+    --cream:#D9D0C2; --tile:#CBC2B4; --shadow:rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1D1A17; --bg-2:#24201C; --fg:#EFE8DC; --fg-2:#A69D91; --line:#3A342E;
+  --accent:#86C8C0; --accent-ink:#13201F; --accent-soft:#223532; --card:#272320;
+  --ground:#2D2823; --ground-2:#241F1B; --plaster:#D8D0C2; --plaster-in:#CFC6B7; --corridor:#8F8575;
+  --cream:#D9D0C2; --tile:#CBC2B4; --shadow:rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+h1,h2,h3{margin:0;font-weight:400;text-wrap:balance}
+p{margin:0}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* ---------- Hero ---------- */
+.hero{padding-block:40px 24px;max-width:1240px;margin:0 auto;display:grid;gap:18px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-2);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);display:inline-block}
+.hero h1{font-family:var(--f-display);font-style:italic;font-size:clamp(44px,7vw,92px);line-height:.98;letter-spacing:-.015em}
+.hero .sub{max-width:36ch;font-size:clamp(17px,1.6vw,21px);color:var(--fg-2);line-height:1.45}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-weight:500;transition:transform .2s,background .2s,border-color .2s}
+.btn:hover{transform:translateY(-1px);border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn .k{font-family:var(--f-display);font-style:italic;font-size:1.05em;opacity:.85}
+.note{font-size:13px;color:var(--fg-2);max-width:62ch}
+
+/* ---------- Stage ---------- */
+.experience{max-width:1240px;margin:0 auto;display:grid;gap:14px}
+.stage-wrap{position:relative;border-radius:22px;background:
+  radial-gradient(120% 90% at 30% 20%, var(--bg-2) 0%, var(--bg) 70%);
+  border:1px solid var(--line);overflow:hidden}
+.stage{position:relative;height:clamp(440px,70vh,780px);perspective:1800px;perspective-origin:50% 42%;overflow:hidden;cursor:grab;touch-action:none;user-select:none}
+.stage.dragging{cursor:grabbing}
+.world{position:absolute;left:50%;top:52%;width:0;height:0;transform-style:preserve-3d;
+  --spin:-32deg;--tilt:57deg;--zoom:1;--cx:340;--cy:230;--ox:0px;--oy:0px;
+  transform:translate(var(--ox),var(--oy)) scale(var(--zoom)) rotateX(var(--tilt)) rotateZ(var(--spin)) translate3d(calc(var(--cx) * -1px),calc(var(--cy) * -1px),0);
+  transition:transform .95s cubic-bezier(.22,.8,.2,1)}
+.stage.dragging .world,.stage.dragging .lbl{transition:none}
+.grp{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.box{position:absolute;left:0;top:0;transform-style:preserve-3d;--dim:0%}
+.face{position:absolute;left:0;top:0;transform-origin:0 0;backface-visibility:visible;
+  background:color-mix(in srgb, color-mix(in srgb, var(--c), #1a1410 var(--sh)), var(--bg) var(--dim));
+  transition:background .5s}
+.face.t{--sh:0%}.face.f{--sh:16%}.face.r{--sh:9%}.face.b{--sh:24%}.face.l{--sh:13%}
+.flat{position:absolute;left:0;top:0;transition:background .5s,opacity .5s}
+.room{cursor:pointer}
+.room .floor{transition:background .5s,box-shadow .5s}
+.room:hover .floor{box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--accent) 55%,transparent)}
+.world.focus .room:not(.active) .face{--dim:62%}
+.world.focus .room:not(.active) .flat{opacity:.35}
+.world.focus .bld .face{--dim:40%}
+.room.active .floor{box-shadow:inset 0 0 0 3px var(--accent)}
+
+/* billboard labels */
+.lbl{position:absolute;left:0;top:0;transform-style:preserve-3d;
+  transform:translate3d(var(--lx),var(--ly),var(--lz)) rotateZ(calc(var(--spin) * -1)) rotateX(calc(var(--tilt) * -1)) translate(-50%,-50%) scale(calc(1 / var(--zoom)));
+  transition:transform .95s cubic-bezier(.22,.8,.2,1)}
+.lbl button{display:flex;align-items:center;gap:7px;padding:6px 11px 6px 7px;border-radius:999px;background:color-mix(in srgb,var(--card) 92%,transparent);border:1px solid var(--line);box-shadow:0 6px 18px -10px var(--shadow);font-size:12.5px;font-weight:500;white-space:nowrap;transition:transform .25s,background .25s,color .25s}
+.lbl .n{width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:11px;font-variant-numeric:tabular-nums}
+.room:hover .lbl button,.room.active .lbl button{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);transform:translateY(-3px)}
+.room:hover .lbl .n,.room.active .lbl .n{background:var(--accent-ink);color:var(--accent)}
+.world.focus .room:not(.active) .lbl{opacity:.0;pointer-events:none}
+.lbl{transition:transform .95s cubic-bezier(.22,.8,.2,1),opacity .4s}
+
+/* stage chrome */
+.chrome{position:absolute;inset:0;pointer-events:none}
+.chrome>*{pointer-events:auto}
+.badge{position:absolute;left:16px;top:14px;display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);background:color-mix(in srgb,var(--card) 85%,transparent);border:1px solid var(--line);padding:7px 11px;border-radius:999px;backdrop-filter:blur(8px)}
+.badge i{width:8px;height:8px;border-radius:2px;background:var(--mustard);display:inline-block}
+.orbit{position:absolute;right:16px;top:14px;display:flex;gap:6px;background:color-mix(in srgb,var(--card) 85%,transparent);border:1px solid var(--line);border-radius:999px;padding:4px;backdrop-filter:blur(8px)}
+.orbit button{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:15px;transition:background .2s}
+.orbit button:hover{background:var(--accent-soft)}
+.hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-size:13px;color:var(--fg-2);background:color-mix(in srgb,var(--card) 85%,transparent);border:1px solid var(--line);padding:8px 14px;border-radius:999px;backdrop-filter:blur(8px);white-space:nowrap;transition:opacity .4s}
+.stage-wrap.open .hint,.stage-wrap.touring .hint{opacity:0}
+
+/* ---------- Panel ---------- */
+.panel{position:absolute;top:14px;right:14px;bottom:14px;width:min(440px,calc(100% - 28px));background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 30px 60px -30px var(--shadow);transform:translateX(calc(100% + 30px));opacity:0;transition:transform .7s cubic-bezier(.22,.8,.2,1),opacity .4s;display:flex;flex-direction:column;overflow:hidden}
+.stage-wrap.open .panel{transform:none;opacity:1}
+.panel-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0 22px}
+.panel .close{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:16px}
+.panel .close:hover{background:var(--accent-soft)}
+.panel-scroll{overflow-y:auto;padding:6px 22px 22px;display:grid;gap:22px;min-width:0}
+.panel h2{font-family:var(--f-display);font-size:38px;line-height:1.02;letter-spacing:-.01em}
+.lede{color:var(--fg-2);font-size:16px;line-height:1.5}
+.panel h3{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-2);margin-bottom:8px;font-weight:600}
+.panel section p,.panel section li{font-size:15px;line-height:1.55}
+.panel ul{margin:0;padding-left:18px;display:grid;gap:5px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0;list-style:none}
+.chips li{padding:5px 10px;border-radius:999px;background:var(--accent-soft);color:var(--fg);font-size:13px}
+.fit{padding:14px 16px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+.fit small{display:block;margin-top:8px;color:var(--fg-2);font-size:12.5px;line-height:1.45}
+.panel-nav{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:16px}
+.panel-nav button{font-size:14px;color:var(--fg-2);display:flex;gap:6px;align-items:center}
+.panel-nav button:hover{color:var(--accent)}
+
+/* modules */
+.module{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--bg);display:grid;gap:12px}
+.module .mh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.module .mh b{font-weight:600;font-size:14px}
+.module .mh span{font-size:12px;color:var(--fg-2)}
+.trial{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.trial .st{padding:10px 8px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:12px;line-height:1.3;text-align:center;transition:background .3s,color .3s,transform .3s;color:var(--fg-2)}
+.trial .st.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);transform:translateY(-2px)}
+.trial .st em{display:block;font-style:normal;font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.scene{min-height:62px;padding:12px 14px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:14px;line-height:1.45}
+.scene q{font-family:var(--f-display);font-style:italic;font-size:18px;quotes:"“" "”"}
+.mrow{display:flex;gap:8px;flex-wrap:wrap}
+.mbtn{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;transition:background .2s,color .2s,border-color .2s}
+.mbtn:hover{border-color:var(--accent)}
+.mbtn.on,.mbtn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.steps{display:grid;gap:6px}
+.steps label{display:flex;gap:10px;align-items:center;padding:9px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:14px;cursor:pointer}
+.steps input{accent-color:var(--accent);width:16px;height:16px}
+.steps label.done{color:var(--fg-2);text-decoration:line-through}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.seg button{padding:8px 4px;font-size:12px;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.cards3 div{padding:10px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:12.5px;line-height:1.35}
+.cards3 b{display:block;font-size:13px;margin-bottom:3px}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .4s}
+
+/* legend */
+.legend{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding-bottom:8px}
+.legend button{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 8px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13.5px;transition:border-color .2s,background .2s}
+.legend button:hover{border-color:var(--accent)}
+.legend button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.legend .n{width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--fg);display:grid;place-items:center;font-size:11px;font-variant-numeric:tabular-nums}
+.legend button.on .n{background:var(--accent-ink);color:var(--accent)}
+
+/* tour bar */
+.tourbar{position:absolute;left:50%;bottom:16px;transform:translate(-50%,140%);display:flex;align-items:center;gap:14px;padding:10px 12px 10px 18px;border-radius:999px;background:var(--card);border:1px solid var(--line);box-shadow:0 20px 40px -24px var(--shadow);transition:transform .6s cubic-bezier(.22,.8,.2,1);max-width:calc(100% - 28px)}
+.stage-wrap.touring .tourbar{transform:translate(-50%,0)}
+.tourbar .tt{display:grid;gap:4px;min-width:120px}
+.tourbar .tt b{font-size:13px;font-weight:600;white-space:nowrap}
+.tourbar .tt span{font-size:11.5px;color:var(--fg-2);font-variant-numeric:tabular-nums}
+.tourbar .bar{width:110px}
+.tourbar button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:14px}
+.tourbar button:hover{background:var(--accent-soft)}
+.tourbar .end{width:auto;padding:0 12px;border-radius:999px;font-size:13px}
+
+/* ---------- Path to Progress ---------- */
+.path{max-width:1240px;margin:0 auto;display:grid;gap:22px;padding-block:8px 40px}
+.path-head{display:grid;gap:10px;max-width:70ch}
+.path-head h2{font-family:var(--f-display);font-size:clamp(34px,4.6vw,58px);line-height:1;font-style:italic}
+.path-head p{color:var(--fg-2);font-size:17px}
+.callout{display:flex;gap:12px;padding:14px 16px;border-radius:12px;background:var(--accent-soft);font-size:14px;line-height:1.5;max-width:76ch}
+.callout i{flex:none;width:8px;border-radius:4px;background:var(--accent);display:block}
+.track{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.track::before{content:"";position:absolute;left:4%;right:4%;top:26px;border-top:2px dashed var(--line);z-index:0}
+.stage-card{position:relative;z-index:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:10px;text-align:left;align-content:start;transition:border-color .25s,transform .25s;min-width:0}
+.stage-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.stage-card.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.stage-card .num{width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:12px;font-variant-numeric:tabular-nums}
+.stage-card h3{font-family:var(--f-display);font-size:24px;line-height:1.05}
+.stage-card p{font-size:13.5px;color:var(--fg-2);line-height:1.45}
+.detail{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:22px;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:22px}
+.detail h4{margin:0 0 8px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-2);font-weight:600}
+.detail p,.detail li{font-size:15px;line-height:1.55}
+.detail ul{margin:0;padding-left:18px;display:grid;gap:5px}
+.detail .rooms{display:flex;flex-wrap:wrap;gap:6px}
+.detail .rooms button{padding:6px 11px;border-radius:999px;background:var(--accent-soft);font-size:13px;transition:background .2s,color .2s}
+.detail .rooms button:hover{background:var(--accent);color:var(--accent-ink)}
+.detail .title{font-family:var(--f-display);font-size:30px;line-height:1.05;margin-bottom:10px}
+.back{justify-self:start}
+
+footer{max-width:1240px;margin:0 auto;padding-block:24px 48px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--fg-2)}
+[hidden]{display:none!important}
+
+@media (max-width:860px){
+  .stage{height:clamp(420px,62vh,640px)}
+  .panel{top:auto;left:10px;right:10px;bottom:10px;width:auto;max-height:70%;transform:translateY(calc(100% + 30px))}
+  .stage-wrap.open .panel{transform:none}
+  .stage-wrap.open .orbit{opacity:0;pointer-events:none}
+  .panel h2{font-size:30px}
+  .track{grid-template-columns:1fr 1fr}
+  .track::before{display:none}
+  .detail{grid-template-columns:1fr}
+  .tourbar .bar{display:none}
+  .trial{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:480px){.track{grid-template-columns:1fr}.cards3{grid-template-columns:1fr}}
+@media (prefers-reduced-motion: reduce){
+  .world,.lbl,.panel,.tourbar,.face,.flat,.btn,.stage-card,.trial .st{transition:none!important}
+}
+</style>
+
+<header class="hero wrap">
+  <div class="eyebrow"><span>Common Ground</span><span class="dot"></span><span>Sugar Land, Texas</span><span class="dot"></span><span>Step inside care</span></div>
+  <h1>Step inside the journey.</h1>
+  <p class="sub">Discover the spaces, experiences, and everyday moments that help children learn, connect, and grow.</p>
+  <div class="actions">
+    <button class="btn primary" id="bExplore">Explore the center</button>
+    <button class="btn" id="bTour"><span class="k">▶</span> Guided tour</button>
+    <button class="btn" id="bPath">Path to progress <span class="k">→</span></button>
+  </div>
+  <p class="note">Illustrative concept. The miniature, its layout and furnishings are placeholders until the verified Sugar Land floor plan, photos and room dimensions are added. Descriptions are general educational explanations, not claims about this center.</p>
+</header>
+
+<main class="wrap">
+  <section class="experience" id="experience">
+    <div class="stage-wrap" id="stageWrap">
+      <div class="stage" id="stage" tabindex="0" aria-label="Interactive miniature of the center. Drag to rotate. Use arrow keys to rotate.">
+        <div class="world" id="world"></div>
+      </div>
+      <div class="chrome">
+        <div class="badge"><i></i> Illustrative concept</div>
+        <div class="orbit" role="group" aria-label="View controls">
+          <button id="rotL" title="Rotate left" aria-label="Rotate left">↺</button>
+          <button id="rotR" title="Rotate right" aria-label="Rotate right">↻</button>
+          <button id="tiltB" title="Change angle" aria-label="Change viewing angle">⤴</button>
+          <button id="resetV" title="Reset view" aria-label="Reset view">⌂</button>
+        </div>
+        <div class="hint" id="hint">Drag to rotate · click any room to step inside</div>
+        <aside class="panel" id="panel" aria-live="polite">
+          <div class="panel-head"><span class="eyebrow" id="pEyebrow"></span><button class="close" id="pClose" aria-label="Close">✕</button></div>
+          <div class="panel-scroll" id="pBody"></div>
+        </aside>
+        <div class="tourbar" id="tourbar">
+          <div class="tt"><b id="tTitle">Guided tour</b><span id="tStep">Stop 1 of 8</span></div>
+          <div class="bar"><i id="tBar"></i></div>
+          <button id="tPrev" aria-label="Previous stop">‹</button>
+          <button id="tPause" aria-label="Pause">❚❚</button>
+          <button id="tNext" aria-label="Next stop">›</button>
+          <button class="end" id="tEnd">End tour</button>
+        </div>
+      </div>
+    </div>
+    <nav class="legend" id="legend" aria-label="Rooms"></nav>
+  </section>
+
+  <section class="path" id="path" hidden>
+    <button class="btn back" id="bBack">← Back to the center</button>
+    <div class="path-head">
+      <h2>Path to progress.</h2>
+      <p>Five areas of growth that show up across the center. Children move between them in their own order and often work on several at once.</p>
+    </div>
+    <div class="callout"><i></i><div>Every child's program is individualized with their family and clinical team. These areas describe <em>kinds</em> of growth, not a fixed sequence, and no set of abilities is required to transition out of services.</div></div>
+    <div class="track" id="track"></div>
+    <div class="detail" id="detail"></div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span>Common Ground · Step Inside Care · Design prototype v0.1</span>
+  <span>Rooms are modular: swap each one's position, size, furnishings and copy independently.</span>
+</footer>
+
+<script>
+/* ============ DATA ============ */
+const ROOMS = [
+ {id:'welcome',n:1,name:'Welcome & Reception',short:'Welcome',x:0,y:0,w:200,d:200,floor:'var(--wood)',
+  lede:'The first room every family sees. Calm, unhurried, and built to make arriving feel easy.',
+  what:'Families check in, say hello to familiar faces, and settle in before a session. For many children this short routine, arrive, greet, wait, go, is itself a skill being practiced.',
+  skills:['Greetings','Waiting','Transitions','Separation from caregivers','Following a simple routine'],
+  why:'Arriving somewhere new, waiting a few minutes, and moving to the next thing are part of nearly every day: school drop-off, the doctor, a friend\'s house.',
+  home:['Use the same short goodbye each time so it becomes predictable.','Narrate what comes next: "First coat, then car, then center."','Celebrate calm waiting, even for ten seconds.'],
+  fit:'Often where foundational routines begin and, later, where families and teams check in about progress together.'},
+ {id:'dtt',n:2,name:'Discrete Trial Training',short:'DTT',x:200,y:0,w:160,d:200,floor:'#C7D0D4',
+  lede:'A quiet, structured space where new skills are taught in small, clear steps.',
+  what:'An instructor presents a short, clear instruction, the child responds, and the instructor gives immediate feedback. Each "trial" is brief, and many are repeated with variations so a skill becomes solid.',
+  skills:['Matching & sorting','Following directions','Labeling objects','Imitation','Early academics'],
+  why:'Breaking a skill into small steps lets a child succeed often. Confidence built here carries into bigger, busier settings.',
+  home:['Keep requests short and clear: "Hand me the cup."','Give feedback right away, warm and specific.','Practice in short bursts, then play.'],
+  fit:'Typically supports foundational skills that are later practiced in groups and in everyday settings.'},
+ {id:'circle',n:3,name:'Circle Time',short:'Circle time',x:360,y:0,w:160,d:200,floor:'var(--sage)',
+  lede:'Group learning in a small, welcoming circle. Songs, stories, calendars, and taking turns.',
+  what:'A few children and staff gather for a short, predictable routine. Children practice attending to a group, responding when it is their turn, and joining in with peers.',
+  skills:['Group attending','Turn-taking','Responding to a name','Sitting with peers','Imitating movements'],
+  why:'Classrooms, church, birthday parties, and family dinners all ask children to be part of a group. Circle time rehearses that in a gentle setting.',
+  home:['Sing one short song together each day with simple motions.','Practice "my turn, your turn" with a toy or snack.','Read a picture book and pause for the child to point or name.'],
+  fit:'Builds participation skills that connect foundational learning to real group settings.'},
+ {id:'gym',n:4,name:'Gym',short:'Gym',x:520,y:0,w:160,d:200,floor:'#D8C7B1',
+  lede:'Room to move, climb, balance, and regulate. Big movement often unlocks learning.',
+  what:'Children use mats, climbing blocks, tunnels and balance equipment. Staff weave in requests, turn-taking and simple games so movement time is also learning time.',
+  skills:['Gross motor','Following multi-step directions','Safety awareness','Regulation & sensory needs','Peer play'],
+  why:'Playgrounds, sports, and simply moving through a busy world rely on these skills. Movement can also help a child settle before focused work.',
+  home:['Build a simple obstacle course from cushions.','Play "Simon says" with two-step directions.','Notice which movement helps your child calm, and offer it.'],
+  fit:'Supports regulation and motor skills throughout a program, and is a natural place to generalize social skills.'},
+ {id:'net',n:5,name:'Natural Environment Teaching',short:'NET',x:0,y:250,w:180,d:200,floor:'var(--wood)',
+  lede:'Learning that happens inside play. The child leads; teaching follows the moment.',
+  what:'Staff follow the child\'s interests, blocks, bubbles, a book, and create opportunities to request, comment, share, and problem-solve within that play.',
+  skills:['Requesting','Commenting','Shared attention','Flexible play','Problem solving'],
+  why:'Most of life is not a lesson. Skills learned inside real play transfer more easily to the park, the kitchen table, and time with siblings.',
+  home:['Pause during play and wait for your child to ask for the next piece.','Put a favorite toy slightly out of reach to invite a request.','Follow their lead for five minutes before suggesting anything.'],
+  fit:'Where skills are generalized: practiced in new ways, with new people and materials.'},
+ {id:'enriched',n:6,name:'Enriched Learning Environment',short:'Enriched learning',x:180,y:250,w:180,d:200,floor:'#D6DDCB',
+  lede:'A classroom-style room with choices, centers, and materials that invite exploration.',
+  what:'Children move between activity centers, art, sensory play, early literacy, fine motor tasks, with support to choose, start, finish, and move on.',
+  skills:['Making choices','Starting & finishing tasks','Fine motor','Early literacy & numbers','Independence with materials'],
+  why:'Choosing an activity, sticking with it, and cleaning up are the building blocks of school and home routines.',
+  home:['Offer two choices instead of open questions.','Use a simple "first, then" board for tasks.','End with cleanup as part of the activity, not after it.'],
+  fit:'Bridges structured teaching and school-like independence.'},
+ {id:'kitchen',n:7,name:'ADL Kitchen',short:'ADL kitchen',x:360,y:250,w:160,d:200,floor:'var(--tile)',
+  lede:'A real kitchen space for real-life routines: washing hands, making a snack, cleaning up.',
+  what:'Children practice activities of daily living (ADLs) step by step. Support fades as each step is learned, from hand-over-hand help to gestures to reminders to doing it alone.',
+  skills:['Hand washing','Preparing a simple snack','Pouring & spreading','Using utensils safely','Cleaning up'],
+  why:'Independence in the kitchen means independence at home. It also gives a child a role in family life.',
+  home:['Pick one job your child owns at mealtime, such as napkins.','Use the same steps in the same order every time.','Let them do the last step alone first, then work backward.'],
+  fit:'Daily-living skills that move a child toward greater independence at home and in the community.'},
+ {id:'bedroom',n:8,name:'ADL Bedroom',short:'ADL bedroom',x:520,y:250,w:160,d:200,floor:'#D9CFC6',
+  lede:'A calm bedroom setting for morning, bedtime, and getting-ready routines.',
+  what:'Children practice dressing, making the bed, and the small sequences that start and end a day, often with a visual schedule they can follow on their own.',
+  skills:['Dressing','Making the bed','Following a visual schedule','Bedtime routines','Tolerating hygiene tasks'],
+  why:'Mornings and bedtimes are often the hardest parts of a family\'s day. Routines a child can lead make both calmer.',
+  home:['Lay out clothes in order the night before.','Use a picture checklist on the wall.','Keep bedtime steps the same, even on busy nights.'],
+  fit:'Daily-living skills and transition planning toward home and school independence.'}
+];
+
+const PATH = [
+ {id:'found',title:'Foundations',blurb:'Attending, imitating, following simple directions, and first ways of communicating.',
+  looks:'A child learns to look toward a speaker, copy a movement, respond to their name, and ask for things in a way others understand.',
+  skills:['Attending & imitation','Following one-step directions','Requesting wants and needs','Tolerating new routines'],
+  rooms:['welcome','dtt'],family:'Keep instructions short, celebrate small responses, and use the same words for the same things.'},
+ {id:'part',title:'Participation',blurb:'Joining groups, taking turns, waiting, and sharing attention with others.',
+  looks:'A child sits with peers for a short song, waits for a turn, and responds when the group is addressed.',
+  skills:['Group attending','Turn-taking','Waiting','Responding to peers'],
+  rooms:['circle','gym'],family:'Practice "my turn, your turn" games and short group routines like a family song or grace before meals.'},
+ {id:'gen',title:'Generalization',blurb:'Using a skill with new people, places, and materials, and inside real play.',
+  looks:'A skill learned at a table shows up during play with a sibling, at the park, and with a new toy.',
+  skills:['Requesting in play','Commenting & sharing','Flexible play','Problem solving'],
+  rooms:['net','enriched','gym'],family:'Create small opportunities to use a skill in new spots: the car, the grocery store, grandma\'s house.'},
+ {id:'adl',title:'Daily living',blurb:'Self-care, meals, chores, safety, and the routines that run a home.',
+  looks:'A child washes hands, helps make a snack, gets dressed, and follows a picture schedule with less and less help.',
+  skills:['Hygiene & dressing','Meal routines','Cleaning up','Safety awareness'],
+  rooms:['kitchen','bedroom'],family:'Give your child one real job in a routine and keep the steps consistent.'},
+ {id:'trans',title:'Transition planning',blurb:'Individualized goals toward school, community, and home, shaped with the family.',
+  looks:'The family and clinical team look at where a child is thriving, what the next setting asks for, and plan supports together.',
+  skills:['Classroom-style routines','Independence with materials','Community outings','Family collaboration'],
+  rooms:['enriched','welcome'],family:'Share what the next setting will look like so goals can point in that direction.'}
+];
+
+/* ============ 3D HELPERS ============ */
+const world = document.getElementById('world');
+const el = (cls)=>{const d=document.createElement('div'); d.className=cls; return d;};
+function box(x,y,z,w,d,h,c,parent){
+  const b=el('box'); b.style.transform=`translate3d(${x}px,${y}px,${z}px)`; b.style.setProperty('--c',c);
+  const mk=(cls,W,H,tf)=>{const f=el('face '+cls); f.style.width=W+'px'; f.style.height=H+'px'; f.style.transform=tf; b.appendChild(f);};
+  mk('t',w,d,`translateZ(${h}px)`);
+  mk('f',w,h,`translate3d(0,${d}px,0) rotateX(90deg)`);
+  mk('b',w,h,`rotateX(90deg)`);
+  mk('l',d,h,`rotateZ(90deg) rotateX(90deg)`);
+  mk('r',d,h,`translate3d(${w}px,0,0) rotateZ(90deg) rotateX(90deg)`);
+  parent.appendChild(b); return b;
+}
+function flat(x,y,z,w,d,c,r,parent,cls){
+  const f=el('flat'+(cls?' '+cls:'')); f.style.cssText=`width:${w}px;height:${d}px;background:${c};border-radius:${r||0}px;transform:translate3d(${x}px,${y}px,${z}px)`;
+  parent.appendChild(f); return f;
+}
+function shadow(x,y,w,d,parent){ return flat(x+3,y+4,2.8,w+2,d+2,'var(--shadow)',6,parent); }
+function piece(x,y,z,w,d,h,c,parent){ if(z<4) shadow(x,y,w,d,parent); return box(x,y,z,w,d,h,c,parent); }
+function tree(x,y,s,parent){
+  const g=el('grp'); g.style.transform=`translate3d(${x}px,${y}px,0)`;
+  flat(-s*.55,-s*.45,.5,s*1.1,s*.9,'var(--shadow)',999,g);
+  box(-2,-2,0,4,4,s*1.2,'var(--wood-2)',g);
+  flat(-s/2,-s/2,s*.75,s,s,'color-mix(in srgb,var(--sage),#000 8%)',999,g);
+  flat(-s*.34,-s*.34,s*1.05,s*.68,s*.68,'var(--sage)',999,g);
+  flat(-s*.18,-s*.18,s*1.3,s*.36,s*.36,'color-mix(in srgb,var(--sage),#fff 25%)',999,g);
+  parent.appendChild(g);
+}
+
+/* ============ BUILD SCENE ============ */
+const BW=680,BD=450;
+const site=el('grp');
+flat(-520,-440,0,BW+1040,BD+880,'radial-gradient(70% 60% at 42% 36%, var(--ground) 0%, var(--ground-2) 100%)',140,site);
+flat(-60,-50,.6,BW+120,BD+100,'var(--shadow)',40,site); // building ground shadow
+flat(-230,78,1,230,48,'color-mix(in srgb,var(--corridor),#fff 18%)',8,site); // entry path
+flat(-300,-20,1,60,60,'color-mix(in srgb,var(--corridor),#fff 10%)',999,site);
+[[-150,-90,54],[-120,330,46],[790,60,58],[760,400,48],[300,-130,44],[560,560,50],[80,570,42]].forEach(t=>tree(t[0],t[1],t[2],site));
+// benches
+piece(-250,150,3,50,14,10,'var(--wood)',site); piece(-250,20,3,50,14,10,'var(--wood)',site);
+world.appendChild(site);
+
+// building: slab + corridor + walls
+const bld=el('grp bld');
+flat(0,0,1.5,BW,BD,'var(--plaster-in)',4,bld);
+flat(4,202,2,BW-8,46,'var(--corridor)',0,bld);
+const WT=5, HX=64, HI=44;
+function wallH(x1,x2,y,h,c){ box(x1,y-WT/2,0,x2-x1,WT,h,c,bld); }
+function wallV(y1,y2,x,h,c){ box(x-WT/2,y1,0,WT,y2-y1,h,c,bld); }
+function wallHGaps(x1,x2,y,h,gaps,c){ let s=x1; gaps.sort((a,b)=>a-b).forEach(g=>{wallH(s,g-22,y,h,c); s=g+22;}); wallH(s,x2,y,h,c); }
+const P='var(--plaster)', PI='var(--plaster-in)';
+wallH(0,BW,0,HX,P); wallH(0,BW,BD,HX,P); wallV(0,BD,BW,HX,P);
+wallV(0,80,0,HX,P); wallV(124,BD,0,HX,P);          // entrance gap on west wall
+[200,360,520].forEach(x=>wallV(0,200,x,HI,PI));
+[180,360,520].forEach(x=>wallV(250,BD,x,HI,PI));
+wallHGaps(0,BW,200,HI,[100,280,440,600],PI);
+wallHGaps(0,BW,250,HI,[90,270,440,600],PI);
+// glazing hint on south wall: low teal band
+flat(30,BD-1,HX-6,620,2,'var(--teal)',0,bld);
+world.appendChild(bld);
+
+/* room furnishings — local coordinates, modular per room */
+const FURN = {
+ welcome(g){ flat(14,112,2.5,140,76,'color-mix(in srgb,var(--teal),var(--cream) 70%)',10,g);
+   piece(56,40,3,92,28,30,'var(--wood)',g); flat(60,36,33.5,84,6,'var(--cream)',3,g);
+   piece(22,128,3,78,30,20,'var(--teal)',g); piece(22,122,23,78,8,12,'var(--teal)',g);
+   piece(118,134,3,28,28,18,'var(--clay)',g); piece(154,134,3,28,28,18,'var(--clay)',g);
+   flat(118,118,3,64,10,'var(--wood-2)',4,g);
+   piece(40,160,3,22,22,16,'var(--wood-2)',g); flat(36,156,19.5,30,30,'var(--wood)',999,g);
+   tree(176,22,26,g); },
+ dtt(g){ piece(52,78,3,56,36,24,'var(--wood)',g);
+   flat(60,84,27.5,12,10,'var(--mustard)',2,g); flat(76,84,27.5,12,10,'var(--teal)',2,g); flat(92,84,27.5,12,10,'var(--clay)',2,g);
+   piece(70,52,3,18,18,14,'var(--charcoal)',g); piece(70,122,3,18,18,14,'var(--charcoal)',g);
+   piece(14,10,3,110,18,40,'var(--cream)',g); flat(20,12,43.5,30,12,'var(--mat)',2,g); flat(56,12,43.5,30,12,'var(--sage)',2,g); flat(92,12,43.5,24,12,'var(--mustard)',2,g);
+   piece(132,150,3,18,36,30,'var(--wood-2)',g); },
+ circle(g){ flat(18,46,2.5,124,124,'color-mix(in srgb,var(--sage),var(--cream) 55%)',999,g);
+   const c=[[72,58],[106,76],[114,112],[86,138],[48,126],[40,92]]; c.forEach(p=>piece(p[0],p[1],3,16,16,7,'var(--clay)',g));
+   piece(66,92,3,28,28,9,'var(--teal)',g);
+   piece(60,12,3,42,4,46,'var(--wood-2)',g); flat(63,12.5,20,36,1,'var(--cream)',0,g);
+   piece(132,160,3,24,24,16,'var(--wood)',g); },
+ gym(g){ flat(10,10,2.5,140,180,'color-mix(in srgb,var(--mat),var(--cream) 62%)',14,g);
+   piece(22,28,3,52,44,32,'var(--mat)',g); piece(22,72,3,52,24,16,'var(--mat)',g);
+   piece(88,120,3,62,54,12,'var(--teal)',g);
+   piece(30,160,3,96,10,10,'var(--wood)',g);
+   piece(90,36,3,56,26,26,'var(--mustard)',g);
+   flat(24,112,3,38,38,'var(--clay)',999,g); flat(30,118,3.2,26,26,'var(--cream)',999,g); },
+ net(g){ flat(26,54,2.5,132,110,'color-mix(in srgb,var(--mustard),var(--cream) 72%)',12,g);
+   piece(60,92,3,18,18,16,'var(--teal)',g); piece(62,94,19,14,14,14,'var(--mustard)',g); piece(64,96,33,10,10,10,'var(--clay)',g);
+   piece(16,10,3,70,14,28,'var(--wood)',g); flat(20,12,31.5,16,10,'var(--teal)',1,g); flat(40,12,31.5,16,10,'var(--clay)',1,g); flat(60,12,31.5,16,10,'var(--sage)',1,g);
+   piece(122,140,3,38,38,16,'var(--sage)',g);
+   piece(100,20,3,30,22,20,'var(--cream)',g); piece(134,20,3,30,22,20,'var(--cream)',g);
+   flat(110,110,3,10,10,'var(--mat)',999,g); flat(126,98,3,8,8,'var(--mat)',999,g); },
+ enriched(g){ piece(18,30,3,62,42,24,'var(--wood)',g); piece(98,118,3,62,42,24,'var(--wood)',g);
+   [[8,60],[48,60],[8,10],[48,10]].forEach(p=>piece(p[0]+16,p[1]+18,3,14,14,12,'var(--charcoal)',g));
+   [[108,100],[136,100],[108,166],[136,166]].forEach(p=>piece(p[0],p[1],3,14,14,12,'var(--charcoal)',g));
+   piece(96,8,3,76,14,44,'var(--cream)',g); flat(100,10,47.5,20,10,'var(--teal)',1,g); flat(124,10,47.5,20,10,'var(--mustard)',1,g); flat(148,10,47.5,20,10,'var(--clay)',1,g);
+   piece(14,180,3,110,4,40,'var(--sage)',g);
+   flat(24,36,27.5,20,14,'var(--cream)',2,g); flat(50,36,27.5,14,14,'var(--mustard)',999,g);
+   flat(16,120,2.5,60,50,'color-mix(in srgb,var(--mat),var(--cream) 70%)',8,g); },
+ kitchen(g){ piece(14,8,3,122,26,34,'var(--cream)',g); piece(14,34,3,26,96,34,'var(--cream)',g);
+   flat(60,12,37.5,28,18,'var(--charcoal)',3,g); flat(100,12,37.5,28,18,'var(--mat)',4,g);
+   piece(122,8,3,30,30,62,'var(--teal)',g);
+   piece(60,112,3,58,40,28,'var(--wood)',g); piece(82,92,3,16,16,13,'var(--charcoal)',g); piece(82,156,3,16,16,13,'var(--charcoal)',g);
+   flat(70,120,31.5,16,12,'var(--cream)',999,g); flat(92,120,31.5,16,12,'var(--cream)',999,g);
+   flat(20,40,37.5,14,80,'color-mix(in srgb,var(--cream),#000 8%)',2,g);
+   piece(134,160,3,20,26,30,'var(--wood-2)',g); },
+ bedroom(g){ flat(16,150,2.5,130,40,'color-mix(in srgb,var(--clay),var(--cream) 70%)',8,g);
+   piece(18,28,3,72,104,18,'var(--wood-2)',g); flat(22,60,21.5,64,68,'var(--teal)',4,g); piece(26,34,21,56,22,8,'var(--cream)',g);
+   piece(98,10,3,54,24,40,'var(--wood)',g); flat(100,12,43.5,50,20,'color-mix(in srgb,var(--wood),#fff 20%)',2,g);
+   piece(96,44,3,22,22,24,'var(--wood)',g); piece(100,48,27,14,14,16,'var(--mustard)',g);
+   piece(120,176,3,36,4,46,'var(--charcoal)',g); flat(122,176.5,10,32,1,'var(--cream)',0,g);
+   flat(28,66,22,54,10,'var(--mustard)',3,g); flat(28,80,22,54,10,'var(--clay)',3,g); }
+};
+
+ROOMS.forEach(r=>{
+  const g=el('grp room'); g.dataset.room=r.id; g.style.transform=`translate3d(${r.x}px,${r.y}px,0)`;
+  const fl=flat(3,3,2,r.w-6,r.d-6,`linear-gradient(135deg, color-mix(in srgb,${r.floor},#fff 10%), ${r.floor})`,2,g,'floor');
+  FURN[r.id](g);
+  const l=el('lbl'); l.style.setProperty('--lx',(r.w/2)+'px'); l.style.setProperty('--ly',(r.d/2)+'px'); l.style.setProperty('--lz','78px');
+  l.innerHTML=`<button type="button" aria-label="Open ${r.name}"><span class="n">${r.n}</span>${r.short}</button>`;
+  g.appendChild(l); world.appendChild(g);
+});
+
+/* ============ CAMERA ============ */
+const stage=document.getElementById('stage'), wrap=document.getElementById('stageWrap');
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cam={spin:-32,tilt:57,zoom:1,cx:340,cy:230,ox:0,oy:0,base:1,tiltAlt:false};
+function setCam(){
+  world.style.setProperty('--spin',cam.spin+'deg'); world.style.setProperty('--tilt',cam.tilt+'deg');
+  world.style.setProperty('--zoom',cam.zoom*cam.base); world.style.setProperty('--cx',cam.cx); world.style.setProperty('--cy',cam.cy);
+  world.style.setProperty('--ox',cam.ox+'px'); world.style.setProperty('--oy',cam.oy+'px');
+}
+function fit(){ const w=stage.clientWidth; cam.base=Math.min(1,Math.max(.42,w/980)); setCam(); }
+addEventListener('resize',fit); fit();
+function homeView(){ cam.zoom=1; cam.cx=340; cam.cy=230; cam.ox=0; cam.oy=0; cam.tilt=cam.tiltAlt?44:57; setCam(); }
+document.getElementById('rotL').onclick=()=>{cam.spin-=45;setCam();};
+document.getElementById('rotR').onclick=()=>{cam.spin+=45;setCam();};
+document.getElementById('tiltB').onclick=()=>{cam.tiltAlt=!cam.tiltAlt; cam.tilt=active?(cam.tiltAlt?40:52):(cam.tiltAlt?44:57); setCam();};
+document.getElementById('resetV').onclick=()=>{cam.spin=-32;cam.tiltAlt=false; if(active) focusRoom(active); else homeView();};
+// drag to rotate
+let drag=null, moved=false;
+stage.addEventListener('pointerdown',e=>{ drag={x:e.clientX,y:e.clientY,s:cam.spin,t:cam.tilt}; moved=false; stage.setPointerCapture(e.pointerId); });
+stage.addEventListener('pointermove',e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
+  if(Math.abs(dx)+Math.abs(dy)>5){ moved=true; stage.classList.add('dragging'); }
+  if(moved){ cam.spin=drag.s+dx*.35; cam.tilt=Math.max(28,Math.min(72,drag.t-dy*.15)); setCam(); } });
+const endDrag=()=>{ drag=null; stage.classList.remove('dragging'); };
+stage.addEventListener('pointerup',endDrag); stage.addEventListener('pointercancel',endDrag);
+stage.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft'){cam.spin-=15;setCam();} if(e.key==='ArrowRight'){cam.spin+=15;setCam();} if(e.key==='Escape') closeRoom(); });
+world.addEventListener('click',e=>{ if(moved){moved=false;return;} const g=e.target.closest('.room'); if(g) selectRoom(g.dataset.room); });
+
+/* ============ ROOM SELECTION ============ */
+let active=null;
+const panel=document.getElementById('panel'), pBody=document.getElementById('pBody'), pEye=document.getElementById('pEyebrow');
+const legend=document.getElementById('legend');
+ROOMS.forEach(r=>{ const b=document.createElement('button'); b.type='button'; b.innerHTML=`<span class="n">${r.n}</span>${r.short}`; b.dataset.room=r.id; b.onclick=()=>selectRoom(r.id); legend.appendChild(b); });
+function focusRoom(id){ const r=ROOMS.find(x=>x.id===id); const desktop=innerWidth>860;
+  cam.cx=r.x+r.w/2; cam.cy=r.y+r.d/2; cam.zoom=desktop?1.85:1.5; cam.tilt=cam.tiltAlt?40:52;
+  cam.ox=desktop?-200:0; cam.oy=desktop?10:-110; setCam(); }
+function selectRoom(id){
+  active=id; focusRoom(id); world.classList.add('focus');
+  document.querySelectorAll('.room').forEach(g=>g.classList.toggle('active',g.dataset.room===id));
+  legend.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.room===id));
+  renderPanel(id); wrap.classList.add('open'); pBody.scrollTop=0;
+}
+function closeRoom(){ active=null; world.classList.remove('focus'); wrap.classList.remove('open');
+  document.querySelectorAll('.room.active').forEach(g=>g.classList.remove('active')); legend.querySelectorAll('button').forEach(b=>b.classList.remove('on')); homeView(); if(tour) endTour(); }
+document.getElementById('pClose').onclick=closeRoom;
+
+function renderPanel(id){
+  const r=ROOMS.find(x=>x.id===id); const i=ROOMS.indexOf(r);
+  const prev=ROOMS[(i+7)%8], next=ROOMS[(i+1)%8];
+  pEye.innerHTML=`<span>Environment ${String(r.n).padStart(2,'0')}</span><span class="dot"></span><span>Illustrative</span>`;
+  pBody.innerHTML=`
+    <div><h2>${r.name}</h2><p class="lede" style="margin-top:8px">${r.lede}</p></div>
+    ${MODULES[id]?MODULES[id]():''}
+    <section><h3>What happens here</h3><p>${r.what}</p></section>
+    <section><h3>Skills that may be supported</h3><ul class="chips">${r.skills.map(s=>`<li>${s}</li>`).join('')}</ul></section>
+    <section><h3>Why it matters day to day</h3><p>${r.why}</p></section>
+    <section><h3>Bringing it home</h3><ul>${r.home.map(s=>`<li>${s}</li>`).join('')}</ul></section>
+    <section class="fit"><h3>Where it fits</h3><p>${r.fit}</p><small>Every child's path is individualized. Rooms and skills are examples of how a program may be organized, not a required sequence.</small></section>
+    <nav class="panel-nav"><button type="button" id="pPrev">‹ ${prev.short}</button><button type="button" id="pNext">${next.short} ›</button></nav>`;
+  document.getElementById('pPrev').onclick=()=>selectRoom(prev.id);
+  document.getElementById('pNext').onclick=()=>selectRoom(next.id);
+  if(INIT[id]) INIT[id](pBody);
+}
+
+/* ============ ROOM MODULES (interactive) ============ */
+const MODULES={
+ dtt:()=>`<div class="module" id="mDtt"><div class="mh"><b>One trial, step by step</b><span>Fictional example</span></div>
+   <div class="trial">
+     <div class="st on" data-s="0"><em>1 · Instruction</em>Clear, short request</div>
+     <div class="st" data-s="1"><em>2 · Response</em>Child answers or tries</div>
+     <div class="st" data-s="2"><em>3 · Feedback</em>Immediate, warm</div>
+     <div class="st" data-s="3"><em>4 · Pause</em>Reset, next trial</div></div>
+   <div class="scene" id="dttScene"></div>
+   <div class="mrow"><button class="mbtn primary" id="dttNext">Next step</button><button class="mbtn" id="dttAuto">Play the trial</button></div></div>`,
+ net:()=>`<div class="module"><div class="mh"><b>Learning inside play</b><span>Tap a moment</span></div>
+   <div class="mrow" id="netRow"><button class="mbtn on" data-k="0">Building a tower</button><button class="mbtn" data-k="1">Bubbles</button><button class="mbtn" data-k="2">Snack time</button><button class="mbtn" data-k="3">Picture book</button></div>
+   <div class="scene" id="netScene"></div></div>`,
+ kitchen:()=>`<div class="module"><div class="mh"><b>Routine: making a snack</b><span>Check steps as they're learned</span></div>
+   <div class="steps" id="kSteps">
+     <label><input type="checkbox" id="k1"> Wash hands</label><label><input type="checkbox" id="k2"> Get a bowl and spoon</label>
+     <label><input type="checkbox" id="k3"> Open the container</label><label><input type="checkbox" id="k4"> Pour or scoop</label>
+     <label><input type="checkbox" id="k5"> Sit and eat</label><label><input type="checkbox" id="k6"> Wipe the table</label></div>
+   <div class="bar"><i id="kBar"></i></div>
+   <div class="mh" style="margin-top:4px"><b>How support fades</b><span>Prompting, from most to least</span></div>
+   <div class="seg" id="kSeg"><button class="on" data-k="0">Hand over hand</button><button data-k="1">Gesture</button><button data-k="2">Reminder</button><button data-k="3">On their own</button></div>
+   <div class="scene" id="kScene"></div></div>`,
+ circle:()=>`<div class="module"><div class="mh"><b>Moments in a circle</b><span>Tap one</span></div>
+   <div class="mrow" id="cRow"><button class="mbtn on" data-k="0">Hello song</button><button class="mbtn" data-k="1">Weather &amp; calendar</button><button class="mbtn" data-k="2">Movement game</button><button class="mbtn" data-k="3">Story</button><button class="mbtn" data-k="4">Goodbye</button></div>
+   <div class="scene" id="cScene"></div></div>`,
+ enriched:()=>`<div class="module"><div class="mh"><b>Choice board</b><span>Pick a center</span></div>
+   <div class="mrow" id="eRow"><button class="mbtn on" data-k="0">Art</button><button class="mbtn" data-k="1">Sensory bin</button><button class="mbtn" data-k="2">Books</button><button class="mbtn" data-k="3">Puzzles</button></div>
+   <div class="scene" id="eScene"></div></div>`,
+ bedroom:()=>`<div class="module"><div class="mh"><b>Visual schedule: getting ready</b><span>Morning example</span></div>
+   <div class="steps" id="bSteps"><label><input type="checkbox" id="b1"> Shirt</label><label><input type="checkbox" id="b2"> Pants</label><label><input type="checkbox" id="b3"> Socks</label><label><input type="checkbox" id="b4"> Make the bed</label><label><input type="checkbox" id="b5"> Brush hair</label></div>
+   <div class="bar"><i id="bBar"></i></div></div>`,
+ welcome:()=>`<div class="module"><div class="mh"><b>What a visit looks like</b><span>General flow</span></div>
+   <div class="cards3"><div><b>Arrive</b>Check in, say hello, hang up a backpack.</div><div><b>Settle</b>A short wait with something familiar to hold or look at.</div><div><b>Go</b>A predictable goodbye, then off to the first space of the day.</div></div></div>`,
+ gym:()=>`<div class="module"><div class="mh"><b>Movement that teaches</b><span>Examples</span></div>
+   <div class="cards3"><div><b>Obstacle course</b>Multi-step directions, sequencing, waiting a turn.</div><div><b>Crash mat</b>Heavy work that can help a child settle and focus.</div><div><b>Ball games</b>Eye contact, "my turn," cheering a peer.</div></div></div>`
+};
+const INIT={
+ dtt(p){ const steps=[
+   `<b>Instruction</b> · The instructor places three picture cards on the table and says, <q>Touch apple.</q>`,
+   `<b>Response</b> · The child reaches and touches the apple card. (If not sure, the instructor gently guides the hand so the trial still ends in success.)`,
+   `<b>Feedback</b> · Right away: <q>Yes, apple!</q> with a smile and a favorite reward, perhaps a quick tickle or a sticker.`,
+   `<b>Pause</b> · Cards are shuffled. Two seconds later, the next trial begins, maybe <q>Touch cup.</q>`];
+   let s=0, timer=null; const sc=p.querySelector('#dttScene'); const st=p.querySelectorAll('.trial .st');
+   const show=()=>{ sc.innerHTML=steps[s]; st.forEach((e,i)=>e.classList.toggle('on',i===s)); };
+   show(); p.querySelector('#dttNext').onclick=()=>{ s=(s+1)%4; show(); };
+   p.querySelector('#dttAuto').onclick=function(){ if(timer){clearInterval(timer);timer=null;this.textContent='Play the trial';return;} s=0; show(); this.textContent='Stop'; timer=setInterval(()=>{ s=(s+1)%4; show(); if(s===0){clearInterval(timer);timer=null;this.textContent='Play the trial';} },1800); }; },
+ net(p){ const d=[
+   `A tower is three blocks high. The adult holds the next block and waits. The child looks up and says <q>more</q> (or signs, points, or uses a device). <b>Requesting</b> happened inside play, not a lesson.`,
+   `The adult blows bubbles, then stops. The child points: <q>bubble!</q> The adult pops one with the child and says <q>pop!</q> together. <b>Shared attention</b> and <b>commenting</b>.`,
+   `Two cups, juice in one, water in the other. <q>Which one?</q> Choosing, then asking by name. Later, opening the lid alone. <b>Choices</b> and <b>daily living</b>.`,
+   `A favorite book. The adult pauses before a familiar word and the child fills it in. <b>Turn-taking</b> and early <b>literacy</b>, led by the child's interest.`];
+   const sc=p.querySelector('#netScene'); const row=p.querySelector('#netRow'); const show=k=>{ sc.innerHTML=d[k]; row.querySelectorAll('.mbtn').forEach(b=>b.classList.toggle('on',+b.dataset.k===k)); };
+   show(0); row.onclick=e=>{ const b=e.target.closest('.mbtn'); if(b) show(+b.dataset.k); }; },
+ kitchen(p){ const bar=p.querySelector('#kBar'); const boxes=p.querySelectorAll('#kSteps input');
+   const upd=()=>{ let n=0; boxes.forEach(b=>{ b.parentElement.classList.toggle('done',b.checked); if(b.checked) n++; }); bar.style.width=(n/boxes.length*100)+'%'; };
+   boxes.forEach(b=>b.onchange=upd); upd();
+   const sc=p.querySelector('#kScene'); const seg=p.querySelector('#kSeg'); const d=[
+   `The adult's hands guide the child's hands through pouring. Full success, no guessing. Used only as long as needed.`,
+   `The adult taps the container or points to the bowl. The child does the pouring.`,
+   `<q>What's next?</q> A word or a glance at the picture schedule is enough.`,
+   `The child pours on their own. The adult is nearby, not needed. This is the goal for each step.`];
+   const show=k=>{ sc.innerHTML=d[k]; seg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.k===k)); }; show(0);
+   seg.onclick=e=>{ const b=e.target.closest('button'); if(b) show(+b.dataset.k); }; },
+ circle(p){ const d=[
+   `Everyone's name is sung in turn. The child waits, then waves or says <q>hi</q> when it's theirs. <b>Responding to a name</b>, <b>waiting</b>.`,
+   `A helper is picked to put today's weather on the board. <b>Choosing</b>, <b>walking up in front of peers</b>, <b>matching</b>.`,
+   `<q>If you're happy and you know it</q> with motions. <b>Imitating</b> the group, <b>following a group direction</b>.`,
+   `A short picture book. Children point, name, and answer one simple question each. <b>Attending</b>, <b>answering</b>.`,
+   `A goodbye song and a transition cue to the next space. <b>Transitions</b> with a familiar ending.`];
+   const sc=p.querySelector('#cScene'); const row=p.querySelector('#cRow'); const show=k=>{ sc.innerHTML=d[k]; row.querySelectorAll('.mbtn').forEach(b=>b.classList.toggle('on',+b.dataset.k===k)); };
+   show(0); row.onclick=e=>{ const b=e.target.closest('.mbtn'); if(b) show(+b.dataset.k); }; },
+ enriched(p){ const d=[
+   `Crayons, paper, a glue stick. <b>Fine motor</b>, <b>asking for a color</b>, <b>finishing</b> a piece and putting it on the wall.`,
+   `Rice, scoops, small hidden objects. <b>Sensory regulation</b>, <b>labeling</b> what's found, <b>cleaning up</b> after.`,
+   `A small library corner. <b>Choosing a book</b>, <b>turning pages</b>, <b>sitting with a peer</b>.`,
+   `Shape and picture puzzles. <b>Problem solving</b>, <b>persistence</b>, <b>asking for help</b> when stuck.`];
+   const sc=p.querySelector('#eScene'); const row=p.querySelector('#eRow'); const show=k=>{ sc.innerHTML=d[k]; row.querySelectorAll('.mbtn').forEach(b=>b.classList.toggle('on',+b.dataset.k===k)); };
+   show(0); row.onclick=e=>{ const b=e.target.closest('.mbtn'); if(b) show(+b.dataset.k); }; },
+ bedroom(p){ const bar=p.querySelector('#bBar'); const boxes=p.querySelectorAll('#bSteps input');
+   const upd=()=>{ let n=0; boxes.forEach(b=>{ b.parentElement.classList.toggle('done',b.checked); if(b.checked) n++; }); bar.style.width=(n/boxes.length*100)+'%'; };
+   boxes.forEach(b=>b.onchange=upd); upd(); }
+};
+
+/* ============ GUIDED TOUR ============ */
+let tour=null, tTimer=null, tStart=0, tPaused=false; const T_MS=11000;
+const tBar=document.getElementById('tBar'), tStep=document.getElementById('tStep'), tTitle=document.getElementById('tTitle'), tPause=document.getElementById('tPause');
+function startTour(){ tour=0; wrap.classList.add('touring'); tPaused=false; tPause.textContent='❚❚'; tourGo(0); }
+function tourGo(i){ tour=i; const r=ROOMS[i]; selectRoom(r.id); tStep.textContent=`Stop ${i+1} of 8`; tTitle.textContent=r.name; tStart=performance.now(); tBar.style.width='0%'; if(!reduced) tick(); }
+function tick(){ cancelAnimationFrame(tTimer); const f=()=>{ if(tour===null) return; if(!tPaused){ const p=(performance.now()-tStart)/T_MS; tBar.style.width=Math.min(100,p*100)+'%'; if(p>=1){ if(tour<7) tourGo(tour+1); else endTour(); return; } } tTimer=requestAnimationFrame(f); }; tTimer=requestAnimationFrame(f); }
+function endTour(){ tour=null; cancelAnimationFrame(tTimer); wrap.classList.remove('touring'); }
+document.getElementById('tNext').onclick=()=>{ if(tour<7) tourGo(tour+1); else endTour(); };
+document.getElementById('tPrev').onclick=()=>{ if(tour>0) tourGo(tour-1); };
+document.getElementById('tPause').onclick=function(){ tPaused=!tPaused; this.textContent=tPaused?'▶':'❚❚'; if(!tPaused) tStart=performance.now()-(parseFloat(tBar.style.width)||0)/100*T_MS; };
+document.getElementById('tEnd').onclick=()=>{ endTour(); closeRoom(); };
+
+/* ============ PATH TO PROGRESS ============ */
+const track=document.getElementById('track'), detail=document.getElementById('detail');
+PATH.forEach((s,i)=>{ const b=document.createElement('button'); b.type='button'; b.className='stage-card'+(i===0?' on':''); b.innerHTML=`<span class="num">${i+1}</span><h3>${s.title}</h3><p>${s.blurb}</p>`; b.onclick=()=>showStage(i); track.appendChild(b); });
+function showStage(i){ const s=PATH[i]; track.querySelectorAll('.stage-card').forEach((c,j)=>c.classList.toggle('on',i===j));
+  detail.innerHTML=`<div><div class="title">${s.title}</div><h4>What it may look like</h4><p>${s.looks}</p><p style="margin-top:12px;color:var(--fg-2);font-size:14px">Children often work in several of these areas at once, and the order varies by child.</p></div>
+    <div><h4>Example skills</h4><ul>${s.skills.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div><h4>Often practiced in</h4><div class="rooms">${s.rooms.map(id=>{const r=ROOMS.find(x=>x.id===id);return `<button type="button" data-room="${id}">${r.n} · ${r.short}</button>`;}).join('')}</div><h4 style="margin-top:16px">Families can</h4><p>${s.family}</p></div>`;
+  detail.querySelectorAll('[data-room]').forEach(b=>b.onclick=()=>{ showView('explore'); selectRoom(b.dataset.room); });
+}
+showStage(0);
+
+/* ============ VIEWS & HERO ACTIONS ============ */
+const exp=document.getElementById('experience'), path=document.getElementById('path');
+function showView(v){ const p=v==='path'; path.hidden=!p; exp.hidden=p; (p?path:exp).scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'}); }
+document.getElementById('bPath').onclick=()=>showView('path');
+document.getElementById('bBack').onclick=()=>showView('explore');
+document.getElementById('bExplore').onclick=()=>{ showView('explore'); closeRoom(); cam.spin=-32; homeView(); stage.focus({preventScroll:true}); };
+document.getElementById('bTour').onclick=()=>{ showView('explore'); startTour(); };
+
+/* gentle intro: drift in from a wider angle */
+if(!reduced){ cam.spin=-70; cam.zoom=.82; setCam(); requestAnimationFrame(()=>requestAnimationFrame(()=>{ cam.spin=-32; cam.zoom=1; setCam(); })); }
+</script>
+
+</body></html>

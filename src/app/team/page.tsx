@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-import { visiblePeople } from '@/data/people';
-import { locations } from '@/data/locations';
+import { visiblePeople, CENTER_NAME } from '@/data/people';
 import { Section } from '@/components/site/Section';
 import { PeopleCards } from '@/components/site/PeopleCards';
 import { Closing as FinalCta } from '@/components/site/acts/Closing';
@@ -12,31 +11,27 @@ export const metadata: Metadata = {
 };
 
 export default function TeamPage() {
-  const bd = visiblePeople.filter((p) => p.role === 'business-development');
-  const reds = visiblePeople.filter((p) => p.role === 'regional-executive-director');
-  const cds = visiblePeople.filter((p) => p.role === 'clinical-director');
+  const bd = visiblePeople.filter((p) => p.title === 'Business Development Lead');
+  const reds = visiblePeople.filter((p) => p.title === 'Regional Executive Director' || p.title === 'Director of Operations');
+  const cds = visiblePeople.filter((p) => p.title === 'Clinical Director');
   return (
     <>
       <Section titleAs="h1" eyebrow="Your team" title="Real names. Real faces. Direct lines." lede="When you call, you reach a person who works here and knows the centers. These are the people you will hear back from.">
         {bd.length > 0 && <PeopleCards people={bd} />}
       </Section>
       {reds.length > 0 && (
-        <Section tone="tint" title="Regional Executive Directors">
+        <Section tone="tint" title="Regional leadership">
           <PeopleCards people={reds} />
         </Section>
       )}
       {cds.length > 0 && (
         <Section title="Clinical directors by center">
-          {locations.map((l) => {
-            const list = cds.filter((p) => p.location === l.slug);
-            if (list.length === 0) return null;
-            return (
-              <div key={l.slug} className="mb-8">
-                <h3 className="h3 mb-3">{l.name}</h3>
-                <PeopleCards people={list} />
-              </div>
-            );
-          })}
+          {cds.map((p) => (
+            <div key={p.id} className="mb-8">
+              <h3 className="h3 mb-3">{p.centers.map((c) => CENTER_NAME[c]).join(' & ')}</h3>
+              <PeopleCards people={[p]} />
+            </div>
+          ))}
         </Section>
       )}
       <Section tone="card" title="Who is in the room with your child">

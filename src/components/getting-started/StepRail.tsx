@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import Link from 'next/link';
 import { steps, tourHref, type Step } from './data/gettingStarted';
+import { useMyCenter } from '@/lib/site/myCenter';
+import { CENTER_NAME, getBestContact } from '@/data/people';
+import { getCenterModel, insideHref } from '@/data/centerModels';
 import { Scene } from './scenes/Scene';
 import styles from './GettingStarted.module.css';
 
@@ -15,6 +18,13 @@ type Props = {
 
 /** The numbered rail and the step cards. Below 981px each card also carries its own scene. */
 export function StepRail({ activeIndex, onSelect, register }: Props) {
+  const { centerId } = useMyCenter();
+  // Steps 2 and 4: name the Clinical Director when the parent's center has one.
+  const director = centerId ? getBestContact('clinical', centerId) : null;
+  const directorLine = director && director.title === 'Clinical Director' && centerId ? `${director.name}, Clinical Director at ${CENTER_NAME[centerId]}` : null;
+  // Step 1: the virtual walkthrough exists for Sugar Land only.
+  const walkModel = getCenterModel('sugarland');
+  const showWalk = walkModel && (!centerId || centerId === 'sugarland');
   return (
     <ol className={styles.steps}>
       {steps.map((s, i) => (
@@ -23,7 +33,15 @@ export function StepRail({ activeIndex, onSelect, register }: Props) {
             {i + 1}
           </span>
           <div className={styles.col}>
-            <StepCard step={s} index={i} onSelect={onSelect} />
+            <StepCard step={s} index={i} onSelect={onSelect} meetExtra={(i === 1 || i === 3) && directorLine ? directorLine : null} />
+            {i === 0 && showWalk && (
+              <p className={styles.alt}>
+                Want to look around first?{' '}
+                <Link href={insideHref(walkModel)}>
+                  <b>Take the virtual walkthrough{centerId ? '' : ' (Sugar Land)'} →</b>
+                </Link>
+              </p>
+            )}
             {i === 0 && (
               <p className={styles.alt}>
                 Prefer a form?{' '}
@@ -46,7 +64,7 @@ export function StepRail({ activeIndex, onSelect, register }: Props) {
   );
 }
 
-function StepCard({ step, index, onSelect }: { step: Step; index: number; onSelect: (i: number) => void }) {
+function StepCard({ step, index, onSelect, meetExtra }: { step: Step; index: number; onSelect: (i: number) => void; meetExtra?: string | null }) {
   const stageRef = useRef<HTMLDivElement>(null);
   // Bumping the key remounts the inline scene, which restarts its CSS animations.
   const [playKey, setPlayKey] = useState(0);
@@ -75,7 +93,15 @@ function StepCard({ step, index, onSelect }: { step: Step; index: number; onSele
       <p>{step.body}</p>
       <div className={styles.meet}>
         <b>WHO YOU MEET</b>
-        <span>{step.meet}</span>
+        <span>
+          {step.meet}
+          {meetExtra && (
+            <>
+              {' '}
+              <strong>{meetExtra}</strong>.
+            </>
+          )}
+        </span>
       </div>
       <div className={styles.inline}>
         <div ref={stageRef} className={styles.stage} aria-hidden="true">

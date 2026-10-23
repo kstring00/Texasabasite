@@ -70,6 +70,7 @@ export function Footer() {
               ['/blog', 'Blog'],
               ['/providers', 'For providers'],
               ['/contact', 'Contact'],
+              ['/contact#who', 'Who to contact'],
               ['/es', 'Español'],
               ['/privacy', 'Privacy policy'],
             ].map(([href, label]) => (

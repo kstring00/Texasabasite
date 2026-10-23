@@ -9,7 +9,7 @@ import { CallButton, TourButton } from './Buttons';
 import { cn } from '@/lib/site/utils';
 
 export function LocationCard({ location, index = 0, className }: { location: Location; index?: number; className?: string }) {
-  const lead = location.clinicalLead ?? clinicalDirectorFor(location.slug);
+  const lead = clinicalDirectorFor(location.slug);
   const [line1, line2] = formatAddress(location, false) as string[];
   return (
     <article className={cn('group flex flex-col gap-5', className)}>
@@ -44,8 +44,7 @@ export function LocationCard({ location, index = 0, className }: { location: Loc
       </p>
       {lead && (
         <p className="font-sans text-[length:var(--t-sm)] text-soft">
-          Clinical lead: <span className="font-semibold text-ink">{lead.name}</span>
-          {lead.credentials ? `, ${lead.credentials}` : ''}
+          Clinical Director: <span className="font-semibold text-ink">{lead.name}</span>
         </p>
       )}
       <div className="mt-auto flex flex-wrap gap-2">

@@ -1,35 +1,37 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Phone } from 'lucide-react';
 import { site } from '@/data/site';
 import { locations, formatAddress } from '@/data/locations';
-import { peopleForRegion } from '@/data/people';
 import { Section } from '@/components/site/Section';
-import { CallButton, TourButton } from '@/components/site/Buttons';
-import { PeopleCards } from '@/components/site/PeopleCards';
+import { TourForm } from '@/components/site/TourForm';
+import { WhoToContact } from '@/components/people/WhoToContact';
 
 export const metadata: Metadata = {
   title: 'Contact Texas ABA Centers',
-  description: `Call ${site.phone.display}, ${site.phoneHours.toLowerCase()}, or request a tour at any of six Texas centers. Addresses for Austin, Cedar Hill, Katy, Pearland, Plano and Sugar Land.`,
+  description: `Call ${site.phone.display}, ${site.phoneHours.toLowerCase()}, tell us what you need and we point you to the right person, or send a message. Six Texas centers.`,
   alternates: { canonical: '/contact' },
 };
 
-export default function ContactPage() {
-  const people = peopleForRegion('all');
+export default async function ContactPage({ searchParams }: { searchParams: Promise<{ contact?: string; center?: string }> }) {
+  const sp = await searchParams;
   return (
     <>
-      <Section titleAs="h1" eyebrow="Contact" title="Talk to a person." lede={`Call ${site.phone.display}, ${site.phoneHours.toLowerCase()}. Or request a tour and we text you back within one business day.`}>
-        <div className="flex flex-wrap gap-3">
-          <TourButton size="lg" />
-          <CallButton place="contact" />
-          <a href={`tel:${site.phoneAlt.tel}`} className="btn-ghost">
-            Or {site.phoneAlt.display}
+      <Section titleAs="h1" eyebrow="Contact" title="Talk to a real person." lede={`One number, answered by a person who works here. ${site.phoneHours}.`}>
+        <div className="flex flex-wrap items-center gap-4">
+          <a href={`tel:${site.phone.tel}`} className="btn-primary">
+            <Phone className="h-4 w-4" aria-hidden /> {site.phone.display}
           </a>
+          <p className="font-sans text-[length:var(--t-sm)] text-soft">{site.phoneHours}</p>
         </div>
-        {people.length > 0 && (
-          <div className="mt-10">
-            <PeopleCards people={people} />
+      </Section>
+      <Section id="who" size="sm" className="scroll-mt-[calc(var(--header-h)+1rem)]">
+        <div className="grid gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-start">
+          <WhoToContact place="contact" />
+          <div className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
+            <TourForm compact about="message" contact={sp.contact} defaultCenter={sp.center} />
           </div>
-        )}
+        </div>
       </Section>
       <Section tone="tint" title="Centers">
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
