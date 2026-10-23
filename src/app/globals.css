@@ -58,7 +58,10 @@
     --rose: var(--persimmon);
     --plum: var(--cobalt);
 
-    --header-h: 76px;
+    /* Fixed nav height; --nav-offset is where sticky things below it should sit (0 while it is hidden). */
+    --nav-h: 64px;
+    --header-h: var(--nav-h);
+    --nav-offset: var(--nav-h);
     --radius: 1.25rem;
     --portal: 9999px 9999px 1.25rem 1.25rem;
 
@@ -113,6 +116,9 @@
     --sage: 110 150 125;
     color-scheme: dark;
   }
+
+  @media (min-width: 1024px) { :root { --nav-h: 80px; } }
+  html[data-nav='hidden'] { --nav-offset: 0px; }
 
   html {
     -webkit-font-smoothing: antialiased;

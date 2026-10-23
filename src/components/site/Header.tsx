@@ -11,6 +11,7 @@ import { site } from '@/data/site';
 import { locations } from '@/data/locations';
 import { track } from '@/lib/site/analytics';
 import { cn } from '@/lib/site/utils';
+import { useNavScroll } from '@/lib/site/useNavScroll';
 
 const primary: { href: string; label: string; mega?: boolean }[] = [
   { href: '/locations', label: 'Locations' },
@@ -43,8 +44,11 @@ export function Header() {
   const pathname = usePathname();
   const reduce = useReducedMotion();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [focusWithin, setFocusWithin] = useState(false);
+  const { hidden, atTop } = useNavScroll();
   const home = pathname === '/';
+  // Always visible while the menu is open or anything in the nav has keyboard focus.
+  const shown = open || focusWithin || !hidden;
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
@@ -53,32 +57,34 @@ export function Header() {
       document.body.style.overflow = '';
     };
   }, [open]);
+  // Tell sticky things below (Common Ground sub-nav, Getting Started panel) where the nav ends.
   useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 80);
-    }
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    document.documentElement.dataset.nav = shown ? 'shown' : 'hidden';
+  }, [shown]);
 
-  // Light text over the hero video and over the frosted bar; ink on cream page tops.
-  const light = home || scrolled;
+  // Light text over the hero video and over the frosted bar; ink only at the top of cream pages.
+  const light = home || !atTop;
   const text = light ? 'text-paper' : 'text-ink';
 
   return (
     <>
       <header
         data-tone={light ? 'light' : 'dark'}
+        onFocus={() => setFocusWithin(true)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocusWithin(false);
+        }}
         className={cn(
-          'top-0 z-40 w-full transition-[height,background-color,border-color] duration-300 motion-safe:animate-[nav-in_0.5s_ease-out_both]',
-          home ? 'fixed' : 'sticky',
-          home && !reduce && 'motion-safe:[animation-delay:1.3s]',
-          scrolled ? 'h-[76px] border-b border-paper/10 bg-ink/[0.94] backdrop-blur-[12px]' : 'h-[88px] border-b border-transparent bg-transparent lg:h-[108px]',
+          'fixed inset-x-0 top-0 z-50 h-16 border-b will-change-transform lg:h-20',
+          'transition-[transform,opacity,background-color,border-color] ease-out',
+          shown ? 'duration-[250ms]' : 'duration-300',
+          reduce ? (shown ? 'opacity-100' : 'pointer-events-none opacity-0 !duration-150') : shown ? 'translate-y-0' : '-translate-y-full',
+          home && 'motion-safe:animate-[nav-in_0.5s_ease-out_1.3s_both]',
+          atTop ? 'border-transparent bg-transparent' : 'border-white/10 bg-ink/75 backdrop-blur-md',
           text,
         )}
       >
-        <div className="mx-auto flex h-full w-full min-w-0 max-w-[1680px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-[max(52px,3.3vw)]">
+        <div className="wrap flex h-full min-w-0 items-center justify-between gap-4">
           <Link href="/" className="inline-flex min-h-[44px] shrink-0 items-center rounded-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-butter/60" aria-label="Texas ABA Centers home">
             <Logo className={cn(light && 'brightness-0 invert')} />
           </Link>
@@ -129,6 +135,7 @@ export function Header() {
           </div>
         </div>
       </header>
+      {!home && <div aria-hidden className="h-16 shrink-0 lg:h-20" />}
 
       <AnimatePresence>
         {open && (

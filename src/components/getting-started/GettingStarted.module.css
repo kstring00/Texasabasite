@@ -49,7 +49,7 @@
 .panelCol { align-self: stretch; }
 
 /* ---------- Companion panel ---------- */
-.panel { position: sticky; top: max(24px, env(safe-area-inset-top, 0px)); background: var(--gs-panel); color: var(--gs-panel-fg); border-radius: 120px 120px 28px 28px; padding: 52px 40px 28px; display: flex; flex-direction: column; gap: 20px; overflow: hidden; isolation: isolate; }
+.panel { position: sticky; top: calc(var(--nav-offset, 0px) + 24px); transition: top 250ms ease-out; background: var(--gs-panel); color: var(--gs-panel-fg); border-radius: 120px 120px 28px 28px; padding: 52px 40px 28px; display: flex; flex-direction: column; gap: 20px; overflow: hidden; isolation: isolate; }
 .panel::before { content: ''; position: absolute; width: 320px; height: 320px; right: -120px; top: -120px; border-radius: 50%; background: var(--gs-blue); opacity: 0.22; filter: blur(60px); z-index: -1; }
 .pTop { display: flex; align-items: center; gap: 16px; }
 .pStep { font-size: 12px; letter-spacing: 0.26em; font-weight: 700; color: var(--gs-yellow); white-space: nowrap; font-variant-numeric: tabular-nums; }

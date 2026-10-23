@@ -28,7 +28,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
       <Section id="who" size="sm" className="scroll-mt-[calc(var(--header-h)+1rem)]">
         <div className="grid gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-start">
           <WhoToContact place="contact" />
-          <div className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
+          <div className="lg:sticky lg:top-[calc(var(--nav-offset)+1.5rem)]">
             <TourForm compact about="message" contact={sp.contact} defaultCenter={sp.center} />
           </div>
         </div>
