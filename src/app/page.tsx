@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Hero } from '@/components/hero/Hero';
 import { Paths } from '@/components/site/acts/Paths';
-import { Journey } from '@/components/site/acts/Journey';
+import { GettingStarted } from '@/components/getting-started/GettingStarted';
 import { Locations } from '@/components/locations/Locations';
 import { ServiceExplorer } from '@/components/site/acts/ServiceExplorer';
 import { CommonGroundFeature } from '@/components/site/acts/CommonGroundFeature';
@@ -28,9 +28,7 @@ export default function HomePage() {
       <Paths />
       <Threshold from="paper" to="paper" className="hidden" />
 
-      <Section id="journey" eyebrow="The journey" title={<>From first worry to first day, in <span className="editorial text-cobalt">five</span> steps.</>} lede="Each step says who you meet, how long it usually takes, and what to bring. No step is a surprise.">
-        <Journey compact />
-      </Section>
+      <GettingStarted />
 
       <Locations />
 
