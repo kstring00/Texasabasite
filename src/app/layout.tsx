@@ -1,14 +1,11 @@
 import type { Metadata, Viewport } from 'next';
 import * as React from 'react';
 import { Analytics } from '@vercel/analytics/next';
-import '@fontsource-variable/fraunces';
-import '@fontsource-variable/plus-jakarta-sans';
 import './globals.css';
 import { Header } from '@/components/site/Header';
 import { Footer } from '@/components/site/Footer';
 import { MobileBar } from '@/components/site/MobileBar';
 import { site } from '@/data/site';
-import { FirstVisitIntro, introScript } from '@/components/site/FirstVisitIntro';
 
 // React's View Transitions component (available through Next's experimental.viewTransition flag).
 const ViewTransition = ((React as any).unstable_ViewTransition ?? React.Fragment) as React.ComponentType<{ children: React.ReactNode }>;
@@ -39,7 +36,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#fbf8f3' },
+    { media: '(prefers-color-scheme: light)', color: '#f7f3eb' },
     { media: '(prefers-color-scheme: dark)', color: '#161924' },
   ],
 };
@@ -48,11 +45,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: introScript }} />
+        <link rel="preload" href="/fonts/bricolage.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/dm-sans.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body className="flex min-h-screen flex-col">
-        <div data-intro-overlay className="fixed inset-0 z-[59] bg-paper" aria-hidden />
-        <FirstVisitIntro />
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-paper">
           Skip to content
         </a>

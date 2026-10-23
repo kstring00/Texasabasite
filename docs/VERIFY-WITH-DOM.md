@@ -20,6 +20,10 @@ Everything on the site is either on texasabacenters.com today ("verified") or a 
 
 | Line on the site | Where | What to confirm |
 | --- | --- | --- |
+| "A whole lot of life happens next." | Home hero | Sample creative headline. Approve or replace. |
+| "You don't need every answer to take the next step." / "You can begin right here." | Home acts 2 and 9 | Sample creative copy. |
+| "Real people, welcoming centers, and guidance from your first question onward." | Home hero support line | Approve. |
+| Illustrative insurance year ($1,500 deductible, 20% coinsurance, $6,000 out-of-pocket max) | Home and Insurance explainer | Example numbers, labeled as such. Confirm the label wording with compliance. |
 | "A real person texts you within one business day" | Hero, form, confirmation, every CTA | Is one business day the real promise? By text? |
 | Step durations: "10-minute call," "one or two visits," "a few business days," "30 to 45 minutes," "first days are shorter" | Getting Started, Home path | Each number. |
 | "Typically within 47 days" from first contact to therapy | Hidden. In the 2023 launch press release. | Still true? If yes, set `typicalStart` per center and it appears. |

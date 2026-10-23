@@ -72,7 +72,7 @@ export const steps: Step[] = [
     n: 4,
     slug: 'tour',
     title: 'Tour',
-    short: 'See the rooms. Meet the people. Ask everything.',
+    short: 'See the rooms. Meet the people. Ask everything. No commitment.',
     whoYouMeet: 'The center\'s clinical lead and your family contact.',
     whatToBring: 'Your child, if you like. Your questions. A sibling is welcome.',
     howLong: 'About 30 to 45 minutes.',
@@ -82,7 +82,7 @@ export const steps: Step[] = [
       'You meet a BCBA and see how a session looks.',
       'You ask every question, including the hard ones.',
     ],
-    whatsNext: 'If it feels right, we schedule your first day.',
+    whatsNext: 'If it feels right, we finish benefits and authorization, your BCBA writes the plan with you, and we set a start date.',
     answers: '"What happens on a tour? What do I bring?"',
   },
   {

@@ -5,5 +5,9 @@ export default function ClientPortalLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ClientShell>{children}</ClientShell>;
+  return (
+    <div data-zone="families">
+      <ClientShell>{children}</ClientShell>
+    </div>
+  );
 }

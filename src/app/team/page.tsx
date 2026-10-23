@@ -3,7 +3,7 @@ import { visiblePeople } from '@/data/people';
 import { locations } from '@/data/locations';
 import { Section } from '@/components/site/Section';
 import { PeopleCards } from '@/components/site/PeopleCards';
-import { FinalCta } from '@/components/site/FinalCta';
+import { Closing as FinalCta } from '@/components/site/acts/Closing';
 
 export const metadata: Metadata = {
   title: 'Your Team: The People at Texas ABA Centers',

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getAllPosts, getPost } from '@/lib/site/blog';
-import { FinalCta } from '@/components/site/FinalCta';
+import { Closing as FinalCta } from '@/components/site/acts/Closing';
 import { BlogReadTracker } from '@/components/site/BlogReadTracker';
 
 export function generateStaticParams() {

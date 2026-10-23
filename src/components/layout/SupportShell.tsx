@@ -208,6 +208,7 @@ export function SupportShell({ children }: { children: React.ReactNode }) {
         transition={reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 390, damping: 40, mass: 0.9 }}
         className={cn('fixed inset-y-0 left-0 z-50 flex min-h-0 w-64 flex-col bg-white shadow-2xl lg:hidden', !sidebarOpen && 'pointer-events-none')}
         aria-hidden={!sidebarOpen}
+        {...(!sidebarOpen ? { inert: true } : {})}
       >
         <button onClick={() => setSidebarOpen(false)} aria-label="Close navigation" className="absolute right-4 top-4 rounded-lg p-1 transition hover:bg-surface-subtle active:scale-95">
           <X className="h-5 w-5 text-brand-muted-500" />

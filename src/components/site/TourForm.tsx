@@ -49,7 +49,7 @@ export function TourForm({ defaultCenter, about, compact }: { defaultCenter?: st
   const isCoverage = about === 'coverage';
 
   return (
-    <form action={action} className={cn('card space-y-6', compact ? 'p-5' : 'p-6 sm:p-8')} noValidate aria-describedby="tour-form-note">
+    <form action={action} className={cn('rounded-[var(--radius)] border border-ink/15 bg-card space-y-6', compact ? 'p-5' : 'p-6 sm:p-8')} noValidate aria-describedby="tour-form-note">
       <div>
         <h2 className="h3">{isCoverage ? 'Check my coverage' : 'Request a tour'}</h2>
         <p id="tour-form-note" className="mt-1 text-base text-body">
@@ -181,7 +181,7 @@ function Chip({ name, value, label, type = 'checkbox', defaultChecked }: { name:
   return (
     <label className="cursor-pointer">
       <input type={type} name={name} value={value} className="peer sr-only" defaultChecked={defaultChecked} />
-      <span className="inline-flex min-h-11 items-center rounded-full border border-line bg-card px-4 text-base font-semibold text-ink transition peer-checked:border-ink peer-checked:bg-ink peer-checked:text-paper peer-focus-visible:ring-4 peer-focus-visible:ring-sun/60">
+      <span className="inline-flex min-h-11 items-center rounded-full border border-line bg-card px-4 text-base font-semibold text-ink transition peer-checked:border-cobalt peer-checked:bg-cobalt peer-checked:text-paper peer-focus-visible:ring-4 peer-focus-visible:ring-cobalt/40">
         {label}
       </span>
     </label>
@@ -195,9 +195,9 @@ export function Confirmation({ name, centerSlug }: { name: string; centerSlug: s
   const reduce = useReducedMotion();
   const item = (i: number) => (reduce ? {} : { initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 }, transition: { delay: 0.25 + i * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } });
   return (
-    <div className="card p-6 sm:p-8" role="status" aria-live="polite">
+    <div className="arch border border-ink/15 bg-card p-6 pt-12 sm:p-8 sm:pt-14" role="status" aria-live="polite">
       <motion.span
-        className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-sun text-ink"
+        className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-butter text-ink"
         initial={reduce ? false : { scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 18 }}

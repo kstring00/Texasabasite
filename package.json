@@ -11,8 +11,6 @@
     "check:content": "node scripts/check-content.mjs"
   },
   "dependencies": {
-    "@fontsource-variable/fraunces": "^5.3.0",
-    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
     "@vercel/analytics": "^1.4.1",
     "chart.js": "^4.5.1",
     "clsx": "^2.1.1",

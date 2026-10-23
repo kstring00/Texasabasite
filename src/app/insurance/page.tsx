@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { insurance } from '@/data/insurance';
 import { Section } from '@/components/site/Section';
-import { CoverageButton } from '@/components/site/Buttons';
-import { FinalCta } from '@/components/site/FinalCta';
+import { InsuranceExplainer } from '@/components/site/acts/InsuranceExplainer';
+import { Closing } from '@/components/site/acts/Closing';
+import { RevealGroup, RevealItem } from '@/components/site/motion';
 
 export const metadata: Metadata = {
   title: 'Insurance & Cost of ABA Therapy in Texas',
@@ -13,9 +14,9 @@ export const metadata: Metadata = {
 export default function InsurancePage() {
   return (
     <>
-      <Section titleAs="h1" eyebrow="Insurance & cost" title="Know the cost before you commit." lede={insurance.freeVerification}>
+      <Section titleAs="h1" eyebrow="Insurance & cost" title={<>Know the cost <span className="editorial text-cobalt">before</span> you commit.</>} lede={insurance.freeVerification}>
         {insurance.plans.length > 0 && (
-          <ul className="flex flex-wrap gap-2" aria-label="Plans we work with">
+          <ul className="mb-10 flex flex-wrap gap-2" aria-label="Plans we work with">
             {insurance.plans.map((p) => (
               <li key={p.name} className="chip">
                 {p.name}
@@ -23,37 +24,25 @@ export default function InsurancePage() {
             ))}
           </ul>
         )}
-        <div className="mt-6">
-          <CoverageButton place="insurance-page" className="btn-primary" />
-        </div>
+        <InsuranceExplainer />
       </Section>
-      <Section tone="tint" title="The words on your insurance card, in plain English">
-        <dl className="grid gap-4 md:grid-cols-2">
-          {insurance.costTerms.map((t) => (
-            <div key={t.term} className="card">
-              <dt className="font-semibold text-ink">{t.term}</dt>
-              <dd className="text-base text-body">{t.plain}</dd>
-            </div>
-          ))}
-        </dl>
-      </Section>
-      <Section title="What Texas law says">
+      <Section tone="sage" eyebrow="What Texas law says" title="Two things that are true in Texas.">
         <div className="grid gap-4 md:grid-cols-2">
-          <p className="card text-base text-body">{insurance.mandate}</p>
-          <p className="card text-base text-body">{insurance.medicaidNote}</p>
+          <p className="rounded-[var(--radius)] bg-paper/70 p-6 font-sans text-[length:var(--t-base)] text-ink">{insurance.mandate}</p>
+          <p className="rounded-[var(--radius)] bg-paper/70 p-6 font-sans text-[length:var(--t-base)] text-ink">{insurance.medicaidNote}</p>
         </div>
       </Section>
-      <Section tone="card" title="What happens after you submit">
-        <ol className="grid gap-4 md:grid-cols-4">
+      <Section eyebrow="After you submit" title={<>What happens <span className="editorial text-cobalt">next.</span></>}>
+        <RevealGroup as="ol" className="grid gap-4 md:grid-cols-4">
           {insurance.afterYouSubmit.map((a, i) => (
-            <li key={a} className="card">
-              <span className="font-serif text-3xl text-plum">{i + 1}</span>
-              <p className="mt-2 text-base text-body">{a}</p>
-            </li>
+            <RevealItem as="li" key={a} className="border-t border-ink/15 pt-5">
+              <span className="num text-[length:var(--t-3xl)] leading-none text-cobalt">{String(i + 1).padStart(2, '0')}</span>
+              <p className="mt-3 font-sans text-[length:var(--t-base)] text-body">{a}</p>
+            </RevealItem>
           ))}
-        </ol>
+        </RevealGroup>
       </Section>
-      <FinalCta title="Want the numbers first?" text="Start with a free benefits check. Add the tour on the same call if you like." />
+      <Closing title={<>Want the numbers <span className="editorial text-butter">first?</span></>} text="Start with a free benefits check. Add the tour on the same call if you like." />
     </>
   );
 }
