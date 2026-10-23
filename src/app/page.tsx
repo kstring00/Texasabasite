@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Hero } from '@/components/hero/Hero';
+import { VideoHero } from '@/components/hero/VideoHero';
 import { Paths } from '@/components/site/acts/Paths';
 import { GettingStarted } from '@/components/getting-started/GettingStarted';
 import { Locations } from '@/components/locations/Locations';
@@ -14,9 +14,9 @@ import { EventsThisMonth } from '@/components/site/EventsThisMonth';
 import { FromTheBlog } from '@/components/site/FromTheBlog';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Autism Evaluations & ABA Therapy in Texas | Texas ABA Centers' },
+  title: { absolute: 'Texas ABA Centers | ABA Therapy for Children with Autism in Texas' },
   description:
-    'Autism evaluations and ABA therapy across Texas: six centers in Austin, Cedar Hill, Katy, Pearland, Plano and Sugar Land, free benefits checks, and a real person who texts you back. Request a tour.',
+    'ABA therapy for children with autism at six Texas centers: Austin, Cedar Hill, Katy, Pearland, Plano and Sugar Land. In-house evaluations, free benefits checks, and a real person who texts you back. Request a tour.',
   alternates: { canonical: '/' },
 };
 
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <Hero />
+      <VideoHero />
       <Paths />
       <Threshold from="paper" to="paper" className="hidden" />
 
