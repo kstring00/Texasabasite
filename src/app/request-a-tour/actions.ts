@@ -31,6 +31,7 @@ export async function submitTourRequest(_prev: TourRequestResult | null, formDat
   const language = clean(formData.get('language'), 5) || 'en';
   const note = clean(formData.get('note'), 500);
   const about = clean(formData.get('about'), 40);
+  const contact = clean(formData.get('contact'), 40);
   const attribution = clean(formData.get('attribution'), 1000);
 
   const fields: Record<string, string> = {};
@@ -81,6 +82,7 @@ export async function submitTourRequest(_prev: TourRequestResult | null, formDat
           `Language: ${language}`,
           `Asked about: ${payload.about}`,
           `Note: ${note || '-'}`,
+          `Ask for: ${contact || '-'}`,
           `Source: ${attribution || '-'}`,
           `Received: ${payload.receivedAt}`,
         ].join('\n'),

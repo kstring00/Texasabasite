@@ -6,7 +6,10 @@ import { Clock, MapPin, Phone, ArrowUpRight, Star } from 'lucide-react';
 import { locations, getLocation, formatAddress, mapsSearchUrl } from '@/data/locations';
 import { services } from '@/data/services';
 import { steps } from '@/data/steps';
-import { peopleForRegion, clinicalDirectorFor } from '@/data/people';
+import { getPeopleForCenter, centerIdFromSlug, hasNamedTeam } from '@/data/people';
+import { getCenterModelBySlug, insideHref } from '@/data/centerModels';
+import { WhoToContact } from '@/components/people/WhoToContact';
+import { RememberCenter } from '@/lib/site/myCenter';
 import { circles, whileYouWait } from '@/data/circles';
 import { upcomingEvents } from '@/data/events';
 import { Section } from '@/components/site/Section';
@@ -42,8 +45,9 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
   const l = getLocation(slug);
   if (!l) notFound();
   const idx = locations.indexOf(l);
-  const lead = l.clinicalLead ?? clinicalDirectorFor(l.slug);
-  const people = peopleForRegion(l.region);
+  const centerId = centerIdFromSlug(l.slug);
+  const people = getPeopleForCenter(centerId);
+  const model = getCenterModelBySlug(l.slug);
   const [line1, line2] = formatAddress(l, false) as string[];
   const centerServices = services.filter((s) => l.services.includes(s.slug));
   const tour = steps.find((s) => s.slug === 'tour')!;
@@ -63,6 +67,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      {centerId && <RememberCenter centerId={centerId} />}
 
       {/* Local hero: the center's own color, its own doorway. */}
       <section className="wrap-wide grid grid-cols-12 gap-x-6 gap-y-10 pb-[var(--s-4)] pt-[var(--s-3)] lg:items-end">
@@ -128,11 +133,28 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
         </Reveal>
       </section>
 
-      {lead && (
-        <Section tone="tint" size="sm" eyebrow="Clinical lead" title={`Who will be with your child in ${l.name}`}>
-          <PeopleCards people={[{ id: 'lead', name: lead.name, title: lead.title, credentials: lead.credentials, photo: lead.photo, regions: [l.region], role: 'clinical-director' }]} compact />
-        </Section>
+      {model && (
+        <section className="wrap pb-[var(--s-4)]" aria-label="Step inside the center">
+          <Link href={insideHref(model)} className="group relative block overflow-hidden rounded-[28px] border border-line bg-card">
+            <Image src="/step-inside/sugarland-poster.webp" alt={`Illustrative miniature of the ${l.name} center`} width={1600} height={900} sizes="(min-width: 1280px) 1200px, 100vw" className="block h-auto w-full transition-transform duration-700 group-hover:scale-[1.02]" />
+            <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-4 bg-gradient-to-t from-ink/80 to-transparent p-6 text-paper sm:p-8">
+              <div className="max-w-xl">
+                <p className="font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em] text-butter">Step inside</p>
+                <p className="mt-2 font-display text-[length:var(--t-xl)] leading-tight">Walk through the {l.name} center, room by room.</p>
+                <p className="mt-1 font-sans text-[length:var(--t-sm)] text-paper/80">Eight rooms, a guided tour, and what happens in each. Illustrative layout.</p>
+              </div>
+              <span className="btn-sun">Explore the center →</span>
+            </div>
+          </Link>
+        </section>
       )}
+
+      <Section tone="tint" size="sm" eyebrow="Your team" title={`Your team at ${l.name}`} lede={hasNamedTeam(centerId) ? 'Real names. Every contact goes through the main line; ask for the person by name.' : 'Marcie is your first call. Your center team will introduce themselves at your tour.'}>
+        <PeopleCards people={people} centerId={centerId} place="location" />
+        <div className="mt-12">
+          <WhoToContact centerId={centerId} place="location" />
+        </div>
+      </Section>
 
       <Section eyebrow="At this center" title={<>Services in <span className="editorial text-cobalt">{l.city}.</span></>}>
         <RevealGroup as="ul" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

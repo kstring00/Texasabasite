@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { steps } from '@/data/steps';
 import { getLocation } from '@/data/locations';
-import { peopleForRegion } from '@/data/people';
+import { peopleForRegion, centerIdFromSlug } from '@/data/people';
 import { Section } from '@/components/site/Section';
 import { TourForm } from '@/components/site/TourForm';
 import { PeopleCards } from '@/components/site/PeopleCards';
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/request-a-tour' },
 };
 
-export default async function RequestTourPage({ searchParams }: { searchParams: Promise<{ center?: string; about?: string }> }) {
+export default async function RequestTourPage({ searchParams }: { searchParams: Promise<{ center?: string; about?: string; contact?: string }> }) {
   const sp = await searchParams;
   const center = sp.center ? getLocation(sp.center) : null;
   const tour = steps.find((s) => s.slug === 'tour')!;
@@ -26,7 +26,7 @@ export default async function RequestTourPage({ searchParams }: { searchParams: 
       lede={isCoverage ? 'We call your insurance so you do not have to, and come back with plain numbers. Nothing to pay, nothing to commit to.' : 'Four quick questions. Then a real person texts you to set a time.'}
     >
       <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr] lg:items-start">
-        <TourForm defaultCenter={center?.slug} about={sp.about} />
+        <TourForm defaultCenter={center?.slug} about={sp.about} contact={sp.contact} />
         <aside className="space-y-6 lg:sticky lg:top-24">
           <div className="arch bg-butter p-7 pt-12">
             <p className="eyebrow text-ink/70">What happens on a tour</p>
@@ -43,7 +43,7 @@ export default async function RequestTourPage({ searchParams }: { searchParams: 
           {people.length > 0 && (
             <div>
               <p className="eyebrow mb-3">Who replies</p>
-              <PeopleCards people={people.slice(0, 1)} compact />
+              <PeopleCards people={people.slice(0, 1)} compact centerId={center ? centerIdFromSlug(center.slug) : null} place="request-a-tour" />
             </div>
           )}
         </aside>

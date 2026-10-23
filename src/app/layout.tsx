@@ -5,6 +5,7 @@ import './globals.css';
 import { Header } from '@/components/site/Header';
 import { Footer } from '@/components/site/Footer';
 import { MobileBar } from '@/components/site/MobileBar';
+import { MyCenterProvider } from '@/lib/site/myCenter';
 import { site } from '@/data/site';
 
 // React's View Transitions component (available through Next's experimental.viewTransition flag).
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preload" href="/fonts/dm-sans.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body className="flex min-h-screen flex-col">
+        <MyCenterProvider>
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-paper">
           Skip to content
         </a>
@@ -59,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <MobileBar />
         <Analytics />
+        </MyCenterProvider>
       </body>
     </html>
   );

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default function ProvidersPage() {
-  const contact = visiblePeople.filter((p) => p.role === 'business-development');
+  const contact = visiblePeople.filter((p) => p.title === 'Business Development Lead');
   return (
     <>
       <Section titleAs="h1" eyebrow="For providers" title="Refer a family in one call." lede="Pediatricians, therapists, ECI, and school teams: we take referrals directly and we do the diagnostic evaluation in-house, so a family you refer is not sent to a second waitlist.">

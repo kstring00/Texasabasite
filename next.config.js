@@ -11,6 +11,8 @@ const nextConfig = {
       { source: '/support', destination: '/families', permanent: true },
       { source: '/support/:path*', destination: '/families/:path*', permanent: true },
       { source: '/families/next-steps', destination: '/families', permanent: true },
+      { source: '/tour', destination: '/locations/sugar-land/inside', permanent: true },
+      { source: '/common-ground/step-inside', destination: '/locations/sugar-land/inside', permanent: true },
     ];
   },
 };

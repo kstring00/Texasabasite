@@ -29,8 +29,8 @@ export type Step = {
 // TODO: confirm — is Marcie the family contact for every center?
 export const contact: Contact = {
   initials: 'MP',
-  name: 'Marcie Pena',
-  role: 'Your family contact, from first text to first day',
+  name: 'Marcie Peña',
+  role: 'Business Development · your first call, from first text to first day',
   phone: '(877) 771-5725',
   tel: '+18777715725',
 };

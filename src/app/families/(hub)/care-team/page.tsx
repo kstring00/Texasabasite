@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Lock } from 'lucide-react';
 import { getLocation, locations } from '@/data/locations';
-import { peopleForRegion, clinicalDirectorFor } from '@/data/people';
+import { getPeopleForCenter, centerIdFromSlug, hasNamedTeam } from '@/data/people';
 import { PeopleCards } from '@/components/site/PeopleCards';
+import { WhoToContact } from '@/components/people/WhoToContact';
+import { CareTeamPeople } from '@/components/people/CareTeamPeople';
 import { CallButton } from '@/components/site/Buttons';
 
 export const metadata: Metadata = {
@@ -14,8 +16,7 @@ export const metadata: Metadata = {
 export default async function CareTeamPage({ searchParams }: { searchParams: Promise<{ center?: string }> }) {
   const { center: slug } = await searchParams;
   const center = slug ? getLocation(slug) : null;
-  const people = peopleForRegion(center?.region ?? 'all');
-  const lead = center ? center.clinicalLead ?? clinicalDirectorFor(center.slug) : null;
+  const centerId = center ? centerIdFromSlug(center.slug) : null;
   return (
     <div className="page-shell">
       <header className="page-header">
@@ -41,23 +42,11 @@ export default async function CareTeamPage({ searchParams }: { searchParams: Pro
         </div>
       </section>
 
-      {lead && center && (
-        <section>
-          <h2 className="section-title">Clinical lead, {center.name}</h2>
-          <div className="mt-4">
-            <PeopleCards people={[{ id: 'lead', name: lead.name, title: lead.title, credentials: lead.credentials, photo: lead.photo, regions: [center.region], role: 'clinical-director' }]} compact />
-          </div>
-        </section>
-      )}
+      <section aria-label="Who to contact">
+        <WhoToContact centerId={centerId} place="care-team" />
+      </section>
 
-      {people.length > 0 && (
-        <section>
-          <h2 className="section-title">Who to call</h2>
-          <div className="mt-4">
-            <PeopleCards people={people} compact />
-          </div>
-        </section>
-      )}
+      <CareTeamPeople centerId={centerId} />
 
       <section className="card flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>

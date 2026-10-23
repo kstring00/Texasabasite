@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   ArrowLeft,
   ArrowRight,
@@ -138,12 +139,12 @@ const involvementFindings = [
   { title: 'Your questions improve the program', body: 'When parents ask why a goal is on the program, BCBAs refine their thinking. When parents report a new behavior at home, BCBAs update their approach. Your engagement makes the program better.' },
 ];
 
-const glossary = [
+const glossary: { term: string; def: string; room?: string }[] = [
   { term: 'ABA', def: 'Applied Behavior Analysis. The scientific study of behavior and how the environment affects it — applied to help people learn meaningful skills.' },
   { term: 'BCBA', def: 'Board Certified Behavior Analyst. A licensed clinician who designs and oversees your child\'s ABA program. They typically hold a master\'s degree and passed a national certification exam.' },
   { term: 'RBT', def: 'Registered Behavior Technician. The therapist who works directly with your child session to session, under BCBA supervision. Most of your child\'s therapy time is with their RBT.' },
-  { term: 'Discrete Trial Training (DTT)', def: 'A structured teaching method where a skill is broken into small steps, practiced repeatedly, and reinforced. Used for building foundational skills.' },
-  { term: 'Natural Environment Teaching (NET)', def: 'Teaching that happens during play and everyday activities rather than at a desk. Used to make skills generalizable to real life.' },
+  { term: 'Discrete Trial Training (DTT)', room: 'dtt', def: 'A structured teaching method where a skill is broken into small steps, practiced repeatedly, and reinforced. Used for building foundational skills.' },
+  { term: 'Natural Environment Teaching (NET)', room: 'net', def: 'Teaching that happens during play and everyday activities rather than at a desk. Used to make skills generalizable to real life.' },
   { term: 'Pairing', def: 'The first phase of ABA therapy — building a positive relationship between the child and therapist by associating the therapist with things the child loves.' },
   { term: 'Reinforcement', def: 'Anything that makes a behavior more likely to happen again. Modern ABA uses positive reinforcement (adding something the child wants) almost exclusively.' },
   { term: 'Function', def: 'The reason a behavior occurs — what it is getting the child (attention, escape, sensory input, a preferred item). Understanding function is central to everything in ABA.' },
@@ -532,6 +533,11 @@ function GlossaryPanel() {
                   <div className="toolbox-reveal-inner min-h-0">
                     <div className="toolbox-reveal-content px-4 pb-3.5 sm:px-5">
                       <p className="text-[13px] leading-relaxed text-brand-muted-600">{entry.def}</p>
+                      {entry.room && (
+                        <Link href={`/locations/sugar-land/inside#room-${entry.room}`} className="mt-2 inline-flex items-center gap-1 text-[14px] font-semibold text-cobalt underline-offset-4 hover:underline">
+                          See this room in the Sugar Land walkthrough →
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>

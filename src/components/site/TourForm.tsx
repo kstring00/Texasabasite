@@ -6,7 +6,7 @@ import { CalendarCheck, ArrowRight, Users, Check } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { submitTourRequest, type TourRequestResult } from '@/app/request-a-tour/actions';
 import { locations, getLocation } from '@/data/locations';
-import { tourResponder } from '@/data/people';
+import { firstName, tourResponder, visiblePeople } from '@/data/people';
 import { circles } from '@/data/circles';
 import { upcomingEvents } from '@/data/events';
 import { captureAttribution, track } from '@/lib/site/analytics';
@@ -27,7 +27,8 @@ const AGE_CHIPS = [
   ['13-plus', '13 and up'],
 ] as const;
 
-export function TourForm({ defaultCenter, about, compact }: { defaultCenter?: string; about?: string; compact?: boolean }) {
+export function TourForm({ defaultCenter, about, compact, contact }: { defaultCenter?: string; about?: string; compact?: boolean; contact?: string }) {
+  const contactPerson = contact ? visiblePeople.find((p) => p.id === contact) ?? null : null;
   const [state, action, pending] = useActionState<TourRequestResult | null, FormData>(submitTourRequest, null);
   const [center, setCenter] = useState(defaultCenter ?? '');
   const [attribution, setAttribution] = useState('');
@@ -47,15 +48,18 @@ export function TourForm({ defaultCenter, about, compact }: { defaultCenter?: st
 
   const err = state && !state.ok ? state.fields ?? {} : {};
   const isCoverage = about === 'coverage';
+  const isMessage = about === 'message';
 
   return (
     <form action={action} className={cn('rounded-[var(--radius)] border border-ink/15 bg-card space-y-6', compact ? 'p-5' : 'p-6 sm:p-8')} noValidate aria-describedby="tour-form-note">
       <div>
-        <h2 className="h3">{isCoverage ? 'Check my coverage' : 'Request a tour'}</h2>
+        <h2 className="h3">{isMessage ? (contactPerson ? `Send a message to ${firstName(contactPerson)}` : 'Send a message') : isCoverage ? 'Check my coverage' : 'Request a tour'}</h2>
         <p id="tour-form-note" className="mt-1 text-base text-body">
-          {isCoverage
-            ? 'Tell us where to reach you. We verify benefits for free and come back with plain numbers. You can add a tour on the same call.'
-            : 'Four quick things. A real person texts you back to confirm a time.'}
+          {isMessage
+            ? `Tell us where to reach you${contactPerson ? ` and we pass it to ${firstName(contactPerson)}` : ''}. A real person texts you back within one business day.`
+            : isCoverage
+              ? 'Tell us where to reach you. We verify benefits for free and come back with plain numbers. You can add a tour on the same call.'
+              : 'Four quick things. A real person texts you back to confirm a time.'}
         </p>
       </div>
 
@@ -72,6 +76,7 @@ export function TourForm({ defaultCenter, about, compact }: { defaultCenter?: st
       </div>
       <input type="hidden" name="attribution" value={attribution} />
       <input type="hidden" name="about" value={about ?? 'tour'} />
+      {contactPerson && <input type="hidden" name="contact" value={contactPerson.id} />}
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Your first name" id="firstName" error={err.firstName} required>
@@ -135,7 +140,7 @@ export function TourForm({ defaultCenter, about, compact }: { defaultCenter?: st
             </div>
           </fieldset>
           <Field label="Anything you'd like us to know" id="note" hint="Please leave out medical details. Save those for the visit.">
-            <textarea id="note" name="note" className="input-field min-h-24" maxLength={500} />
+            <textarea id="note" name="note" className="input-field min-h-24" maxLength={500} defaultValue={contactPerson ? `Ask for ${firstName(contactPerson)}. ` : undefined} />
           </Field>
         </div>
       </details>
