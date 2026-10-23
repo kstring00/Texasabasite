@@ -72,7 +72,7 @@ export function Header() {
             <Logo />
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
+          <nav className="hidden items-center gap-1 xl:flex" aria-label="Main">
             {primary.map((n) => {
               const active = pathname === n.href || pathname.startsWith(n.href + '/');
               return (
@@ -96,7 +96,7 @@ export function Header() {
             <a
               href={`tel:${site.phone.tel}`}
               onClick={() => track({ name: 'call_tap', center: 'main', place: 'header' })}
-              className="hidden items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 font-sans text-[length:var(--t-sm)] font-semibold text-ink hover:bg-ink/[0.06] md:inline-flex"
+              className="hidden items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 font-sans text-[length:var(--t-sm)] font-semibold text-ink hover:bg-ink/[0.06] lg:inline-flex"
             >
               <Phone className="h-4 w-4" aria-hidden /> {site.phone.display}
             </a>

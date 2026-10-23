@@ -1,0 +1,167 @@
+/*
+  Graduation hero. Ported from design/graduation-hero-reference.html.
+  Colors map to the site's tokens (ink, paper, cobalt, butter, persimmon); the cap colors are
+  local because nothing else on the site uses them. Fonts come from the site's self-hosted set.
+*/
+.hero {
+  --hero-bg: rgb(var(--paper));
+  --hero-ink: rgb(var(--ink));
+  --hero-muted: rgb(var(--soft));
+  --hero-line: rgb(var(--line));
+  --hero-blue: rgb(var(--cobalt));
+  --hero-blue-deep: #2238b8;
+  --hero-yellow: rgb(var(--butter));
+  --hero-red: rgb(var(--persimmon));
+  --hero-paper: rgb(var(--card));
+  --hero-cap: #141c30;
+  --hero-cap-side: #0a0f1e;
+  --hero-cap-shine: #2a3550;
+  --hero-ring: #e3dbcf;
+  --hero-shadow: rgba(18, 26, 43, 0.18);
+
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  gap: 32px;
+  align-items: stretch;
+  padding-block: 20px 0;
+}
+:global([data-theme='dark']) .hero {
+  --hero-blue-deep: #3a52e0;
+  --hero-cap: #2a44c9;
+  --hero-cap-side: #1c2f9e;
+  --hero-cap-shine: #4d68ff;
+  --hero-ring: #1e2639;
+  --hero-shadow: rgba(0, 0, 0, 0.5);
+}
+
+.copy { display: flex; flex-direction: column; justify-content: center; gap: 26px; padding-block: 36px 56px; min-width: 0; }
+.eyebrow { font-size: 12px; letter-spacing: 0.3em; font-weight: 700; color: var(--hero-blue); animation: fade 0.6s 0.15s both; display: flex; align-items: center; gap: 12px; }
+.eyebrow i { display: block; width: 28px; height: 2px; background: var(--hero-yellow); }
+
+.h1 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: clamp(56px, 6.6vw, 112px); line-height: 0.92; letter-spacing: -0.035em; text-wrap: balance; color: var(--hero-ink); }
+.ln { display: block; overflow: hidden; padding-bottom: 0.06em; margin-bottom: -0.06em; }
+.w { display: inline-block; animation: rise 0.9s cubic-bezier(0.16, 0.84, 0.22, 1) both; }
+.ln:nth-child(1) .w { animation-delay: 0.2s; }
+.ln:nth-child(2) .w { animation-delay: 0.34s; }
+.ln:nth-child(3) .w { animation-delay: 0.48s; }
+@media (min-width: 1200px) { .ln:nth-child(3) { white-space: nowrap; } }
+.wLife { position: relative; cursor: default; }
+.wNext {
+  font-family: var(--font-editorial); font-style: italic; font-weight: 400; color: var(--hero-blue); letter-spacing: -0.02em; position: relative; cursor: pointer;
+  animation: slideIn 1s 0.78s cubic-bezier(0.16, 0.84, 0.22, 1) both !important; padding-right: 0.08em; background: none; border: 0; padding-left: 0; padding-top: 0; padding-bottom: 0; font-size: inherit; line-height: inherit; display: inline-block;
+}
+.wNext svg { position: absolute; left: -0.02em; bottom: -0.1em; height: 0.28em; width: calc(100% - 0.04em); overflow: visible; pointer-events: none; }
+.wNext path { fill: none; stroke: var(--hero-yellow); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 420; stroke-dashoffset: 420; animation: draw 1s 1.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.lede { max-width: 36ch; font-size: clamp(17px, 1.45vw, 21px); line-height: 1.5; color: var(--hero-muted); margin: 0; animation: fade 0.8s 1.05s both; }
+.lede strong { color: var(--hero-ink); font-weight: 600; }
+.cta { display: flex; flex-wrap: wrap; gap: 14px; animation: fade 0.8s 1.25s both; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; border-radius: 999px; padding: 14px 24px; font-weight: 600; font-size: 15px; border: 1.5px solid transparent; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s, background 0.3s; }
+.solid { background: var(--hero-blue); color: #fff; }
+.solid:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -12px var(--hero-blue); }
+.ghost { background: transparent; border-color: var(--hero-line); color: var(--hero-ink); }
+.ghost:hover { background: var(--hero-paper); transform: translateY(-2px); }
+.arrow { display: inline-block; transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.solid:hover .arrow { transform: translateY(4px); }
+.promise { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--hero-muted); animation: fade 0.8s 1.5s both; }
+.promise svg { width: 22px; height: 22px; flex: none; }
+.promise b { color: var(--hero-ink); font-weight: 600; }
+
+/* ---------- Scene ---------- */
+.stage { position: relative; min-width: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.scene { width: min(100%, 660px); height: auto; display: block; overflow: visible; }
+.depth { will-change: transform; }
+.rings circle { fill: none; stroke: var(--hero-ring); stroke-width: 1.5; transform-box: fill-box; transform-origin: center; animation: pop2 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.rings circle:nth-child(1) { animation-delay: 0.2s; }
+.rings circle:nth-child(2) { animation-delay: 0.32s; }
+.rings circle:nth-child(3) { animation-delay: 0.44s; }
+.burstRing { fill: none; stroke: var(--hero-yellow); stroke-width: 3; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.rays { transform-box: fill-box; transform-origin: center; opacity: 0.9; }
+.rays line { stroke: var(--hero-ring); stroke-width: 1.2; stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw 1.2s 0.5s ease-out forwards; }
+.capwrap { transform-box: fill-box; transform-origin: center; animation: capIn 1.5s 0.28s cubic-bezier(0.16, 0.9, 0.22, 1) both; }
+.capShadow { fill: var(--hero-shadow); filter: blur(10px); transform-box: fill-box; transform-origin: center; }
+.board { fill: var(--hero-cap); }
+.boardSide { fill: var(--hero-cap-side); }
+.boardShine { fill: var(--hero-cap-shine); opacity: 0.55; }
+.dome { fill: var(--hero-cap-side); }
+.domeHi { fill: var(--hero-cap-shine); opacity: 0.35; }
+.button { fill: var(--hero-yellow); stroke: var(--hero-ink); stroke-width: 1.5; }
+.tassel { transform-box: view-box; transform-origin: 280px 198px; transform: rotate(-30deg); }
+.cord { fill: none; stroke: var(--hero-yellow); stroke-width: 3.5; stroke-linecap: round; }
+.tuft { fill: var(--hero-yellow); }
+.band { fill: var(--hero-ink); }
+.strand { fill: none; stroke: var(--hero-ink); stroke-width: 1; opacity: 0.35; stroke-linecap: round; }
+.turn .tassel { animation: turn 1.6s cubic-bezier(0.3, 0.9, 0.3, 1) forwards; }
+.turned .tassel { transform: rotate(28deg); }
+.confetti { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.burst .confetti { animation: conf 1.6s cubic-bezier(0.15, 0.7, 0.3, 1) forwards; }
+.burst .burstRing { animation: ringOut 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.diploma { transform-box: fill-box; transform-origin: center; animation: pop2 0.9s 1s cubic-bezier(0.3, 1.6, 0.4, 1) both; }
+.roll { fill: var(--hero-paper); stroke: var(--hero-ink); stroke-width: 2; }
+.ribbon { fill: var(--hero-red); }
+.road { fill: none; stroke: var(--hero-line); stroke-width: 2; stroke-dasharray: 6 8; animation: roadIn 1.2s 1.1s ease-out both; }
+.ms { transform-box: fill-box; transform-origin: center; animation: pop2 0.7s cubic-bezier(0.3, 1.6, 0.4, 1) both; }
+.ms:nth-child(1) { animation-delay: 1.2s; }
+.ms:nth-child(2) { animation-delay: 1.3s; }
+.ms:nth-child(3) { animation-delay: 1.4s; }
+.ms:nth-child(4) { animation-delay: 1.5s; }
+.ms:nth-child(5) { animation-delay: 1.6s; }
+.ms:nth-child(6) { animation-delay: 1.7s; }
+.ms rect { fill: var(--hero-paper); stroke: var(--hero-line); stroke-width: 1.5; }
+.ms text { font-family: var(--font-sans); font-size: 13px; font-weight: 600; fill: var(--hero-ink); }
+.ms circle { fill: var(--hero-blue); }
+.msLast rect { fill: var(--hero-yellow); stroke: var(--hero-yellow); }
+.msLast text { fill: #121a2b; }
+.msLast circle { fill: #121a2b; }
+.caption { position: absolute; left: 0; right: 0; bottom: 3%; text-align: center; font-size: 12px; letter-spacing: 0.3em; font-weight: 700; color: var(--hero-muted); animation: spread 1.2s 1.9s cubic-bezier(0.2, 0.8, 0.2, 1) both; pointer-events: none; }
+
+/* words drive the graphic */
+.hero:has(.wLife:hover) .ms { animation: bounce 0.8s cubic-bezier(0.3, 1.5, 0.4, 1) both; }
+.hero:has(.wLife:hover) .ms:nth-child(2) { animation-delay: 0.07s; }
+.hero:has(.wLife:hover) .ms:nth-child(3) { animation-delay: 0.14s; }
+.hero:has(.wLife:hover) .ms:nth-child(4) { animation-delay: 0.21s; }
+.hero:has(.wLife:hover) .ms:nth-child(5) { animation-delay: 0.28s; }
+.hero:has(.wLife:hover) .ms:nth-child(6) { animation-delay: 0.35s; }
+.hero:has(.wNext:hover) .arrow { animation: nudge 1s ease-in-out infinite; }
+.hero:has(.capwrap:hover) .tassel { animation: wiggle 1.2s ease-in-out; }
+.wLife:hover { text-decoration: underline; text-decoration-color: var(--hero-yellow); text-decoration-thickness: 0.06em; text-underline-offset: 0.08em; }
+.wNext:hover { color: var(--hero-blue-deep); }
+
+@keyframes rise { from { transform: translateY(112%); } to { transform: none; } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-0.35em) skewX(-6deg); filter: blur(6px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes pop2 { from { transform: scale(0); opacity: 0; } 60% { opacity: 1; } to { transform: none; opacity: 1; } }
+@keyframes capIn { from { transform: translateY(260px) rotate(-22deg) scale(0.8); opacity: 0; } 55% { opacity: 1; } to { transform: none; opacity: 1; } }
+@keyframes turn { 0% { transform: rotate(-30deg); } 55% { transform: rotate(40deg); } 75% { transform: rotate(20deg); } 90% { transform: rotate(31deg); } 100% { transform: rotate(28deg); } }
+@keyframes wiggle { 0%, 100% { transform: rotate(28deg); } 25% { transform: rotate(16deg); } 50% { transform: rotate(36deg); } 75% { transform: rotate(22deg); } }
+@keyframes conf { 0% { opacity: 0; transform: translate(0, 0) rotate(0); } 8% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--r)); } }
+@keyframes ringOut { 0% { opacity: 0.9; transform: scale(0.2); } 100% { opacity: 0; transform: scale(1.6); } }
+@keyframes roadIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes bounce { 0% { transform: none; } 40% { transform: translateY(-12px) scale(1.06); } 100% { transform: none; } }
+@keyframes nudge { 0%, 100% { transform: none; } 50% { transform: translateY(5px); } }
+@keyframes spread { from { opacity: 0; letter-spacing: 0.05em; } to { opacity: 1; letter-spacing: 0.3em; } }
+@keyframes floatCap { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-10px) rotate(1.5deg); } }
+@keyframes floatShadow { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.88); opacity: 0.7; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.idle .capwrap { animation: floatCap 6s ease-in-out infinite; }
+.idle .capShadow { animation: floatShadow 6s ease-in-out infinite; }
+.idle .rays { animation: spin 90s linear infinite; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 0; padding-block: 12px 0; }
+  .copy { padding-block: 24px 30px; gap: 22px; }
+  .stage { height: min(84vw, 460px); }
+  .scene { width: min(100%, 520px); }
+  .caption { bottom: 2%; font-size: 11px; }
+}
+@media (max-width: 480px) {
+  .h1 { font-size: clamp(50px, 15.5vw, 64px); }
+  .cta .btn { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero *, .hero *::before, .hero *::after { animation: none !important; transition: none !important; }
+  .rays line, .wNext path { stroke-dashoffset: 0; }
+  .tassel { transform: rotate(28deg); }
+}
