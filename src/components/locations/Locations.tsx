@@ -20,7 +20,7 @@ export function Locations() {
   useEffect(() => setAnimate(true), [selectedId]);
 
   return (
-    <section className={styles.wrap} id="centers" aria-labelledby="locations-title">
+    <section className={styles.wrap} id="locations" aria-labelledby="locations-title">
       <div className={styles.head}>
         <div className={styles.eyebrow}>LOCATIONS</div>
         <h2 id="locations-title" className={styles.h2}>

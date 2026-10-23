@@ -1,42 +1,47 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Phone, X, ArrowUpRight } from 'lucide-react';
-import { Logo } from './Logo';
-import { OpenWorldMark } from './OpenWorld';
 import { site } from '@/data/site';
 import { locations } from '@/data/locations';
 import { track } from '@/lib/site/analytics';
 import { cn } from '@/lib/site/utils';
 
 const primary = [
-  { href: '/locations', label: 'Locations' },
+  { href: '/team', label: 'About' },
   { href: '/services', label: 'Services' },
-  { href: '/getting-started', label: 'Getting started' },
-  { href: '/insurance', label: 'Insurance' },
-  { href: '/families', label: 'Common Ground' },
+  { href: '/locations', label: 'Our Centers' },
+  { href: '/families', label: 'For Families' },
+  { href: '/blog', label: 'Resources' },
 ];
 const more = [
-  { href: '/team', label: 'Your team' },
+  { href: '/getting-started', label: 'Getting started' },
+  { href: '/insurance', label: 'Insurance & cost' },
+  { href: '/request-a-tour', label: 'Request a tour' },
   { href: '/events', label: 'Events' },
-  { href: '/blog', label: 'Blog' },
   { href: '/providers', label: 'For providers' },
   { href: '/contact', label: 'Contact' },
   { href: '/es', label: 'Español' },
 ];
 
+function Logo({ className, tall = 40 }: { className?: string; tall?: number }) {
+  // The real Texas ABA Centers logo file. 200 × 77 source; rendered 40px tall on desktop, 34px on mobile.
+  return <Image src="/logos/texas-aba-centers.png" alt="Texas ABA Centers" width={Math.round((200 / 77) * tall)} height={tall} priority className={cn('h-[34px] w-auto md:h-[40px]', className)} />;
+}
+
+/**
+ * Site header. Transparent over the hero; after 80px of scroll it sticks with a blurred cream
+ * background, a hairline, and eases from 108px to 76px tall. Below 1100px the links collapse to Menu.
+ */
 export function Header() {
   const pathname = usePathname();
   const reduce = useReducedMotion();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [hidden, setHidden] = useState(false);
-  const lastY = useRef(0);
-  const isEs = pathname.startsWith('/es');
-  const inFamilies = pathname.startsWith('/families');
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
@@ -47,65 +52,51 @@ export function Header() {
   }, [open]);
   useEffect(() => {
     function onScroll() {
-      const y = window.scrollY;
-      setScrolled(y > 24);
-      setHidden(y > lastY.current && y > 320 && !open);
-      lastY.current = y;
+      setScrolled(window.scrollY > 80);
     }
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, [open]);
+  }, []);
+
+  const findHref = pathname === '/' ? '#locations' : '/#locations';
 
   return (
     <>
       <header
         className={cn(
-          'sticky top-0 z-40 transition-[transform,background-color,border-color,box-shadow] duration-300',
-          scrolled ? 'border-b border-ink/10 bg-paper/90 backdrop-blur-md' : 'border-b border-transparent bg-transparent',
-          hidden && '-translate-y-full',
+          'sticky top-0 z-40 transition-[height,background-color,border-color] duration-300 motion-safe:animate-[nav-in_0.3s_ease-out_both]',
+          scrolled ? 'h-[76px] border-b border-ink/10 bg-paper/85 backdrop-blur-[12px]' : 'h-[88px] border-b border-transparent bg-transparent lg:h-[108px]',
         )}
-        style={{ height: 'var(--header-h)' }}
       >
-        <div className="wrap-wide flex h-full items-center justify-between gap-4">
-          <Link href="/" className="rounded-xl" aria-label="Texas ABA Centers home">
+        <div className="mx-auto flex h-full w-full max-w-[1680px] items-center justify-between gap-6 px-5 sm:px-8 lg:px-[max(52px,3.3vw)]">
+          <Link href="/" className="inline-flex min-h-[44px] shrink-0 items-center rounded-md" aria-label="Texas ABA Centers home">
             <Logo />
           </Link>
 
-          <nav className="hidden items-center gap-1 xl:flex" aria-label="Main">
+          <nav className="hidden items-center gap-14 min-[1100px]:flex" aria-label="Main">
             {primary.map((n) => {
               const active = pathname === n.href || pathname.startsWith(n.href + '/');
               return (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  aria-current={active ? 'page' : undefined}
-                  className={cn(
-                    'group relative whitespace-nowrap px-3 py-2 font-sans text-[length:var(--t-sm)] font-semibold text-ink/80 transition hover:text-ink',
-                    active && 'text-ink',
-                  )}
-                >
+                <Link key={n.href} href={n.href} aria-current={active ? 'page' : undefined} className="group relative whitespace-nowrap py-2 font-sans text-[15px] font-medium text-ink">
                   {n.label}
-                  <span aria-hidden className={cn('absolute inset-x-3 -bottom-0.5 h-0.5 origin-left scale-x-0 bg-cobalt transition-transform duration-300 group-hover:scale-x-100', active && 'scale-x-100')} />
+                  <span aria-hidden className={cn('absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-cobalt transition-transform duration-[350ms] ease-out group-hover:scale-x-100', active && 'scale-x-100')} />
                 </Link>
               );
             })}
           </nav>
 
-          <div className="flex items-center gap-2">
-            <a
-              href={`tel:${site.phone.tel}`}
-              onClick={() => track({ name: 'call_tap', center: 'main', place: 'header' })}
-              className="hidden items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 font-sans text-[length:var(--t-sm)] font-semibold text-ink hover:bg-ink/[0.06] lg:inline-flex"
-            >
-              <Phone className="h-4 w-4" aria-hidden /> {site.phone.display}
-            </a>
-            <Link href="/request-a-tour" className="btn-primary hidden min-h-11 whitespace-nowrap px-5 sm:inline-flex">
-              Request a tour
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link href={findHref} className="group inline-flex h-[52px] items-center gap-2 whitespace-nowrap rounded-full bg-cobalt px-4 font-sans text-[15px] font-semibold text-white transition hover:bg-ink sm:px-7 sm:text-[16px]">
+              <span className="max-[400px]:hidden">Find a center</span>
+              <span className="min-[401px]:hidden">Centers</span>
+              <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-[3px]">
+                →
+              </span>
             </Link>
             <button
               type="button"
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-ink/25 px-4 font-sans text-[length:var(--t-sm)] font-semibold text-ink transition hover:bg-ink hover:text-paper"
+              className="inline-flex h-[52px] items-center gap-2 rounded-full border border-ink/25 px-3 font-sans sm:px-4 text-[15px] font-semibold text-ink transition hover:bg-ink hover:text-paper min-[1100px]:hidden"
               aria-expanded={open}
               aria-controls="site-menu"
               onClick={() => setOpen(true)}
@@ -133,15 +124,15 @@ export function Header() {
             exit={reduce ? { opacity: 0 } : { clipPath: 'inset(0 0 100% 0 round 0 0 48px 48px)' }}
             transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
           >
-            <div className="wrap-wide flex items-center justify-between" style={{ height: 'var(--header-h)' }}>
-              <Link href="/" className="rounded-xl" aria-label="Texas ABA Centers home" onClick={() => setOpen(false)}>
-                <Logo className="[&_*]:text-paper" markClassName="" />
+            <div className="mx-auto flex h-[88px] w-full max-w-[1600px] items-center justify-between px-5 sm:px-8">
+              <Link href="/" className="inline-flex rounded-md" aria-label="Texas ABA Centers home" onClick={() => setOpen(false)}>
+                <Logo className="brightness-0 invert" />
               </Link>
-              <button type="button" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-paper/30 px-4 font-sans text-[length:var(--t-sm)] font-semibold text-paper hover:bg-paper hover:text-ink" onClick={() => setOpen(false)} autoFocus>
+              <button type="button" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-paper/30 px-4 font-sans text-[15px] font-semibold text-paper hover:bg-paper hover:text-ink" onClick={() => setOpen(false)} autoFocus>
                 <X className="h-4 w-4" aria-hidden /> Close
               </button>
             </div>
-            <div className="wrap-wide grid flex-1 content-start gap-10 overflow-y-auto pb-28 pt-6 lg:grid-cols-[1.4fr_1fr] lg:items-end lg:pb-12">
+            <div className="mx-auto grid w-full max-w-[1600px] flex-1 content-start gap-10 overflow-y-auto px-5 pb-28 pt-4 sm:px-8 lg:grid-cols-[1.4fr_1fr] lg:items-end lg:pb-12">
               <nav aria-label="Menu" className="flex flex-col">
                 {primary.map((n, i) => (
                   <motion.div key={n.href} initial={reduce ? false : { opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 + i * 0.05, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
@@ -163,7 +154,6 @@ export function Header() {
                 </div>
               </nav>
               <div className="flex flex-col gap-6">
-                <OpenWorldMark tone="butter" className="h-16 w-20" />
                 <p className="font-sans text-[length:var(--t-base)] text-paper/75">Six centers across Texas. One phone number, answered by a person.</p>
                 <div className="flex flex-wrap gap-2">
                   {locations.map((l) => (
@@ -173,15 +163,13 @@ export function Header() {
                   ))}
                 </div>
                 <div className="flex flex-wrap gap-3">
-                  <Link href="/request-a-tour" className="btn-sun">
-                    Request a tour
+                  <Link href={findHref} className="btn-sun" onClick={() => setOpen(false)}>
+                    Find a center →
                   </Link>
                   <a href={`tel:${site.phone.tel}`} className="btn border border-paper/30 text-paper hover:bg-paper hover:text-ink" onClick={() => track({ name: 'call_tap', center: 'main', place: 'menu' })}>
                     <Phone className="h-4 w-4" aria-hidden /> {site.phone.display}
                   </a>
                 </div>
-                {inFamilies && <p className="font-sans text-[length:var(--t-xs)] text-paper/60">You are in Common Ground, the parent side of Texas ABA Centers.</p>}
-                {isEs && <p className="font-sans text-[length:var(--t-xs)] text-paper/60" lang="es">Versión en español en camino.</p>}
               </div>
             </div>
           </motion.div>
