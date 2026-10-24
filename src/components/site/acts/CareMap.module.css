@@ -1,0 +1,113 @@
+/*
+  Care map: who is with your family at each point, top down.
+  Fixed dark palette (same in light and dark mode) so the light beams read.
+*/
+.section { --bg: #121a2b; --fg: #f3eee6; --muted: rgba(243, 238, 230, 0.66); --line: rgba(243, 238, 230, 0.14); --gold: rgb(242 207 104); --blue: rgb(77 104 255);
+  position: relative; overflow: hidden; isolation: isolate; background: var(--bg); color: var(--fg); padding-block: clamp(72px, 9vw, 128px); }
+.section::before { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0.55;
+  background-image: radial-gradient(rgba(243, 238, 230, 0.10) 1px, transparent 1.2px); background-size: 22px 22px;
+  mask-image: radial-gradient(80% 70% at 60% 45%, #000 0%, transparent 85%); }
+.section::after { content: ''; position: absolute; z-index: -1; width: 720px; height: 720px; right: -220px; top: -260px; border-radius: 50%; background: radial-gradient(closest-side, rgba(77, 104, 255, 0.28), transparent); filter: blur(20px); }
+
+.head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px 48px; align-items: end; margin-bottom: clamp(40px, 5vw, 64px); }
+.eyebrow { font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.24em; font-weight: 700; text-transform: uppercase; color: var(--gold); }
+.h2 { margin: 14px 0 0; font-family: var(--font-display); font-weight: 500; font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1.02; letter-spacing: -0.03em; color: var(--fg); max-width: 18ch; }
+.h2 em { font-family: var(--font-editorial); font-style: italic; font-weight: 400; color: var(--gold); letter-spacing: -0.01em; }
+.lede { margin: 14px 0 0; max-width: 52ch; font-family: var(--font-sans); font-size: 17px; line-height: 1.6; color: var(--muted); }
+
+/* Center switcher */
+.centers { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.centersLabel { font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.18em; font-weight: 700; text-transform: uppercase; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: 420px; }
+.chip { min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--fg); font-family: var(--font-sans); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms, border-color 200ms, color 200ms; }
+.chip:hover { border-color: rgba(243, 238, 230, 0.4); }
+.chip[aria-checked='true'] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.chip:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* Layout: stage rail · tree · detail card */
+.body { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 48px; align-items: start; }
+.tree { position: relative; }
+.svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 0; }
+.base { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1100ms cubic-bezier(0.65, 0, 0.35, 1), stroke 300ms; }
+.in .base { stroke-dashoffset: 0; }
+.base.dashed { stroke-dasharray: 0.03 0.03; stroke-dashoffset: 0; opacity: 0; transition: opacity 600ms 1200ms, stroke 300ms; }
+.in .base.dashed { opacity: 1; }
+.base.lit { stroke: rgba(242, 207, 104, 0.8); }
+.beam { fill: none; stroke: url(#cm-beam); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 0.22 1; stroke-dashoffset: 1.22; opacity: 0; }
+.in .beam { opacity: 1; animation: beam 3.2s cubic-bezier(0.45, 0, 0.25, 1) infinite; }
+@keyframes beam { 0% { stroke-dashoffset: 1.22; } 70%, 100% { stroke-dashoffset: 0; } }
+
+.tier { position: relative; z-index: 1; display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 24px; align-items: center; }
+.tier + .tier { margin-top: 34px; }
+.stage { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 0 10px; align-items: baseline; opacity: 0; transform: translateY(10px); transition: opacity 600ms, transform 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+.in .stage { opacity: 1; transform: none; }
+.stageNum { font-family: var(--font-sans); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--gold); font-variant-numeric: tabular-nums; }
+.stageName { font-family: var(--font-display); font-size: 18px; font-weight: 500; letter-spacing: -0.015em; color: var(--fg); }
+.stageWhen { grid-column: 2; font-family: var(--font-sans); font-size: 13px; color: var(--muted); }
+.nodes { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+.node { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 0 12px; align-items: center; min-width: 250px; max-width: 300px; padding: 10px 18px 10px 10px; border-radius: 999px; background: rgba(243, 238, 230, 0.045); border: 1px solid var(--line); backdrop-filter: blur(6px); text-align: left; color: inherit; font: inherit; cursor: pointer;
+  opacity: 0; transform: translateY(12px) scale(0.98); transition: opacity 600ms, transform 600ms cubic-bezier(0.22, 1, 0.36, 1), border-color 250ms, background 250ms, box-shadow 250ms; }
+.in .node { opacity: 1; transform: none; }
+.node:hover, .node.lit { border-color: rgba(242, 207, 104, 0.55); background: rgba(243, 238, 230, 0.07); }
+.node.on { border-color: var(--gold); background: rgba(242, 207, 104, 0.1); box-shadow: 0 0 0 4px rgba(242, 207, 104, 0.1), 0 18px 40px -24px rgba(242, 207, 104, 0.45); }
+.node:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.firstTag { position: absolute; top: -10px; right: 16px; padding: 2px 9px; border-radius: 999px; background: var(--gold); color: #172638; font-family: var(--font-sans); font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.av { grid-row: span 2; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-sans); font-weight: 700; font-size: 14px; }
+.av svg { width: 18px; height: 18px; }
+.avGold { background: var(--gold); color: #172638; }
+.avBlue { background: var(--blue); color: #fff; }
+.avRole { border: 1.5px solid var(--line); color: var(--fg); background: transparent; }
+.name { font-family: var(--font-display); font-size: 16px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; color: var(--fg); }
+.title { font-family: var(--font-sans); font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+.jobInline { display: none; }
+
+/* Detail card: the one dark arch */
+.detail { position: sticky; top: calc(var(--nav-offset, 0px) + 24px); transition: top 250ms ease-out; border-radius: 160px 160px 28px 28px; padding: 64px 32px 28px; background: linear-gradient(180deg, rgba(77, 104, 255, 0.18), rgba(243, 238, 230, 0.04) 60%); border: 1px solid var(--line); min-height: 470px; display: flex; flex-direction: column; }
+.dStage { font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.22em; font-weight: 700; text-transform: uppercase; color: var(--gold); text-align: center; }
+.dAv { margin: 18px auto 0; width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-sans); font-weight: 700; font-size: 22px; }
+.dAv svg { width: 28px; height: 28px; }
+.dName { margin: 14px 0 0; font-family: var(--font-display); font-size: 26px; font-weight: 500; letter-spacing: -0.02em; text-align: center; color: var(--fg); }
+.dTitle { margin: 4px 0 0; font-family: var(--font-sans); font-size: 14px; color: var(--muted); text-align: center; }
+.dLabel { margin: 22px 0 0; font-family: var(--font-sans); font-size: 12px; letter-spacing: 0.18em; font-weight: 700; text-transform: uppercase; color: var(--muted); }
+.dJob { margin: 6px 0 0; font-family: var(--font-sans); font-size: 16px; line-height: 1.6; color: var(--fg); }
+.dCall { margin-top: auto; padding-top: 20px; }
+.dCall a { display: inline-flex; width: 100%; justify-content: center; align-items: center; gap: 8px; min-height: 48px; border-radius: 999px; background: var(--fg); color: #172638; font-family: var(--font-sans); font-size: 15px; font-weight: 600; text-decoration: none; transition: background 200ms; }
+.dCall a:hover { background: var(--gold); }
+.dCall svg { width: 16px; height: 16px; }
+.swap { animation: swap 420ms cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes swap { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.foot { margin-top: clamp(40px, 5vw, 64px); padding-top: 24px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; }
+.footText { margin: 0; font-family: var(--font-sans); font-size: 16px; color: var(--muted); }
+.footText a { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(243, 238, 230, 0.35); }
+.footLinks { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.footLinks a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-family: var(--font-sans); font-size: 14px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); text-decoration: none; }
+.footLinks a:hover { text-decoration: underline; text-underline-offset: 5px; }
+.footLinks svg { width: 16px; height: 16px; }
+.note { margin: 12px 0 0; font-family: var(--font-sans); font-size: 13px; color: rgba(243, 238, 230, 0.5); }
+
+@media (max-width: 1100px) {
+  .body { grid-template-columns: 1fr; }
+  .detail { display: none; }
+  .jobInline { display: block; grid-column: 2; margin-top: 6px; font-family: var(--font-sans); font-size: 14px; line-height: 1.5; color: rgba(243, 238, 230, 0.82); }
+  .node { border-radius: 22px; align-items: start; max-width: 380px; }
+  .av { grid-row: span 3; }
+}
+@media (max-width: 1023px) {
+  .head { grid-template-columns: 1fr; }
+  .centers { align-items: flex-start; }
+  .chips { justify-content: flex-start; }
+  .svg { display: none; }
+  .tier { grid-template-columns: 1fr; gap: 12px; padding-left: 22px; border-left: 1px solid var(--line); }
+  .tier::before { content: ''; position: absolute; left: -5px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); }
+  .tier + .tier { margin-top: 0; padding-top: 28px; }
+  .tier + .tier::before { top: 34px; }
+  .nodes { justify-content: flex-start; }
+  .node { width: 100%; max-width: none; min-width: 0; cursor: default; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .base, .stage, .node { transition: none; }
+  .swap { animation: none; }
+  .beam { display: none; }
+}
