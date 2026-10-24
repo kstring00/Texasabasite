@@ -6,7 +6,7 @@ import { Locations } from '@/components/locations/Locations';
 import { ServiceExplorer } from '@/components/site/acts/ServiceExplorer';
 import { CommonGroundSection } from '@/components/site/acts/CommonGroundSection';
 import { InsuranceExplainer } from '@/components/site/acts/InsuranceExplainer';
-import { Humans } from '@/components/site/acts/Humans';
+import { CareMap } from '@/components/site/acts/CareMap';
 import { Closing } from '@/components/site/acts/Closing';
 import { Section } from '@/components/site/Section';
 import { EventsThisMonth } from '@/components/site/EventsThisMonth';
@@ -39,7 +39,7 @@ export default function HomePage() {
         <InsuranceExplainer />
       </Section>
 
-      <Humans />
+      <CareMap />
       <EventsThisMonth />
       <FromTheBlog />
       <Closing />
