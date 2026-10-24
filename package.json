@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "check:content": "node scripts/check-content.mjs"
+    "check:content": "node scripts/check-content.mjs",
+    "video:prep": "bash scripts/video-prep.sh"
   },
   "dependencies": {
     "@vercel/analytics": "^1.4.1",
