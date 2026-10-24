@@ -13,3 +13,6 @@ next-env.d.ts
 
 # Source hero video stays local; the encoded webm/mp4 derivatives ship.
 public/hero/hero.mp4
+
+# Video sources stay local; the encoded derivatives in public/ ship.
+media-src/
