@@ -38,3 +38,7 @@ export const lcCategories: LcCategory[] = [
 export function getLcCategory(slug: string) {
   return lcCategories.find((c) => c.slug === slug) ?? null;
 }
+
+export function getLcCategoryById(id: string) {
+  return lcCategories.find((c) => c.id === id) ?? null;
+}

@@ -10,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   const fixed = ['', '/locations', '/services', '/getting-started', '/request-a-tour', '/insurance', '/team', '/events', '/blog', '/providers', '/contact', '/privacy', '/es', '/families', '/families/connect', '/families/what-is-aba', '/families/resources', '/families/caregiver'];
   // Learning Center pages are listed only when the zone is on and no sample content is showing.
-  if (learnFlags.enabled && !learnFlags.demoContent) fixed.push('/learn');
+  if (learnFlags.enabled && !learnFlags.demoContent) fixed.push('/learn', '/learn/library', '/learn/trainings', '/learn/help', '/learn/privacy', '/learn/accessibility');
   return [
     ...fixed.map((p) => ({ url: `${base}${p}`, lastModified: now, changeFrequency: 'weekly' as const, priority: p === '' ? 1 : 0.7 })),
     ...locations.map((l) => ({ url: `${base}/locations/${l.slug}`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.9 })),
