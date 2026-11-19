@@ -355,6 +355,9 @@
 .lc-hero-orb { pointer-events: none; }
 .lc-hero-copy { display: grid; gap: var(--lc-s-4); }
 .lc-hero-copy .lc-lead { max-width: 44ch; }
+/* The gradient phrase takes its own line, as in reference 01. */
+.lc-h-hero .lc-text-light { display: block; }
+[data-zone="learn"] abbr[title] { text-decoration: none; }
 
 /* ── Choice cards: two, identical in size, structure and weight ────────── */
 .lc-choice { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: var(--lc-s-4) var(--lc-s-5); align-items: center; padding: var(--lc-s-5); color: var(--lc-ink);

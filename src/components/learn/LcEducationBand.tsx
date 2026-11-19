@@ -14,7 +14,7 @@ export function LcEducationBand() {
           <Info width={22} height={22} strokeWidth={1.75} aria-hidden="true" className="lc-band-icon" />
           <div>
             <p className="lc-band-statement">
-              These educational resources support general learning. Your child&rsquo;s supervising Board Certified Behavior Analyst (BCBA) is responsible for individualized recommendations and treatment planning.
+              These educational resources support general learning. Your child&rsquo;s supervising <abbr title="Board Certified Behavior Analyst">BCBA</abbr> is responsible for individualized recommendations and treatment planning.
             </p>
             <p className="lc-band-note">Sugar Land pilot. The wording on these pages is a draft that is still being reviewed.</p>
             <ul className="lc-band-links">
