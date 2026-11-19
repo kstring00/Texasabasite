@@ -16,3 +16,6 @@ public/hero/hero.mp4
 
 # Video sources stay local; the encoded derivatives in public/ ship.
 media-src/
+
+# Learning Center local demo store and uploads. Never committed, never under public/.
+.learn-demo/

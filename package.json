@@ -9,7 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "check:content": "node scripts/check-content.mjs",
-    "video:prep": "bash scripts/video-prep.sh"
+    "video:prep": "bash scripts/video-prep.sh",
+    "test": "vitest run"
   },
   "dependencies": {
     "@vercel/analytics": "^1.4.1",
@@ -35,6 +36,7 @@
     "eslint-config-next": "15.5.15",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.19",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.9"
   }
 }

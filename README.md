@@ -96,6 +96,15 @@ Vercel Analytics plus custom events: `tour_request_submit` (center), `call_tap` 
 
 The original Common Ground codebase lives here unchanged in substance. Its routes moved from `/support/*` to `/families/*` (old URLs redirect). Three hub pages were added on top and read from the site data: While You Wait, Parent Pulse (demo UI over the existing bandwidth check, device-only), and Your Care Team. The voice guide is in `docs-common-ground-voice.md`.
 
+## Learning Center (`/learn`)
+
+The Caregiver Learning Center is a separate section of this site, for families enrolled at the Sugar Land center. It is a local demo, not a clinical launch. The plan and rules are in `docs/learning-center/`.
+
+- **Off by default.** With no flags set, every `/learn` route is a 404 and the header has no "Learn" item.
+- **Flags** (see `.env.example`): `NEXT_PUBLIC_LEARN_ENABLED=1` turns the section on. `LEARN_DEMO_CONTENT=1` shows the labelled sample content and is ignored on Vercel production. `LEARN_DEMO_STAFF=1` turns on the fictional staff demo and is ignored anywhere on Vercel, so it only works on a local machine. The rules are in `src/lib/learn/flags.ts` and tested in `src/lib/learn/flags.test.ts`.
+- **Its own zone.** Pages live in `src/app/learn/`, components in `src/components/learn/`, data in `src/data/learn/`, logic in `src/lib/learn/`. Styles are in `src/app/learn/learn.css`: `--lc-*` tokens on `[data-zone="learn"]` and `lc-` classes. Nothing there changes the rest of the site, and `globals.css` is not touched.
+- **Run the tests:** `npm test`.
+
 ## Design system: Open World
 
 Read `docs/REDESIGN-NOTES.md` first. The short version:

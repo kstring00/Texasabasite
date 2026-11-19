@@ -1,0 +1,409 @@
+/*
+  Caregiver Learning Center zone styles.
+  Tokens and recipes are from docs/learning-center/DESIGN_REFERENCE_GUIDE.md (sections 4 and 7), as written.
+  Every token is --lc-* on [data-zone="learn"]; every class is lc-*. Nothing here touches the rest of the site.
+*/
+
+/* ═══ TOKENS (guide §4.1) ═══ */
+[data-zone="learn"] {
+  /* ── Neutrals ─────────────────────────────────────────── */
+  --lc-ink: #172138;            /* headings, body, primary button fill */
+  --lc-ink-muted: #4A5A72;      /* secondary text: AA on every light surface and 300 tint */
+  --lc-white: #FFFFFF;
+  --lc-paper: #F8FAFD;          /* opaque page fallback, form backgrounds */
+  --lc-canvas: #EEF2F6;         /* the base under the atmosphere */
+  --lc-slate-100: #EEF1F6;
+  --lc-slate-700: #44526A;
+  --lc-border: rgba(23, 33, 56, 0.10);
+  --lc-border-strong: rgba(23, 33, 56, 0.18);
+  --lc-border-glass: rgba(255, 255, 255, 0.70);
+
+  /* ── Dark anchors ─────────────────────────────────────── */
+  --lc-navy-900: #0B1F3B;
+  --lc-deep-teal: #103F4A;
+  --lc-on-dark: #FFFFFF;
+  --lc-on-dark-muted: rgba(255, 255, 255, 0.72);
+
+  /* ── The six orb hues ─────────────────────────────────────
+     100 wash · 300 tint · 500 glow · 600 graphic (≥3:1) · 700 text/icon (≥4.5:1) */
+  --lc-teal-100: #E3F6F4;  --lc-teal-300: #BFECE8;  --lc-teal-500: #178A90;  --lc-teal-600: #12787D;  --lc-teal-700: #0E6B70;
+  --lc-blue-100: #E9F1FC;  --lc-blue-300: #D0E1F5;  --lc-blue-500: #76A1F3;  --lc-blue-600: #3F74DE;  --lc-blue-700: #2756BD;
+  --lc-iris-100: #F1EEFB;  --lc-iris-300: #E4DFF5;  --lc-iris-500: #A78BFA;  --lc-iris-600: #7B5CE6;  --lc-iris-700: #5A3EC8;
+  --lc-rose-100: #FCEDF3;  --lc-rose-300: #F8D3E0;  --lc-rose-500: #EE8FB4;  --lc-rose-600: #D4578F;  --lc-rose-700: #A8326A;
+  --lc-coral-100: #FEF0EA; --lc-coral-300: #FADBCA; --lc-coral-500: #FF9E88; --lc-coral-600: #D4542F; --lc-coral-700: #AE3D20;
+  --lc-amber-100: #FEF4E3; --lc-amber-300: #FDE9D0; --lc-amber-500: #F5B95C; --lc-amber-600: #B8770A; --lc-amber-700: #855400;
+
+  /* ── Type ─────────────────────────────────────────────── */
+  --lc-font-display: var(--font-display);   /* the site's Bricolage Grotesque */
+  --lc-font-body: var(--font-sans);         /* the site's DM Sans */
+
+  --lc-text-hero: clamp(2.125rem, 1.4rem + 3.1vw, 3.75rem);    /* 34 → 60 */
+  --lc-text-h1: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);      /* 28 → 44 */
+  --lc-text-h2: clamp(1.375rem, 1.2rem + 0.75vw, 1.875rem);   /* 22 → 30 */
+  --lc-text-h3: 1.25rem;                                      /* 20 */
+  --lc-text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);    /* 17 → 20 */
+  --lc-text-body: 1.0625rem;                                  /* 17, caregiver default */
+  --lc-text-body-dense: 0.9375rem;                            /* 15, staff tables only */
+  --lc-text-small: 0.875rem;                                  /* 14, floor for information */
+  --lc-text-eyebrow: 0.75rem;                                 /* 12, decorative labels only */
+
+  /* ── Shape ────────────────────────────────────────────── */
+  --lc-r-xs: 8px;    /* checkboxes, small tags */
+  --lc-r-sm: 12px;   /* inputs, selects, table containers */
+  --lc-r-md: 16px;   /* tiles, small cards */
+  --lc-r-lg: 20px;   /* standard cards */
+  --lc-r-xl: 28px;   /* hero panel, app shell */
+  --lc-r-pill: 999px;/* buttons, chips */
+
+  /* ── Space (4px base) ─────────────────────────────────── */
+  --lc-s-1: 4px; --lc-s-2: 8px; --lc-s-3: 12px; --lc-s-4: 16px; --lc-s-5: 24px;
+  --lc-s-6: 32px; --lc-s-7: 48px; --lc-s-8: 64px; --lc-s-9: 96px;
+
+  /* ── Elevation: always layered, always navy-tinted, never grey ── */
+  --lc-shadow-1: 0 1px 2px rgba(11, 31, 59, 0.05), 0 2px 8px rgba(11, 31, 59, 0.04);
+  --lc-shadow-2: 0 1px 2px rgba(11, 31, 59, 0.05), 0 8px 24px rgba(11, 31, 59, 0.07),
+              0 24px 48px -12px rgba(11, 31, 59, 0.10);
+  --lc-shadow-3: 0 2px 4px rgba(11, 31, 59, 0.06), 0 16px 40px rgba(11, 31, 59, 0.10),
+              0 40px 80px -20px rgba(11, 31, 59, 0.18);
+  --lc-ring: 0 0 0 3px var(--lc-white), 0 0 0 6px var(--lc-blue-700);
+
+  /* ── Motion ───────────────────────────────────────────── */
+  --lc-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --lc-t-fast: 140ms;
+  --lc-t-base: 220ms;
+  --lc-t-slow: 420ms;
+}
+
+/* ═══ CASTS AND THE ICON TILE (guide §4.4) ═══ */
+[data-zone="learn"] [data-cast="teal"]  { --lc-c100: var(--lc-teal-100);  --lc-c300: var(--lc-teal-300);  --lc-c500: var(--lc-teal-500);  --lc-c600: var(--lc-teal-600);  --lc-c700: var(--lc-teal-700); }
+[data-zone="learn"] [data-cast="blue"]  { --lc-c100: var(--lc-blue-100);  --lc-c300: var(--lc-blue-300);  --lc-c500: var(--lc-blue-500);  --lc-c600: var(--lc-blue-600);  --lc-c700: var(--lc-blue-700); }
+[data-zone="learn"] [data-cast="iris"]  { --lc-c100: var(--lc-iris-100);  --lc-c300: var(--lc-iris-300);  --lc-c500: var(--lc-iris-500);  --lc-c600: var(--lc-iris-600);  --lc-c700: var(--lc-iris-700); }
+[data-zone="learn"] [data-cast="rose"]  { --lc-c100: var(--lc-rose-100);  --lc-c300: var(--lc-rose-300);  --lc-c500: var(--lc-rose-500);  --lc-c600: var(--lc-rose-600);  --lc-c700: var(--lc-rose-700); }
+[data-zone="learn"] [data-cast="coral"] { --lc-c100: var(--lc-coral-100); --lc-c300: var(--lc-coral-300); --lc-c500: var(--lc-coral-500); --lc-c600: var(--lc-coral-600); --lc-c700: var(--lc-coral-700); }
+[data-zone="learn"] [data-cast="amber"] { --lc-c100: var(--lc-amber-100); --lc-c300: var(--lc-amber-300); --lc-c500: var(--lc-amber-500); --lc-c600: var(--lc-amber-600); --lc-c700: var(--lc-amber-700); }
+[data-zone="learn"] [data-cast="slate"] { --lc-c100: var(--lc-slate-100); --lc-c300: #DDE2EA; --lc-c500: #8793A6; --lc-c600: #5E6B80; --lc-c700: var(--lc-slate-700); }
+
+/* The icon tile: the one coloured object most cards carry */
+.lc-icon-tile {
+  display: grid; place-items: center; flex: none;
+  width: 56px; height: 56px; border-radius: var(--lc-r-md);
+  color: var(--lc-c700);
+  background: linear-gradient(140deg, var(--lc-white) 0%, var(--lc-c300) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), inset 0 0 0 1px rgba(255,255,255,.6), 0 6px 16px -6px var(--lc-c500);
+}
+
+/* ═══ RECIPES (guide §7) ═══ */
+/* ═══ 0. ZONE BASE: undo the site's global text rules inside the zone ═══ */
+[data-zone="learn"] {
+  font: 400 var(--lc-text-body)/1.6 var(--lc-font-body);
+  color: var(--lc-ink);
+  color-scheme: light;
+}
+[data-zone="learn"] :is(h1, h2, h3, h4) {
+  font-family: var(--lc-font-display);
+  font-weight: 600;
+  color: var(--lc-ink);
+  letter-spacing: -0.02em;
+  line-height: 1.2;            /* then set the exact value per heading from §5 */
+  text-wrap: balance;
+}
+
+/* ═══ 1. ATMOSPHERE: the soft vignette field (reference 03) ═══ */
+.lc-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--lc-canvas);
+}
+.lc-atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  background:
+    radial-gradient(36% 34% at 20% 14%, var(--lc-coral-300) 0%, transparent 70%),
+    radial-gradient(40% 38% at 86% 18%, var(--lc-blue-300) 0%, transparent 72%),
+    radial-gradient(32% 34% at 70% 78%, rgba(118, 161, 243, 0.85) 0%, transparent 70%),
+    radial-gradient(34% 32% at 20% 86%, var(--lc-iris-300) 0%, transparent 72%),
+    radial-gradient(22% 24% at 4% 52%, var(--lc-teal-300) 0%, transparent 72%);
+  filter: blur(48px);
+}
+/* film grain: kills gradient banding, gives the printed-paper softness of ref 03 */
+.lc-atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+}
+/* Variants: move the light, never add more of it */
+.lc-atmosphere[data-scene="reading"]::before { opacity: 0.55; }           /* lesson player, forms */
+.lc-atmosphere[data-scene="staff"]::before {
+  background:
+    radial-gradient(36% 34% at 88% 10%, var(--lc-iris-300) 0%, transparent 72%),
+    radial-gradient(30% 30% at 70% 92%, var(--lc-blue-300) 0%, transparent 72%),
+    radial-gradient(26% 26% at 30% 96%, var(--lc-coral-300) 0%, transparent 70%);
+  opacity: 0.8;
+}
+@media (max-width: 640px) {
+  .lc-atmosphere::before { inset: -30% -40%; filter: blur(36px); opacity: 0.8; }
+}
+
+/* ═══ 2. SURFACES: three tiers, picked by what sits on them ═══ */
+.lc-glass {            /* decoration + large ink headings ONLY. Never body text. */
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--lc-border-glass);
+  border-radius: var(--lc-r-xl);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), var(--lc-shadow-2);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  backdrop-filter: blur(24px) saturate(140%);
+}
+.lc-surface {          /* default for anything a caregiver reads */
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--lc-border-glass);
+  border-radius: var(--lc-r-lg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), var(--lc-shadow-1);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  backdrop-filter: blur(16px) saturate(120%);
+}
+.lc-solid {            /* forms, tables, the lesson player, review panels */
+  background: var(--lc-white);
+  border: 1px solid var(--lc-border);
+  border-radius: var(--lc-r-lg);
+  box-shadow: var(--lc-shadow-1);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .lc-glass { background: rgba(255, 255, 255, 0.90); }
+  .lc-surface { background: var(--lc-white); }
+}
+
+/* ═══ 3. THE ORB: one light source, six colors (references 01 + 04) ═══ */
+.lc-orb {
+  position: relative;
+  width: clamp(200px, 32vw, 440px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  isolation: isolate;
+  background:
+    radial-gradient(36% 32% at 30% 22%, rgba(255, 255, 255, 0.90) 0%, rgba(255, 255, 255, 0) 72%),
+    radial-gradient(60% 54% at 76% 22%, var(--lc-amber-500) 0%, transparent 70%),
+    radial-gradient(52% 48% at 26% 34%, var(--lc-rose-500) 0%, transparent 72%),
+    radial-gradient(58% 58% at 16% 76%, var(--lc-teal-500) 0%, transparent 68%),
+    radial-gradient(72% 62% at 82% 86%, var(--lc-iris-700) 0%, transparent 72%),
+    linear-gradient(160deg, var(--lc-coral-500) 0%, var(--lc-iris-500) 46%, var(--lc-blue-500) 100%);
+  filter: blur(3px) saturate(112%);
+}
+.lc-orb::before {      /* halo: the color that spills past the edge */
+  content: "";
+  position: absolute;
+  inset: -14%;
+  z-index: -1;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg,
+    var(--lc-blue-500), var(--lc-iris-500), var(--lc-rose-500), var(--lc-coral-500),
+    var(--lc-amber-500), var(--lc-teal-300), var(--lc-blue-500));
+  filter: blur(44px);
+  opacity: 0.55;
+}
+.lc-orb::after {       /* terminator shadow: makes a disc into a sphere */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(78% 78% at 34% 28%, transparent 52%, rgba(11, 31, 59, 0.34) 100%);
+  mix-blend-mode: multiply;
+}
+
+/* ═══ 4. Gradient headline word ═══ */
+.lc-text-light {
+  background: linear-gradient(92deg, var(--lc-iris-600) 0%, var(--lc-rose-600) 52%, var(--lc-coral-600) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@media (forced-colors: active) { .lc-text-light { color: CanvasText; background: none; } }
+
+/* ═══ 5. Dark sidebar ═══ */
+.lc-sidebar {
+  background:
+    radial-gradient(120% 40% at 50% 108%, rgba(118, 161, 243, 0.42) 0%, rgba(167, 139, 250, 0.16) 45%, transparent 75%),
+    linear-gradient(180deg, var(--lc-deep-teal) 0%, var(--lc-navy-900) 70%);
+  color: var(--lc-on-dark);
+}
+.lc-sidebar a[aria-current="page"] {
+  background: linear-gradient(90deg, rgba(250, 219, 202, 0.30), rgba(255, 158, 136, 0.42));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/* ═══ 6. Motion ═══ */
+@media (prefers-reduced-motion: no-preference) {
+  .lc-atmosphere::before { animation: lc-drift 60s var(--lc-ease) infinite alternate; }
+  .lc-lift { transition: transform var(--lc-t-base) var(--lc-ease), box-shadow var(--lc-t-base) var(--lc-ease); }
+  .lc-lift:hover { transform: translateY(-3px); box-shadow: var(--lc-shadow-2); }
+}
+@keyframes lc-drift { to { transform: translate3d(2%, -1.5%, 0) scale(1.04); } }
+
+/* ═══ 7. Sub-nav: sits under the site header and follows it ═══ */
+.lc-subnav {
+  position: sticky;
+  top: var(--nav-offset, 0px);   /* the SITE's variable, not an lc one: 0 while its header is hidden */
+  z-index: 30;                   /* below the site header's z-40 */
+  background: rgba(255, 255, 255, 0.86);
+  border-block: 1px solid var(--lc-border-glass);
+  box-shadow: var(--lc-shadow-1);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  backdrop-filter: blur(16px) saturate(120%);
+  transition: top 300ms;
+}
+.lc-subnav-links a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  padding: 0 var(--lc-s-3); border-radius: var(--lc-r-pill);
+  font: 500 1rem/1 var(--lc-font-body); color: var(--lc-ink-muted);
+}
+.lc-subnav-links a[aria-current="page"] {
+  color: var(--lc-ink); background: var(--lc-white);
+  box-shadow: inset 0 0 0 1px var(--lc-border);
+}
+@media (max-width: 767px) {
+  .lc-subnav-links { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; }
+  .lc-subnav-links a { justify-content: center; padding: 0; font-size: 0.9375rem; }
+}
+
+/* ═══ 8. Hero: compact, because 136px of site chrome sits above it ═══ */
+.lc-hero { position: relative; overflow: hidden; display: grid; gap: var(--lc-s-5); padding: clamp(20px, 2.6vw, 40px); }
+.lc-hero-copy { position: relative; max-width: min(62%, 720px); padding-block: var(--lc-s-3) var(--lc-s-2); }
+.lc-hero-orb { position: absolute; right: -7%; top: -16%; }     /* out of the grid flow: it must never set the hero's height */
+.lc-hero-choices { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: var(--lc-s-5); }
+@media (max-width: 767px) {
+  .lc-hero { padding: var(--lc-s-5) var(--lc-s-4); }
+  .lc-hero-copy { max-width: none; padding: 0 56px 0 0; }
+  .lc-hero-orb { right: -120px; top: -110px; opacity: 0.85; }
+  .lc-hero-orb .lc-orb { width: 240px; }
+  .lc-hero-choices { grid-template-columns: 1fr; gap: var(--lc-s-4); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Below this line: component styles built from the tokens and recipes above.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Zone plumbing ─────────────────────────────────────────────────────── */
+.lc-zone { position: relative; min-height: 60vh; }
+[data-zone="learn"] :focus-visible { outline: 2px solid transparent; outline-offset: 2px; box-shadow: var(--lc-ring); border-radius: var(--lc-r-sm); }
+[data-zone="learn"] p { text-wrap: pretty; }
+[data-zone="learn"] a { color: inherit; text-decoration: none; }
+/* One atmosphere for the whole zone; a page picks its scene with a marker element. */
+[data-zone="learn"]:has([data-lc-scene="reading"]) .lc-atmosphere::before { opacity: 0.55; }
+[data-zone="learn"]:has([data-lc-scene="staff"]) .lc-atmosphere::before {
+  background:
+    radial-gradient(36% 34% at 88% 10%, var(--lc-iris-300) 0%, transparent 72%),
+    radial-gradient(30% 30% at 70% 92%, var(--lc-blue-300) 0%, transparent 72%),
+    radial-gradient(26% 26% at 30% 96%, var(--lc-coral-300) 0%, transparent 70%);
+  opacity: 0.8;
+}
+.lc-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.lc-only-narrow { display: none; }
+@media (max-width: 767px) { .lc-only-wide { display: none; } .lc-only-narrow { display: inline; } }
+
+/* ── Type roles (guide §5) ─────────────────────────────────────────────── */
+.lc-h-hero { margin: 0; font-size: var(--lc-text-hero); line-height: 1.06; font-weight: 600; letter-spacing: -0.02em; }
+.lc-h1 { margin: 0; font-size: var(--lc-text-h1); line-height: 1.12; font-weight: 600; }
+.lc-h2 { margin: 0; font-size: var(--lc-text-h2); line-height: 1.2; font-weight: 600; }
+.lc-h3 { margin: 0; font-size: var(--lc-text-h3); line-height: 1.3; font-weight: 500; letter-spacing: -0.01em; }
+.lc-eyebrow { margin: 0; font: 600 var(--lc-text-eyebrow)/1 var(--lc-font-body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--lc-ink); }
+.lc-lead { margin: 0; font-size: var(--lc-text-lead); line-height: 1.6; color: var(--lc-ink); }
+.lc-muted { margin: 0; color: var(--lc-ink-muted); }
+
+/* ── Buttons: pills, 48px, label never wraps ───────────────────────────── */
+.lc-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--lc-s-2); min-height: 48px; padding: 0 var(--lc-s-5); border: 0; border-radius: var(--lc-r-pill); font: 600 1rem/1 var(--lc-font-body); white-space: nowrap; cursor: pointer; text-decoration: none; }
+.lc-btn-primary { background: var(--lc-ink); color: var(--lc-white); }
+.lc-btn-secondary { background: var(--lc-white); color: var(--lc-ink); box-shadow: inset 0 0 0 1.5px var(--lc-border-strong); }
+.lc-btn-quiet { background: none; color: var(--lc-blue-700); padding-inline: var(--lc-s-2); }
+.lc-btn-quiet:hover { text-decoration: underline; text-underline-offset: 4px; }
+.lc-btn-destructive { background: var(--lc-rose-700); color: var(--lc-white); }
+@media (prefers-reduced-motion: no-preference) {
+  .lc-btn { transition: transform var(--lc-t-fast) var(--lc-ease), box-shadow var(--lc-t-fast) var(--lc-ease); }
+  a.lc-btn:hover, button.lc-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--lc-shadow-2); }
+  a.lc-btn-secondary:hover, button.lc-btn-secondary:hover:not(:disabled) { box-shadow: inset 0 0 0 1.5px var(--lc-border-strong), var(--lc-shadow-2); }
+  a.lc-btn:active, button.lc-btn:active { transform: none; }
+}
+
+/* ── Icon tile sizes ───────────────────────────────────────────────────── */
+.lc-icon-tile[data-size="lg"] { width: 64px; height: 64px; }
+.lc-icon-tile[data-size="sm"] { width: 40px; height: 40px; border-radius: var(--lc-r-sm); }
+
+/* ── Sub-nav layout (look is recipe 7) ─────────────────────────────────── */
+.lc-subnav-inner { display: flex; align-items: center; gap: var(--lc-s-5); min-height: 56px; }
+.lc-subnav-name { font: 600 1rem/1.2 var(--lc-font-display); letter-spacing: -0.01em; color: var(--lc-ink); margin-right: auto; white-space: nowrap; }
+@media (min-width: 768px) { .lc-subnav-links { display: flex; align-items: center; gap: var(--lc-s-1); } }
+.lc-subnav-staff { font: 500 var(--lc-text-small)/1 var(--lc-font-body); color: var(--lc-ink-muted); white-space: nowrap; display: inline-flex; align-items: center; min-height: 44px; }
+.lc-subnav-staff:hover, .lc-subnav-links a:hover { color: var(--lc-ink); }
+@media (max-width: 1023px) { .lc-subnav-staff { display: none; } }
+@media (max-width: 767px) {
+  .lc-subnav-inner { min-height: 52px; gap: 0; }
+  .lc-subnav-name { display: none; }
+}
+
+/* ── Page rhythm ───────────────────────────────────────────────────────── */
+.lc-page { padding-block: var(--lc-s-5) var(--lc-s-8); }
+.lc-section { margin-top: var(--lc-s-8); }
+.lc-section > .lc-h2 { margin-bottom: var(--lc-s-5); }
+@media (max-width: 767px) { .lc-page { padding-block: var(--lc-s-4) var(--lc-s-7); } .lc-section { margin-top: var(--lc-s-7); } .lc-section > .lc-h2 { margin-bottom: var(--lc-s-4); } }
+
+/* ── Hero details (frame is recipe 8) ──────────────────────────────────── */
+.lc-hero-orb { pointer-events: none; }
+.lc-hero-copy { display: grid; gap: var(--lc-s-4); }
+.lc-hero-copy .lc-lead { max-width: 44ch; }
+
+/* ── Choice cards: two, identical in size, structure and weight ────────── */
+.lc-choice { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: var(--lc-s-4) var(--lc-s-5); align-items: center; padding: var(--lc-s-5); color: var(--lc-ink);
+  background: linear-gradient(135deg, var(--lc-c100), rgba(255, 255, 255, 0.9) 62%); }
+.lc-choice-text { display: grid; gap: var(--lc-s-1); min-width: 0; }
+.lc-choice-title { font: 600 1.375rem/1.25 var(--lc-font-display); letter-spacing: -0.02em; }
+.lc-choice-sub { color: var(--lc-ink-muted); line-height: 1.5; }
+.lc-choice-cta { grid-column: 1 / -1; justify-self: start; }
+@media (max-width: 767px) {
+  /* Stacked: icon beside the title, the line under both, then a full-width button. Equal rows keep the two cards the same size. */
+  .lc-hero { gap: var(--lc-s-4); padding-top: var(--lc-s-4); }
+  .lc-hero-copy { gap: var(--lc-s-3); }
+  .lc-hero-copy .lc-lead { font-size: 1.0625rem; line-height: 1.5; margin-right: -56px; }
+  .lc-hero-choices { grid-auto-rows: 1fr; gap: var(--lc-s-3); }
+  .lc-choice { grid-template-columns: 48px minmax(0, 1fr); grid-template-rows: auto 1fr auto; gap: var(--lc-s-2) var(--lc-s-3); padding: var(--lc-s-4); }
+  .lc-choice .lc-icon-tile[data-size="lg"] { width: 48px; height: 48px; }
+  .lc-choice .lc-icon-tile[data-size="lg"] svg { width: 24px; height: 24px; }
+  .lc-choice-text { display: contents; }
+  .lc-choice-title { font-size: 1.1875rem; align-self: center; }
+  .lc-choice-sub { grid-column: 1 / -1; font-size: 0.9375rem; line-height: 1.45; }
+  .lc-choice-cta { justify-self: stretch; margin-top: var(--lc-s-1); }
+}
+
+/* ── Topic tiles ───────────────────────────────────────────────────────── */
+.lc-topic-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--lc-s-4); }
+@media (min-width: 768px) { .lc-topic-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--lc-s-5); } }
+@media (min-width: 1280px) { .lc-topic-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--lc-s-4); } }
+.lc-topic { display: grid; gap: var(--lc-s-3); align-content: start; height: 100%; min-height: 132px; padding: var(--lc-s-4); border-radius: var(--lc-r-md); color: var(--lc-ink); }
+.lc-topic-name { font: 500 1rem/1.3 var(--lc-font-display); letter-spacing: -0.01em; }
+
+/* ── How learning works ────────────────────────────────────────────────── */
+.lc-how-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--lc-s-4); }
+@media (min-width: 768px) { .lc-how-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--lc-s-5); } }
+.lc-how { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: var(--lc-s-4); align-items: start; padding: var(--lc-s-5); }
+.lc-how .lc-h3 { margin-bottom: var(--lc-s-1); }
+@media (max-width: 767px) { .lc-how { padding: var(--lc-s-4); } }
+
+/* ── Education band, above the site footer ─────────────────────────────── */
+.lc-band { padding-bottom: var(--lc-s-7); }
+.lc-band-inner { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: var(--lc-s-4); padding: var(--lc-s-5); }
+.lc-band-icon { color: var(--lc-blue-700); margin-top: 3px; }
+.lc-band-statement { margin: 0; max-width: 78ch; color: var(--lc-ink); }
+.lc-band-note { margin: var(--lc-s-2) 0 0; font-size: var(--lc-text-small); color: var(--lc-ink-muted); }
+.lc-band-links { list-style: none; margin: var(--lc-s-3) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 var(--lc-s-5); }
+.lc-band-links a { display: inline-flex; align-items: center; min-height: 44px; font: 600 var(--lc-text-small)/1 var(--lc-font-body); color: var(--lc-blue-700); }
+.lc-band-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 767px) { .lc-band-inner { padding: var(--lc-s-4); } }
+
+/* ── Chrome isolation (same :has() pattern the site already uses) ──────── */
+/* Lesson player: keep the site header, hide the site footer. Staff: hide both; the sidebar is the nav. */
+body:has([data-lc-chrome="focus"]) > footer { display: none; }
+body:has([data-lc-chrome="app"]) > header, body:has([data-lc-chrome="app"]) > header + div[aria-hidden], body:has([data-lc-chrome="app"]) > footer { display: none; }
