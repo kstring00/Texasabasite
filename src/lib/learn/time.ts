@@ -40,3 +40,13 @@ export function ctDateParts(iso: string): { month: string; day: string; weekday:
 export function minutesBetween(startIso: string, endIso: string): number {
   return Math.round((new Date(endIso).getTime() - new Date(startIso).getTime()) / 60000);
 }
+
+/** "Nov 5, 2026, 1:30 PM CT", for staff history and status lines. */
+export function formatCtDateTime(iso: string): string {
+  return `${fmt({ month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(iso))} CT`;
+}
+
+/** "Nov 5, 2026" */
+export function formatCtShortDate(iso: string): string {
+  return fmt({ month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(iso));
+}
