@@ -15,7 +15,7 @@ import { createDraft, deleteDraft, removeFile, startRevision, submitForReview, u
  * Every staff action. Each one re-checks, on the server, that the staff demo is on and who is
  * asking, then lets the rules in submissions.ts decide. Nothing here trusts what the page shows.
  */
-export type LcActionState = { ok: boolean; message: string; id?: string; rev?: number; fieldErrors?: LcFieldErrors };
+export type LcActionState = { ok: boolean; message: string; id?: string; rev?: number; fieldErrors?: LcFieldErrors; code?: string };
 
 const CLOSED: LcActionState = { ok: false, message: 'Staff sign-in is not set up yet.' };
 const SIGNED_OUT: LcActionState = { ok: false, message: 'Your demo session has ended. Sign in again to continue.' };
@@ -51,7 +51,7 @@ export async function saveDraftAction(id: string | null, rev: number, input: unk
   if (!actor) return SIGNED_OUT;
   const store = getStaffStore();
   const r = id ? updateDraft(store, actor, id, rev, input, ctx()) : createDraft(store, actor, input, ctx());
-  if (!r.ok) return { ok: false, message: r.message, fieldErrors: r.fieldErrors };
+  if (!r.ok) return { ok: false, message: r.message, fieldErrors: r.fieldErrors, code: r.code };
   commitStaffStore();
   // No page refresh here on purpose. A refresh would start the site's page-transition animation,
   // and input during that animation is dropped. Staff pages are rendered fresh on every visit anyway.

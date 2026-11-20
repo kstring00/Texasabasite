@@ -3,6 +3,7 @@ import { ArrowLeft, Info, KeyRound, RotateCcw } from 'lucide-react';
 import { demoStaff } from '@/data/learn/demo/staff';
 import { LC_ROLE_LABEL, capabilitiesOf } from '@/lib/learn/staff/roles';
 import { resetDemoAction, signInAction } from '@/app/learn/staff/actions';
+import { LcForgetWizardState } from './LcConfirm';
 
 /** The amber strip across the top of every demo staff page. It cannot be dismissed. */
 export function LcStaffDemoBanner() {
@@ -30,6 +31,7 @@ const WHAT: Record<string, string> = {
 export function LcStaffSignIn() {
   return (
     <div className="lc-signin">
+      <LcForgetWizardState />
       <Link href="/learn" className="lc-back">
         <ArrowLeft width={20} height={20} strokeWidth={1.75} aria-hidden="true" />
         Back to the Learning Center

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, ArrowRight, CircleAlert, CircleCheck, CloudUpload, FileText, Info, Plus, Save, Send, Trash2 } from 'lucide-react';
 import { removeFileAction, saveDraftAction, submitAction } from '@/app/learn/staff/actions';
 import { LC_MAX_UPLOAD_BYTES, LC_MAX_UPLOAD_LABEL, LC_TOO_LARGE_MESSAGE, checkPptxName, formatBytes } from '@/lib/learn/staff/pptx';
-import { LC_APPROVED_TAGS, LC_AUDIENCES, LC_CHECKLIST, submitProblems, type LcChecklistState, type LcFieldErrors, type LcSubmissionDetails } from '@/lib/learn/staff/submissions';
+import { LC_APPROVED_TAGS, LC_AUDIENCES, LC_CHECKLIST, sanitizeDraftInput, submitProblems, type LcChecklistState, type LcDraftInput, type LcFieldErrors, type LcSubmissionDetails } from '@/lib/learn/staff/submissions';
 
 export type LcWizardInitial = {
   id: string;
@@ -19,6 +19,22 @@ export type LcWizardInitial = {
 
 const STEPS = ['Title and summary', 'Topic and tags', 'Objectives and audience', 'PowerPoint file', 'Checklist', 'Review and submit'] as const;
 const FIELD_STEP: Record<keyof LcFieldErrors, number> = { title: 0, summary: 0, categoryId: 1, objectives: 2, audience: 2, file: 3, revisionNotes: 3, checklist: 4 };
+/** One comparable form of a draft's content, so "the same" means the same after the server's clean-up. */
+const canon = (raw: unknown) => {
+  const x = sanitizeDraftInput(raw);
+  return JSON.stringify([x.title, x.summary, x.categoryId, x.tags, x.objectives, x.audience, LC_CHECKLIST.map((c) => x.checklist[c.key]), x.revisionNotes]);
+};
+const bufferKey = (id: string) => `lc-wizard-buffer:${id}`;
+async function fetchSaved(id: string): Promise<{ rev: number; input: LcDraftInput } | null> {
+  try {
+    const res = await fetch(`/learn/staff/api/drafts?id=${encodeURIComponent(id)}`, { cache: 'no-store' });
+    const data = (await res.json()) as { ok: boolean; rev?: number; input?: LcDraftInput };
+    return data.ok && typeof data.rev === 'number' && data.input ? { rev: data.rev, input: data.input } : null;
+  } catch {
+    return null;
+  }
+}
+
 const emptyChecks = (): LcChecklistState => ({ noClientIdentifiers: false, noCaseNotes: false, noConfidentialMaterial: false, plainLanguageObjective: false, eligibleContributor: false });
 
 /**
@@ -45,18 +61,68 @@ export function LcSubmissionWizard({ initial, categories, feedback, startStep = 
   const headingRef = useRef<HTMLHeadingElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const moved = useRef(false);
+  /** Set when a save is refused (for example the draft changed in another tab), so autosave stops trying. */
+  const [autosaveOff, setAutosaveOff] = useState(false);
+  /** The latest values, for the save that runs as the page is being left. */
+  const latest = useRef<{ id: string | null; rev: number; dirty: boolean; input: unknown; done: boolean }>({ id: null, rev: 0, dirty: false, input: null, done: false });
   const versionNumber = initial?.versionNumber ?? 1;
   const isRevision = versionNumber > 1;
 
-  // After a reload, return to the step this tab was last on.
+  // After a reload or coming back with Back/Forward: return to the step this tab was on, and pick up
+  // any typing this tab had not saved yet. The tab keeps that typing in its own session storage.
   useEffect(() => {
     if (!initial) return;
+    let cancelled = false;
+    let buffered: { baseRev: number; input: LcDraftInput } | null = null;
     try {
       const saved = window.sessionStorage.getItem(`lc-wizard-step:${initial.id}`);
       if (saved && /^[0-5]$/.test(saved)) setStep(Number(saved));
+      const raw = window.sessionStorage.getItem(bufferKey(initial.id));
+      if (raw) buffered = JSON.parse(raw) as { baseRev: number; input: LcDraftInput };
     } catch {
-      /* storage blocked */
+      buffered = null;
     }
+    if (!buffered || typeof buffered.baseRev !== 'number') return;
+    const mine = buffered;
+    void (async () => {
+      // The save sent while leaving may still be arriving, so ask the server for its current copy.
+      const server = (await fetchSaved(initial.id)) ?? { rev: initial.rev, input: { ...initial.details, checklist: initial.checklist, revisionNotes: initial.revisionNotes } };
+      if (cancelled) return;
+      const clear = () => {
+        try {
+          window.sessionStorage.removeItem(bufferKey(initial.id));
+        } catch {
+          /* storage blocked */
+        }
+      };
+      const apply = (input: LcDraftInput) => {
+        setD({ title: input.title, summary: input.summary, categoryId: input.categoryId, tags: input.tags, objectives: input.objectives, audience: input.audience });
+        setObjectives(input.objectives.length > 0 ? input.objectives : ['']);
+        setChecklist(input.checklist);
+        setRevisionNotes(input.revisionNotes);
+      };
+      if (canon(server.input) === canon(mine.input)) {
+        // It was saved after all. Show it, and carry on from the server's revision.
+        apply(sanitizeDraftInput(server.input));
+        setRev(server.rev);
+        clear();
+      } else if (server.rev === mine.baseRev) {
+        // Nothing else has saved since. Put this tab's typing back; autosave will save it.
+        apply(sanitizeDraftInput(mine.input));
+        setRev(server.rev);
+        setDirty(true);
+        setNotice({ kind: 'ok', text: 'We put back the changes you had not saved yet.' });
+      } else {
+        // The draft was saved somewhere else in the meantime. The saved copy wins; nothing is overwritten.
+        apply(sanitizeDraftInput(server.input));
+        setRev(server.rev);
+        clear();
+        setNotice({ kind: 'error', text: 'This draft was changed in another tab, so this tab now shows the saved version.' });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
     // Only on first mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -68,13 +134,14 @@ export function LcSubmissionWizard({ initial, categories, feedback, startStep = 
     document.getElementById('lc-staff-main')?.scrollIntoView({ block: 'start' });
   }, [step]);
 
-  // Warn before leaving with unsaved typing.
+  // Only when there is no title yet (so nothing can be saved) does the browser ask before leaving.
+  const canSave = d.title.trim().length > 0;
   useEffect(() => {
-    if (!dirty) return;
+    if (!dirty || canSave) return;
     const warn = (e: BeforeUnloadEvent) => e.preventDefault();
     window.addEventListener('beforeunload', warn);
     return () => window.removeEventListener('beforeunload', warn);
-  }, [dirty]);
+  }, [dirty, canSave]);
 
   const edit = (patch: Partial<LcSubmissionDetails>) => {
     setD((prev) => ({ ...prev, ...patch }));
@@ -82,12 +149,49 @@ export function LcSubmissionWizard({ initial, categories, feedback, startStep = 
     setNotice(null);
   };
   const payload = () => ({ ...d, objectives: objectives.map((o) => o.trim()).filter(Boolean), checklist, revisionNotes });
+  latest.current = { id, rev, dirty: dirty && canSave, input: payload(), done: latest.current.done };
+
+  // This tab's unsaved typing, kept in this tab only, so a refresh or the Back button cannot lose it.
+  const bufferJson = dirty && id && canSave ? JSON.stringify({ baseRev: rev, input: payload() }) : null;
+  useEffect(() => {
+    if (!id) return;
+    try {
+      if (bufferJson) window.sessionStorage.setItem(bufferKey(id), bufferJson);
+      else if (!dirty) window.sessionStorage.removeItem(bufferKey(id));
+    } catch {
+      /* storage blocked: autosave and the save-on-leave still apply */
+    }
+  }, [id, dirty, bufferJson]);
+
+  // Autosave: two seconds after the last change, once the draft exists. Nothing is sent for review by this.
+  useEffect(() => {
+    if (!dirty || !id || !canSave || busy !== 'idle' || autosaveOff) return;
+    const t = window.setTimeout(() => void save(step, true), 2000);
+    return () => window.clearTimeout(t);
+    // `save` reads the same values these dependencies cover.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dirty, id, canSave, busy, autosaveOff, d, objectives, checklist, revisionNotes]);
+
+  // Leaving the page (refresh, the browser's Back button, closing the tab): send whatever is not saved yet.
+  useEffect(() => {
+    const flush = () => {
+      const now = latest.current;
+      if (!now.dirty || now.done) return;
+      now.dirty = false;
+      void fetch('/learn/staff/api/drafts', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: now.id, rev: now.rev, input: now.input }) }).catch(() => undefined);
+    };
+    window.addEventListener('pagehide', flush);
+    return () => {
+      window.removeEventListener('pagehide', flush);
+      flush();
+    };
+  }, []);
 
   /**
    * Save the draft. The first save creates it and moves to the draft's own address, carrying the
    * step to land on, because the page is rebuilt there. Returns null when the caller should stop.
    */
-  async function save(landOn: number = step): Promise<{ id: string; rev: number } | null> {
+  async function save(landOn: number = step, auto = false): Promise<{ id: string; rev: number } | null> {
     if (d.title.trim().length < 1) {
       setErrors({ title: 'Give the presentation a title before saving.' });
       setNotice({ kind: 'error', text: 'Add a title first, then save.' });
@@ -100,17 +204,31 @@ export function LcSubmissionWizard({ initial, categories, feedback, startStep = 
       r = await saveDraftAction(id, rev, payload());
     } catch {
       setBusy('idle');
+      if (auto) setAutosaveOff(true);
       setNotice({ kind: 'error', text: 'The draft could not be saved. Check your connection and try again. Your typing is still here.' });
       return null;
     }
     setBusy('idle');
+    if (!r.ok && r.code === 'stale' && id) {
+      // Refused because the saved copy is newer. If the saved copy already says the same thing
+      // (the save sent while leaving the page got there first), there is nothing to resolve.
+      const server = await fetchSaved(id);
+      if (server && canon(server.input) === canon(payload())) {
+        setRev(server.rev);
+        setDirty(false);
+        setNotice({ kind: 'ok', text: 'Draft saved.' });
+        return { id, rev: server.rev };
+      }
+    }
     if (!r.ok || !r.id || r.rev === undefined) {
+      if (auto) setAutosaveOff(true);
       setErrors(r.fieldErrors ?? {});
       setNotice({ kind: 'error', text: r.message });
       return null;
     }
     if (!id) {
       setDirty(false);
+      latest.current.done = true; // this page is about to be replaced by the draft's own page; nothing more to send
       rememberStep(r.id, landOn);
       router.replace(`/learn/staff/submissions/${r.id}/edit?step=${landOn + 1}&saved=1`);
       return null;
@@ -118,8 +236,11 @@ export function LcSubmissionWizard({ initial, categories, feedback, startStep = 
     setId(r.id);
     setRev(r.rev);
     setDirty(false);
-    setErrors({});
-    setNotice({ kind: 'ok', text: `Draft saved at ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}.` });
+    if (!auto) {
+      setErrors({});
+      setAutosaveOff(false);
+    }
+    setNotice({ kind: 'ok', text: `Draft saved${auto ? ' automatically' : ''} at ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}.` });
     return { id: r.id, rev: r.rev };
   }
 
@@ -204,6 +325,7 @@ export function LcSubmissionWizard({ initial, categories, feedback, startStep = 
       return setNotice({ kind: 'error', text: r.message });
     }
     setDirty(false);
+    latest.current.done = true;
     try {
       window.sessionStorage.removeItem(`lc-wizard-step:${id}`);
     } catch {
@@ -478,7 +600,7 @@ export function LcSubmissionWizard({ initial, categories, feedback, startStep = 
         <p className="lc-wizard-notice" role="status" data-kind={notice?.kind}>
           {notice?.kind === 'ok' ? <CircleCheck width={18} height={18} strokeWidth={1.75} aria-hidden="true" /> : null}
           {notice?.kind === 'error' ? <CircleAlert width={18} height={18} strokeWidth={1.75} aria-hidden="true" /> : null}
-          {notice?.text ?? (dirty ? 'You have changes that are not saved yet.' : '')}
+          {notice?.text ?? (dirty ? (id && canSave && !autosaveOff ? 'Saving your changes automatically…' : 'You have changes that are not saved yet.') : '')}
         </p>
 
         <div className="lc-wizard-bottom">
