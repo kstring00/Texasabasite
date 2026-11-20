@@ -7,7 +7,9 @@ import { LcStaffDemoBanner, LcStaffSignIn } from '@/components/learn/staff/LcSta
 import { LcStaffShell, type LcStaffNavItem } from '@/components/learn/staff/LcStaffShell';
 import { learnFlags } from '@/lib/learn/flags';
 import { getStaffActor } from '@/lib/learn/staff/guard';
+import { canOpenProduction, reviewQueue } from '@/lib/learn/staff/pipeline';
 import { LC_ROLE_LABEL, can } from '@/lib/learn/staff/roles';
+import { getStaffStore } from '@/lib/learn/staff/store';
 import { signOutAction } from './actions';
 
 // Staff pages are never indexed, in any mode.
@@ -52,6 +54,11 @@ export default async function LearnStaffLayout({ children }: { children: React.R
   const nav: LcStaffNavItem[] = [{ href: '/learn/staff', label: 'Overview', icon: 'overview' }];
   if (can(actor, 'submission.create')) nav.push({ href: '/learn/staff/submissions', label: 'My submissions', icon: 'mine' });
   if (can(actor, 'submission.read_all')) nav.push({ href: '/learn/staff/submissions/all', label: 'All submissions', icon: 'all' });
+  if (can(actor, 'review.source') || can(actor, 'review.final')) {
+    const q = reviewQueue(getStaffStore(), actor);
+    nav.push({ href: '/learn/staff/reviews', label: 'Reviews', icon: 'reviews', count: q.sources.filter((x) => !x.blocked).length + q.modules.filter((x) => !x.blocked).length });
+  }
+  if (canOpenProduction(actor)) nav.push({ href: '/learn/staff/modules', label: 'Modules', icon: 'modules' });
 
   return (
     <div data-lc-chrome="app" data-lc-scene="staff" className="lc-staff">

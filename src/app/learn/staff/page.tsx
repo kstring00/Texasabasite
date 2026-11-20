@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Clock, MessageSquareWarning, PencilLine, CircleCheck, FileStack, Plus } from 'lucide-react';
+import { ArrowRight, Clock, MessageSquareWarning, PencilLine, CircleCheck, FileStack, Layers, Plus, Presentation } from 'lucide-react';
 import { getDemoStaff } from '@/data/learn/demo/staff';
 import { LcStatusChip } from '@/components/learn/staff/LcStatusChip';
 import { getStaffActor } from '@/lib/learn/staff/guard';
+import { canOpenProduction, productionList, reviewQueue } from '@/lib/learn/staff/pipeline';
 import { can } from '@/lib/learn/staff/roles';
 import { getStaffStore } from '@/lib/learn/staff/store';
 import { LC_STATUS, listSubmissions } from '@/lib/learn/staff/submissions';
@@ -27,6 +28,10 @@ export default async function LearnStaffOverviewPage() {
   ] as const;
   const needsYou = mine.filter((s) => s.status === 'changes_requested');
   const allCount = readsAll ? listSubmissions(store, actor, 'all').length : 0;
+  const reviews = can(actor, 'review.source') || can(actor, 'review.final');
+  const queue = reviewQueue(store, actor);
+  const production = canOpenProduction(actor);
+  const producing = productionList(store, actor);
 
   return (
     <>
@@ -95,14 +100,56 @@ export default async function LearnStaffOverviewPage() {
         </section>
       ) : null}
 
+      {reviews ? (
+        <section aria-labelledby="lc-review-title" className="lc-solid lc-panel">
+          <h2 id="lc-review-title" className="lc-h2">
+            Items needing review
+          </h2>
+          <ul className="lc-metrics lc-metrics-two">
+            <li data-cast="blue">
+              <Link href="/learn/staff/reviews?gate=source" className="lc-metric">
+                <span className="lc-icon-tile" data-size="sm" aria-hidden="true">
+                  <Presentation width={20} height={20} strokeWidth={1.75} />
+                </span>
+                <span className="lc-metric-value">{queue.sources.filter((x) => !x.blocked).length}</span>
+                <span className="lc-metric-label">Gate 1 · source PowerPoints you can review</span>
+              </Link>
+            </li>
+            <li data-cast="iris">
+              <Link href="/learn/staff/reviews?gate=module" className="lc-metric">
+                <span className="lc-icon-tile" data-size="sm" aria-hidden="true">
+                  <Layers width={20} height={20} strokeWidth={1.75} />
+                </span>
+                <span className="lc-metric-value">{queue.modules.filter((x) => !x.blocked).length}</span>
+                <span className="lc-metric-label">Gate 2 · final modules you can review</span>
+              </Link>
+            </li>
+          </ul>
+          {queue.sources.length + queue.modules.length === 0 ? <p className="lc-muted">You’re all caught up on assigned reviews.</p> : null}
+        </section>
+      ) : null}
+
+      {production ? (
+        <section aria-labelledby="lc-prod-title" className="lc-solid lc-panel" data-cast="blue">
+          <h2 id="lc-prod-title" className="lc-h2">
+            Modules
+          </h2>
+          <p className="lc-muted">
+            {producing.filter((r) => r.submission.status === 'source_approved').length} approved sources ready for production, {producing.filter((r) => r.submission.status === 'in_production').length} in production, {producing.filter((r) => r.submission.status === 'final_approved').length} ready to publish, {producing.filter((r) => r.submission.status === 'published').length} published.
+          </p>
+          <Link href="/learn/staff/modules" className="lc-btn lc-btn-secondary">
+            <Layers width={20} height={20} strokeWidth={1.75} aria-hidden="true" />
+            Open modules
+          </Link>
+        </section>
+      ) : null}
+
       {readsAll ? (
         <section aria-labelledby="lc-all-title" className="lc-solid lc-panel" data-cast="blue">
           <h2 id="lc-all-title" className="lc-h2">
             All submissions
           </h2>
-          <p className="lc-muted">
-            Your role can read every submission, {allCount} in total. Reviewing them (approve, request changes, decline) is built in the next phase, so for now this is read-only.
-          </p>
+          <p className="lc-muted">Your role can read every submission, {allCount} in total.</p>
           <Link href="/learn/staff/submissions/all" className="lc-btn lc-btn-secondary">
             <FileStack width={20} height={20} strokeWidth={1.75} aria-hidden="true" />
             See all submissions

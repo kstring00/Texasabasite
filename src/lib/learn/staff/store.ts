@@ -49,7 +49,11 @@ export function getStaffStore(): LcStaffStore {
   let store: LcStaffStore | null = null;
   try {
     const parsed = JSON.parse(fs.readFileSync(STORE_FILE, 'utf8')) as LcStaffStore;
-    if (parsed && parsed.v === 1 && Array.isArray(parsed.submissions)) store = parsed;
+    if (parsed && parsed.v === 1 && Array.isArray(parsed.submissions)) {
+      // A store written before modules existed gains an empty list.
+      if (!Array.isArray(parsed.modules)) parsed.modules = [];
+      store = parsed;
+    }
   } catch {
     store = null;
   }

@@ -27,7 +27,7 @@ export default async function LearnModulePage({ params }: Params) {
   // Only published versions are ever looked up here. Anything else is simply not found.
   const found = getModuleBySlug((await params).moduleSlug);
   if (!found) notFound();
-  const { manifest: m, isDemo } = found;
+  const { manifest: m, isDemo, origin } = found;
   const category = getLcCategoryById(m.categoryId);
   if (!category) notFound();
   const now = new Date();
@@ -96,7 +96,11 @@ export default async function LearnModulePage({ params }: Params) {
                 </span>
               </p>
             ) : (
-              <p className="lc-muted">Demo sample — pending clinical approval. This module has not been reviewed by a clinician and is here only to show how lessons work.</p>
+              <p className="lc-muted">
+                {origin === 'demo_workflow'
+                  ? 'Demo sample — pending clinical approval. This module was published through the staff demo by fictional reviewers. It has not been reviewed by a clinician.'
+                  : 'Demo sample — pending clinical approval. This module has not been reviewed by a clinician and is here only to show how lessons work.'}
+              </p>
             )}
           </section>
         </aside>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { CircleAlert, CircleCheck, Download, FilePlus2, PencilLine, Trash2 } from 'lucide-react';
+import { CircleAlert, CircleCheck, ClipboardCheck, Download, FilePlus2, Layers, PencilLine, Presentation, Trash2 } from 'lucide-react';
 import { LcBack } from '@/components/learn/LcPageHead';
 import { LcConfirm } from '@/components/learn/staff/LcConfirm';
 import { LcStatusChip } from '@/components/learn/staff/LcStatusChip';
@@ -9,9 +9,10 @@ import { getDemoStaff } from '@/data/learn/demo/staff';
 import { getLcCategoryById } from '@/data/learn/categories';
 import { getStaffActor } from '@/lib/learn/staff/guard';
 import { formatBytes } from '@/lib/learn/staff/pptx';
-import { LC_ROLE_LABEL } from '@/lib/learn/staff/roles';
+import { canOpenProduction, modulesOf } from '@/lib/learn/staff/pipeline';
+import { LC_ROLE_LABEL, can } from '@/lib/learn/staff/roles';
 import { getStaffStore } from '@/lib/learn/staff/store';
-import { LC_AUDIT_LABEL, LC_STATUS, viewSubmission } from '@/lib/learn/staff/submissions';
+import { LC_AFTER_SOURCE_APPROVAL, LC_AUDIT_LABEL, LC_STATUS, viewSubmission } from '@/lib/learn/staff/submissions';
 import { formatCtDateTime } from '@/lib/learn/time';
 import { deleteDraftAction, startRevisionAction } from '../../actions';
 
@@ -23,7 +24,6 @@ const PROBLEMS: Record<string, string> = {
   forbidden: 'Your role does not allow that.',
   not_found: 'That submission was not found.',
 };
-const DECISION: Record<string, string> = { approved: 'Approved as a source', changes_requested: 'Changes requested', declined: 'Declined' };
 
 export default async function LearnStaffSubmissionPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ submitted?: string; problem?: string }> }) {
   const actor = await getStaffActor();
@@ -35,7 +35,9 @@ export default async function LearnStaffSubmissionPage({ params, searchParams }:
   const { submitted, problem } = await searchParams;
   const { submission: s, versions, reviews, audit } = view;
   const author = getDemoStaff(s.createdBy);
-  const latestReview = reviews[0] ?? null;
+  const modules = modulesOf(getStaffStore(), id);
+  const canReviewThis = can(actor, 'review.source') && (s.status === 'submitted' || s.status === 'in_review');
+  const canProduce = canOpenProduction(actor) && LC_AFTER_SOURCE_APPROVAL.includes(s.status);
   const name = (personId: string) => getDemoStaff(personId)?.displayName ?? 'Staff member';
 
   return (
@@ -71,6 +73,22 @@ export default async function LearnStaffSubmissionPage({ params, searchParams }:
               What happens next
             </h2>
             <p>{LC_STATUS[s.status].next}</p>
+            {canReviewThis || canProduce ? (
+              <div className="lc-action-row">
+                {canReviewThis ? (
+                  <Link href={`/learn/staff/reviews/source/${s.id}`} className="lc-btn lc-btn-primary">
+                    <ClipboardCheck width={20} height={20} strokeWidth={1.75} aria-hidden="true" />
+                    Open the source review
+                  </Link>
+                ) : null}
+                {canProduce ? (
+                  <Link href={`/learn/staff/modules/${s.id}`} className="lc-btn lc-btn-secondary">
+                    <Layers width={20} height={20} strokeWidth={1.75} aria-hidden="true" />
+                    Open the module workspace
+                  </Link>
+                ) : null}
+              </div>
+            ) : null}
             {view.canEdit || view.canStartRevision || view.canDelete ? (
               <div className="lc-action-row">
                 {view.canEdit ? (
@@ -101,18 +119,30 @@ export default async function LearnStaffSubmissionPage({ params, searchParams }:
             ) : null}
           </section>
 
-          {latestReview ? (
+          {reviews.length > 0 ? (
             <section aria-labelledby="lc-feedback-title" className="lc-solid lc-panel">
               <h2 id="lc-feedback-title" className="lc-h2">
                 Reviewer feedback
               </h2>
-              <div className="lc-gate-strip" data-cast="blue">
-                <p className="lc-gate-strip-title">Gate 1 · Source PowerPoint</p>
-                <p className="lc-muted">
-                  {DECISION[latestReview.decision]} by {name(latestReview.reviewerId)} on {formatCtDateTime(latestReview.decidedAt)}, for version {versions.find((v) => v.id === latestReview.targetVersionId)?.versionNumber ?? '?'}.
-                </p>
-              </div>
-              <p className="lc-feedback-text">{latestReview.comments}</p>
+              {reviews.map((r) => {
+                const isFinal = r.targetType === 'derived_module';
+                const verb = r.decision === 'approved' ? (isFinal ? 'Final module approved' : 'Approved as a source') : r.decision === 'declined' ? (isFinal ? 'Module rejected' : 'Declined') : 'Changes requested';
+                const which = isFinal ? `module version ${modules.find((m) => m.id === r.targetVersionId)?.versionNumber ?? '?'}` : `version ${versions.find((v) => v.id === r.targetVersionId)?.versionNumber ?? '?'}`;
+                return (
+                  <div key={r.id} className="lc-review-record">
+                    <div className="lc-gate-strip" data-cast={isFinal ? 'iris' : 'blue'}>
+                      <p className="lc-gate-strip-title">
+                        {isFinal ? <Layers width={20} height={20} strokeWidth={1.75} aria-hidden="true" /> : <Presentation width={20} height={20} strokeWidth={1.75} aria-hidden="true" />}
+                        {isFinal ? 'Gate 2 · Final module' : 'Gate 1 · Source PowerPoint'}
+                      </p>
+                      <p className="lc-muted">
+                        {verb} by {name(r.reviewerId)} on {formatCtDateTime(r.decidedAt)}, for {which}.
+                      </p>
+                    </div>
+                    {r.comments ? <p className="lc-feedback-text">{r.comments}</p> : null}
+                  </div>
+                );
+              })}
             </section>
           ) : null}
 

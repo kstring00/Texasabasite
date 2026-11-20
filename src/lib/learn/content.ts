@@ -3,6 +3,8 @@ import { validateManifest, type LcManifest } from './manifest';
 import { isPubliclyListed, type LcTraining } from './trainings';
 import { demoAbcsOfBehavior } from '@/data/learn/demo/abcs-of-behavior';
 import { demoTrainings } from '@/data/learn/demo/trainings';
+import { publishedManifests } from './staff/pipeline';
+import { getStaffStore } from './staff/store';
 
 /**
  * What caregiver pages are allowed to read. SERVER ONLY: import this from server components
@@ -12,7 +14,11 @@ import { demoTrainings } from '@/data/learn/demo/trainings';
  * sources: nothing at all (the default), or the labelled demo set when LEARN_DEMO_CONTENT is on.
  * A real content service later implements the same interface.
  */
-export type LcPublishedModule = { manifest: LcManifest; isDemo: boolean };
+/**
+ * `sample`: the hand-written demo module. `demo_workflow`: a module published through the local
+ * staff demo by fictional reviewers. Both are demo content and are labelled as such everywhere.
+ */
+export type LcPublishedModule = { manifest: LcManifest; isDemo: boolean; origin: 'sample' | 'demo_workflow' };
 
 export interface LcContentAdapter {
   listModules(): LcPublishedModule[];
@@ -24,14 +30,31 @@ const emptyAdapter: LcContentAdapter = { listModules: () => [], listTrainings: (
 function buildDemoAdapter(): LcContentAdapter {
   const checked = validateManifest(demoAbcsOfBehavior);
   // A sample that fails validation is not shown at all.
-  const modules: LcPublishedModule[] = checked.ok ? [{ manifest: checked.manifest, isDemo: true }] : [];
+  const modules: LcPublishedModule[] = checked.ok ? [{ manifest: checked.manifest, isDemo: true, origin: 'sample' }] : [];
   return { listModules: () => modules, listTrainings: () => demoTrainings.filter(isPubliclyListed) };
+}
+
+/**
+ * Modules published through the local staff demo. Only versions that hold both approvals and are
+ * currently published come back; a withdrawn module is simply absent. Local machine only: the
+ * staff demo flag is refused on Vercel, so this never runs there.
+ */
+function demoWorkflowModules(taken: Set<string>): LcPublishedModule[] {
+  if (!learnFlags.demoStaff) return [];
+  return publishedManifests(getStaffStore())
+    .filter((m) => !taken.has(m.slug) && !taken.has(m.id))
+    .map((manifest) => ({ manifest, isDemo: true, origin: 'demo_workflow' as const }));
 }
 
 let cached: LcContentAdapter | null = null;
 export function getLcContent(): LcContentAdapter {
   if (!cached) cached = learnFlags.demoContent ? buildDemoAdapter() : emptyAdapter;
-  return cached;
+  if (!learnFlags.demoStaff) return cached;
+  // With the staff demo on, published modules are read fresh each time, so publish and withdraw show at once.
+  const base = cached;
+  const samples = base.listModules();
+  const published = demoWorkflowModules(new Set(samples.flatMap((m) => [m.manifest.slug, m.manifest.id])));
+  return { listModules: () => [...samples, ...published], listTrainings: base.listTrainings };
 }
 
 /* ── Read helpers used by the pages ── */

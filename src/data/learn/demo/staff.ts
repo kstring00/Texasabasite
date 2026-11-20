@@ -9,6 +9,7 @@ export const demoStaff: LcStaffActor[] = [
   { id: 'demo-apprentice', displayName: 'Sample Apprentice', role: 'apprentice', active: true },
   { id: 'demo-bcba', displayName: 'Sample BCBA', role: 'bcba_reviewer', active: true },
   { id: 'demo-director', displayName: 'Sample Clinical Director', role: 'clinical_director', active: true },
+  { id: 'demo-producer', displayName: 'Sample Producer', role: 'producer', active: true },
 ];
 
 export const getDemoStaff = (id: string | null | undefined) => demoStaff.find((p) => p.id === id && p.active) ?? null;

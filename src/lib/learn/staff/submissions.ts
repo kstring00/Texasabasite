@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { lcCategories } from '@/data/learn/categories';
+import type { LcManifest } from '../manifest';
 import { can, type LcStaffActor, type LcStaffRole } from './roles';
 
 /**
@@ -37,6 +38,8 @@ export type LcSubmission = LcSubmissionDetails & {
   /** Goes up on every change. A save that carries an old number is refused, so two tabs cannot overwrite each other. */
   rev: number;
   checklist: LcChecklistState;
+  /** Who has picked this up for the source review, once someone has. */
+  reviewerId?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -80,12 +83,43 @@ export type LcReview = {
   decision: 'approved' | 'changes_requested' | 'declined';
   comments: string;
   decidedAt: string;
+  /** What the reviewer ticked. Absent on seeded sample reviews. */
+  checklist?: Record<string, boolean>;
+  /** For a final-module review: the fingerprint of the exact content that was reviewed. */
+  targetHash?: string;
 };
 
 export type LcAuditEvent = { id: string; actorId: string; actorRole: LcStaffRole; action: string; targetType: 'submission'; targetId: string; targetVersionId: string | null; at: string; note: string };
 
-export type LcStaffStore = { v: 1; submissions: LcSubmission[]; versions: LcSubmissionVersion[]; assets: LcAsset[]; reviews: LcReview[]; audit: LcAuditEvent[] };
-export const emptyStaffStore = (): LcStaffStore => ({ v: 1, submissions: [], versions: [], assets: [], reviews: [], audit: [] });
+export type LcModuleStatus = 'draft' | 'final_review' | 'changes_requested' | 'rejected' | 'final_approved' | 'published' | 'withdrawn';
+
+/** An interactive module made from an approved source. Its content never changes once it is sent for final review. */
+export type LcModuleVersion = {
+  id: string;
+  submissionId: string;
+  /** The exact source PowerPoint version this was made from. That version must hold a source approval. */
+  sourceVersionId: string;
+  versionNumber: number;
+  manifest: LcManifest;
+  /** Fingerprint of the manifest. A final approval is tied to this exact value. */
+  contentHash: string;
+  importedBy: string;
+  importedAt: string;
+  conversionDate: string;
+  generationMethod: 'external_ai_assisted' | 'written_by_hand';
+  /** What the producer says is new compared with the source: explanations, scenarios, questions. */
+  newContentNotes: string;
+  status: LcModuleStatus;
+  submittedForReviewAt: string | null;
+  publishedBy: string | null;
+  publishedAt: string | null;
+  withdrawnBy: string | null;
+  withdrawnAt: string | null;
+  withdrawnReason: string;
+};
+
+export type LcStaffStore = { v: 1; submissions: LcSubmission[]; versions: LcSubmissionVersion[]; assets: LcAsset[]; reviews: LcReview[]; audit: LcAuditEvent[]; modules: LcModuleVersion[] };
+export const emptyStaffStore = (): LcStaffStore => ({ v: 1, submissions: [], versions: [], assets: [], reviews: [], audit: [], modules: [] });
 
 /* ── Input ───────────────────────────────────────────────────────────────── */
 
@@ -154,9 +188,13 @@ const versionsOf = (store: LcStaffStore, id: string) => store.versions.filter((v
 export const workingVersion = (store: LcStaffStore, id: string) => versionsOf(store, id).find((v) => !v.frozenAt) ?? null;
 
 /** Who may see a submission: its author, or a role allowed to read all of them. Nobody else. */
+export const LC_AFTER_SOURCE_APPROVAL: LcWorkflowStatus[] = ['source_approved', 'awaiting_production', 'in_production', 'final_review', 'final_approved', 'published', 'withdrawn'];
+
 export function canSee(actor: LcStaffActor | null, s: LcSubmission): boolean {
   if (!actor || !actor.active) return false;
-  return s.createdBy === actor.id || can(actor, 'submission.read_all');
+  if (s.createdBy === actor.id || can(actor, 'submission.read_all')) return true;
+  // A producer sees a submission only once its source PowerPoint has been clinically approved.
+  return can(actor, 'module.import') && LC_AFTER_SOURCE_APPROVAL.includes(s.status);
 }
 
 export function listSubmissions(store: LcStaffStore, actor: LcStaffActor | null, scope: 'mine' | 'all'): LcSubmission[] {
@@ -350,9 +388,9 @@ export const LC_STATUS: Record<LcWorkflowStatus, { label: string; cast: 'slate' 
   in_review: { label: 'In review', cast: 'iris', next: 'A reviewer is looking at this version now.' },
   changes_requested: { label: 'Changes requested', cast: 'coral', next: 'Read the reviewer’s feedback, then start a new version with your changes.' },
   declined: { label: 'Declined', cast: 'rose', next: 'The reviewer explained why below. Talk with them before starting something new on this topic.' },
-  source_approved: { label: 'Source approved', cast: 'teal', next: 'Your PowerPoint is approved as a source. It still has to be turned into a module and approved a second time before families see it.' },
+  source_approved: { label: 'Source approved', cast: 'teal', next: 'This PowerPoint is approved as a source. It still has to be turned into a module and approved a second time before families see it.' },
   awaiting_production: { label: 'Awaiting production', cast: 'blue', next: 'The approved source is waiting to be turned into an interactive module.' },
-  in_production: { label: 'In production', cast: 'blue', next: 'The interactive module is being built from your approved source.' },
+  in_production: { label: 'In production', cast: 'blue', next: 'The interactive module is being built from the approved source.' },
   final_review: { label: 'Final review', cast: 'iris', next: 'A clinician is reviewing the finished module itself. This is a separate approval from the first one.' },
   final_approved: { label: 'Final approved', cast: 'teal', next: 'The finished module is approved and waiting to be published.' },
   published: { label: 'Published', cast: 'solid', next: 'Families can now see the module made from this presentation.' },
@@ -371,4 +409,13 @@ export const LC_AUDIT_LABEL: Record<string, string> = {
   changes_requested: 'Reviewer requested changes',
   source_approved: 'Source approved',
   declined: 'Declined',
+  source_review_started: 'Source review started',
+  production_started: 'Collected for production',
+  module_imported: 'Module imported',
+  module_submitted: 'Module sent for final review',
+  final_approved: 'Final module approved',
+  final_changes_requested: 'Changes requested on the module',
+  final_rejected: 'Module rejected',
+  module_published: 'Module published',
+  module_withdrawn: 'Module withdrawn',
 };

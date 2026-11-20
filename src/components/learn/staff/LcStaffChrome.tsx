@@ -23,8 +23,9 @@ export function LcStaffDemoBanner() {
 const WHAT: Record<string, string> = {
   rbt: 'Submits PowerPoints and sees only their own.',
   apprentice: 'Submits PowerPoints and sees only their own.',
-  bcba_reviewer: 'Can read every submission. Reviewing arrives in the next build phase.',
-  clinical_director: 'Can read every submission. Reviewing and publishing arrive in the next build phases.',
+  bcba_reviewer: 'Reviews source PowerPoints and final modules. Cannot publish.',
+  clinical_director: 'Reviews source PowerPoints and final modules, and publishes or withdraws modules.',
+  producer: 'Collects approved sources and imports the finished module. Cannot approve or publish.',
 };
 
 /** Demo sign-in: pick a fictional role. Shown only when the staff demo flag is on, which is local machines only. */

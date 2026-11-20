@@ -19,6 +19,11 @@ export type LcPlayerProps = {
   /** Trainings linked to this module that are really listed. Empty when there are none. */
   relatedTrainings: { slug: string; title: string; isExample: boolean }[];
   relatedModules: { slug: string; title: string }[];
+  /**
+   * Staff preview of an unpublished module in the real player. Links stay inside `basePath`,
+   * nothing is saved to the browser, and `watermark` replaces the demo strip on every step.
+   */
+  preview?: { basePath: string; exitHref: string; watermark: string };
 };
 
 const STEP_LABEL: Record<LcStep['type'], { word: string; icon: typeof Info }> = {
@@ -34,11 +39,13 @@ const STEP_LABEL: Record<LcStep['type'], { word: string; icon: typeof Info }> = 
 const clamp = (n: number, max: number) => Math.max(0, Math.min(max, n));
 
 /** The guided player: one step at a time, Back and Next always in the same place, nothing timed. */
-export function LcPlayer({ module: mod, lesson, lessonIndex, outline, relatedTrainings, relatedModules }: LcPlayerProps) {
+export function LcPlayer({ module: mod, lesson, lessonIndex, outline, relatedTrainings, relatedModules, preview }: LcPlayerProps) {
   const router = useRouter();
   const last = lesson.steps.length - 1;
   const lessonCount = outline.length;
-  const base = `/learn/modules/${mod.slug}`;
+  const base = preview?.basePath ?? `/learn/modules/${mod.slug}`;
+  const exitHref = preview?.exitHref ?? base;
+  const persist = !preview;
   const prevLesson = lessonIndex > 0 ? outline[lessonIndex - 1] : null;
   const nextLesson = lessonIndex < lessonCount - 1 ? outline[lessonIndex + 1] : null;
 
@@ -54,6 +61,7 @@ export function LcPlayer({ module: mod, lesson, lessonIndex, outline, relatedTra
 
   const save = useCallback(
     (patch: Partial<LcModuleProgress>) => {
+      if (!persist) return; // a staff preview never writes to the browser
       const prev = readStore().modules[mod.id];
       const sameVersion = prev && prev.version === mod.version ? prev : undefined;
       const next: LcModuleProgress = {
@@ -68,7 +76,7 @@ export function LcPlayer({ module: mod, lesson, lessonIndex, outline, relatedTra
       };
       setCanSave(saveModuleProgress(mod.id, next));
     },
-    [mod.id, mod.version, lesson.id],
+    [mod.id, mod.version, lesson.id, persist],
   );
 
   // Work out where to open: the address (?step=2), else this browser's saved place, else the start.
@@ -79,12 +87,12 @@ export function LcPlayer({ module: mod, lesson, lessonIndex, outline, relatedTra
       if (q && /^\d+$/.test(q)) return clamp(Number(q) - 1, last);
       return null;
     };
-    const saved = readStore().modules[mod.id];
+    const saved = persist ? readStore().modules[mod.id] : undefined;
     const mine = saved && saved.version === mod.version ? saved : undefined;
     const start = fromUrl() ?? (mine && mine.lessonId === lesson.id ? clamp(mine.step, last) : 0);
     setAnswers(mine?.answers ?? {});
     setDoneLessons(mine?.doneLessons ?? []);
-    setCanSave(storageAvailable());
+    setCanSave(persist ? storageAvailable() : true);
     setStep(start);
     setReady(true);
     window.history.replaceState(null, '', `?step=${start + 1}`);
@@ -101,7 +109,7 @@ export function LcPlayer({ module: mod, lesson, lessonIndex, outline, relatedTra
     };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
-  }, [mod.id, mod.version, lesson.id, last, save]);
+  }, [mod.id, mod.version, lesson.id, last, save, persist]);
 
   // After a step change, put the reader at the top of the new step and tell screen readers.
   useEffect(() => {
@@ -141,14 +149,14 @@ export function LcPlayer({ module: mod, lesson, lessonIndex, outline, relatedTra
     }
     if (step > 0) return go(step - 1, 'back');
     if (prevLesson) router.push(`${base}/lesson/${prevLesson.id}?step=last`);
-    else router.push(base);
+    else router.push(exitHref);
   };
 
   const current = lesson.steps[step];
   const label = STEP_LABEL[current.type];
   const LabelIcon = label.icon;
   const nextLabel = step < last ? 'Next' : nextLesson ? 'Next lesson' : 'Finish module';
-  const backLabel = finished || step > 0 ? 'Back' : prevLesson ? 'Previous lesson' : 'Module overview';
+  const backLabel = finished || step > 0 ? 'Back' : prevLesson ? 'Previous lesson' : preview ? 'Close preview' : 'Module overview';
 
   return (
     <div className="lc-player" data-cast={mod.cast}>
@@ -161,8 +169,8 @@ export function LcPlayer({ module: mod, lesson, lessonIndex, outline, relatedTra
           <p className="lc-player-where">
             Lesson {lessonIndex + 1} of {lessonCount}
           </p>
-          <Link href={base} className="lc-btn lc-btn-quiet">
-            Save and exit
+          <Link href={exitHref} className="lc-btn lc-btn-quiet">
+            {preview ? 'Close preview' : 'Save and exit'}
           </Link>
         </div>
 
@@ -172,7 +180,7 @@ export function LcPlayer({ module: mod, lesson, lessonIndex, outline, relatedTra
           ))}
         </div>
 
-        {mod.isDemo ? <LcDemoStrip /> : null}
+        {preview ? <LcDemoStrip>{preview.watermark}</LcDemoStrip> : mod.isDemo ? <LcDemoStrip /> : null}
         {ready && !canSave ? (
           <p className="lc-note" data-cast="blue">
             <Info width={20} height={20} strokeWidth={1.75} aria-hidden="true" />
@@ -249,8 +257,8 @@ export function LcPlayer({ module: mod, lesson, lessonIndex, outline, relatedTra
             {backLabel}
           </button>
           {finished ? (
-            <Link href="/learn/library" className="lc-btn lc-btn-primary">
-              Return to library
+            <Link href={preview ? exitHref : '/learn/library'} className="lc-btn lc-btn-primary">
+              {preview ? 'Close preview' : 'Return to library'}
             </Link>
           ) : (
             <button type="button" className="lc-btn lc-btn-primary" onClick={next}>
@@ -260,7 +268,7 @@ export function LcPlayer({ module: mod, lesson, lessonIndex, outline, relatedTra
           )}
         </div>
       </article>
-      <p className="lc-player-foot">You can always come back to this lesson. Your progress is saved on this device.</p>
+      <p className="lc-player-foot">{preview ? 'Staff preview. Nothing is saved, and families cannot see this.' : 'You can always come back to this lesson. Your progress is saved on this device.'}</p>
     </div>
   );
 }

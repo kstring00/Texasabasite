@@ -17,7 +17,7 @@ export default async function LearnStaffAllSubmissionsPage({ searchParams }: { s
         <div>
           <p className="lc-eyebrow">Submissions</p>
           <h1 className="lc-h1">All submissions</h1>
-          <p className="lc-muted">Every PowerPoint staff have started or submitted. Read-only for now. Review tools are built in the next phase.</p>
+          <p className="lc-muted">Every PowerPoint staff have started or submitted. To review one, use Reviews in the menu.</p>
         </div>
       </header>
       <SubmissionsView actor={actor} scope="all" status={(await searchParams).status} basePath="/learn/staff/submissions/all" emptyText="No one has submitted a presentation yet." />

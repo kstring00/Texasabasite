@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowLeft, FileStack, LayoutDashboard, Menu, Presentation, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, ClipboardCheck, FileStack, Layers, LayoutDashboard, Menu, Presentation, X, type LucideIcon } from 'lucide-react';
 
-export type LcStaffNavItem = { href: string; label: string; icon: 'overview' | 'mine' | 'all' };
-const ICONS: Record<LcStaffNavItem['icon'], LucideIcon> = { overview: LayoutDashboard, mine: Presentation, all: FileStack };
+export type LcStaffNavItem = { href: string; label: string; icon: 'overview' | 'mine' | 'all' | 'reviews' | 'modules'; count?: number };
+const ICONS: Record<LcStaffNavItem['icon'], LucideIcon> = { overview: LayoutDashboard, mine: Presentation, all: FileStack, reviews: ClipboardCheck, modules: Layers };
 
 /**
  * The staff workspace frame: a dark sidebar beside the content on a desktop, a drawer opened by
@@ -48,6 +48,7 @@ export function LcStaffShell({ nav, who, role, signOut, children }: { nav: LcSta
                   <Link href={n.href} aria-current={current(n.href) ? 'page' : undefined}>
                     <Icon width={20} height={20} strokeWidth={1.75} aria-hidden="true" />
                     {n.label}
+                    {n.count ? <span className="lc-shell-count">{n.count}<span className="lc-sr-only"> waiting</span></span> : null}
                   </Link>
                 </li>
               );
