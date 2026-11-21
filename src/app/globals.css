@@ -241,14 +241,7 @@
 .rv-anim { transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
 @media (prefers-reduced-motion: reduce) { .rv-hidden { opacity: 1; transform: none; } .rv-anim { transition: none; } }
 
-/* Page transitions (Next experimental View Transitions). Calm cross-fade, no slide. */
-::view-transition-old(root) { animation: 160ms ease-out both vt-out; }
-::view-transition-new(root) { animation: 220ms ease-out both vt-in; }
-@keyframes vt-out { to { opacity: 0; } }
-@keyframes vt-in { from { opacity: 0; transform: translateY(6px); } }
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
-}
+/* Page transitions: a short fade of the page content, run by src/components/site/PageEnter.tsx. It never blocks clicks. */
 
 /* Photography treatment: soft corners, warm grade, so mixed sources feel like one family. */
 .photo { @apply overflow-hidden rounded-3xl; }
