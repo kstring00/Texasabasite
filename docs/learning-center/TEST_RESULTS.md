@@ -17,9 +17,15 @@ Written at the end of phase 5, November 2026. Every command below was run on the
 | Automated accessibility scan | part of `npm run test:e2e -- on` | 169 screens, no findings |
 | Existing site unchanged when switched off | `node src/lib/learn/tools/site-shots.mjs` | 86 of 86 pictures identical to `main` |
 
-Nothing failed in the final run.
+The final run of every setup passed completely.
 
-**One thing to know.** The existing site ignores clicks and key presses for about half a second after every page change. That is fixed by a separate pull request to `main` (`fix/tour-form-and-page-transitions`). Until that fix is brought into this branch, the staff pages behave the same way, and the browser tests wait half a second after each page change, as a person naturally would. One test failed once on a slow run before that wait was added.
+**How the browser tests got there.** Five earlier full runs during phase 5 each ended with one failed check out of about 300. Each was looked into before it was accepted as fixed:
+
+| What failed | Cause | What was done |
+|---|---|---|
+| Three different checks, one per run, each reading a page a moment too early | The four long walks left their browser windows open, so the machine was crowded and slow by the time later tests ran | Each walk now closes its windows. Tests wait for the page itself, not for a fixed pause. The run fell from about 18 minutes to 10 |
+| A key press on the staff menu was ignored | The existing site ignores clicks and key presses for about half a second after every page change. A separate pull request to `main` fixes it (`fix/tour-form-and-page-transitions`) | Until that fix is brought into this branch, the tests wait half a second after a page change, as a person naturally would |
+| The browser reported a React "hydration" error once, during the reporting walk | Not found. It did not happen again in four repeats of that walk, or in 196 loads of the pages it visits. React recovers from this error by redrawing the page, so nothing visible breaks | The tests now record which page an error came from. To be rechecked after the page-transition fix reaches this branch, because that fix removes an experimental React feature from every page |
 
 ## Unit tests
 

@@ -6,7 +6,7 @@ test('staff demo: sign-in, permissions, PowerPoint submission wizard', async ({ 
 const B = baseURL, ST = B + '/learn/staff';
 const ctx = await b.newContext({ viewport: { width: 1366, height: 768 } });
 const p = await ctx.newPage();
-const errs = []; p.on('pageerror', e => errs.push(String(e).slice(0, 200)));
+const errs = []; p.on('pageerror', e => errs.push(`${p.url()} :: ${String(e).slice(0, 200)}`));
 let checks = 0;
 const ok = (name, cond, extra = '') => { checks++; expect.soft(!!cond, cond ? name : `${name} :: ${String(extra).slice(0, 400)}`).toBe(true); };
 const signIn = async (who) => { await p.goto(ST, { waitUntil: 'load' }); await p.waitForTimeout(450); await p.getByRole('button', { name: new RegExp(`Continue as ${who}$|Continue as ${who}\\b`) }).first().click(); await p.waitForLoadState('load'); await p.waitForTimeout(400); };
@@ -196,5 +196,7 @@ ok('reset puts the seeded submissions back', (await p.locator('.lc-table-title')
 }
 
 ok('no page errors', errs.length === 0, errs.join(' | '));
+// Close every window this walk opened, so later tests are not slowed down by them.
+for (const c of b.contexts()) await c.close();
 console.log(`[checks] on-02-staff-submission.spec.mjs: ${checks}`);
 });

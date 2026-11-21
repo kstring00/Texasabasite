@@ -6,7 +6,7 @@ test('caregiver pages: library, module, lesson player, trainings, help', async (
 const B = baseURL, M = '/learn/modules/understanding-the-abcs-of-behavior';
 const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
 const p = await ctx.newPage();
-const errs = []; p.on('pageerror', e => errs.push(String(e).slice(0, 200)));
+const errs = []; p.on('pageerror', e => errs.push(`${p.url()} :: ${String(e).slice(0, 200)}`));
 const reqs = []; p.on('request', r => { const u = r.url(); if (/api\/chat|_vercel\/insights\/event|va\.vercel/.test(u)) reqs.push(u); });
 let checks = 0;
 const ok = (name, cond, extra = '') => { checks++; expect.soft(!!cond, cond ? name : `${name} :: ${String(extra).slice(0, 400)}`).toBe(true); };
@@ -104,5 +104,7 @@ await q.locator('.lc-player-bottom .lc-btn-primary').click(); await q.waitForTim
 ok('storage blocked: can still move on', (await q.locator('#lc-step-title').innerText()) === 'The ABC model');
 ok('no chat or tracking calls from /learn', reqs.length === 0, reqs.join(','));
 ok('no page errors', errs.length === 0, errs.join('|'));
+// Close every window this walk opened, so later tests are not slowed down by them.
+for (const c of b.contexts()) await c.close();
 console.log(`[checks] on-01-caregiver.spec.mjs: ${checks}`);
 });

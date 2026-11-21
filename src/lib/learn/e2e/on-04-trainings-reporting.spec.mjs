@@ -12,7 +12,7 @@ const ok = (name, cond, extra = '') => { checks++; expect.soft(!!cond, cond ? na
 const settle = (p, ms = 700) => p.waitForTimeout(ms);
 async function as(who) {
   const ctx = await b.newContext({ viewport: { width: 1366, height: 800 } }); const p = await ctx.newPage();
-  p.on('pageerror', e => errs.push(String(e).slice(0, 200)));
+  p.on('pageerror', e => errs.push(`${p.url()} :: ${String(e).slice(0, 200)}`));
   const signIn = async (page, name) => { await page.goto(ST, { waitUntil: 'load' }); await page.getByRole('button', { name: new RegExp('Continue as ' + name) }).click(); await page.locator('.lc-shell').waitFor(); };
   if (who) await signIn(p, who);
   const go = async (u, page = p) => { const r = await page.goto(u.startsWith('http') ? u : ST + u, { waitUntil: 'load' }); await settle(page, 450); return r; };
@@ -304,5 +304,7 @@ for (const u of ['/learn', '/learn/trainings', '/learn/trainings/walk-test-summe
   ok(`${u}: no participation number, staff address or join link reaches caregivers`, !/Registrations submitted|Attendances|meetup-join|\/learn\/staff\/analytics|\/learn\/staff\/trainings/.test(html));
 }
 ok('no page errors', errs.length === 0, errs.join(' | '));
+// Close every window this walk opened, so later tests are not slowed down by them.
+for (const c of b.contexts()) await c.close();
 console.log(`[checks] on-04-trainings-reporting.spec.mjs: ${checks}`);
 });

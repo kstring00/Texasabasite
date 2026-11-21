@@ -11,7 +11,7 @@ const settle = (p, ms = 450) => p.waitForTimeout(ms);
 /** A browser with its own cookie jar, signed in as one fictional role. */
 async function as(who) {
   const ctx = await b.newContext({ viewport: { width: 1366, height: 800 } }); const p = await ctx.newPage();
-  p.on('pageerror', e => errs.push(String(e).slice(0, 200)));
+  p.on('pageerror', e => errs.push(`${p.url()} :: ${String(e).slice(0, 200)}`));
   if (who) { await p.goto(ST, { waitUntil: 'load' }); await p.getByRole('button', { name: new RegExp('Continue as ' + who) }).click(); await p.locator('.lc-shell').waitFor(); }
   const go = async (u) => { const r = await p.goto(u.startsWith('http') ? u : ST + u, { waitUntil: 'load' }); await settle(p); return r; };
   /** Change who this browser is signed in as, leaving any open page exactly as it was. */
@@ -214,5 +214,7 @@ await cd.go('/modules/seed-group-trainings');
 ok('withdrawn: staff keep the full record, with the reason and both approvals', await text(cd.p).then(t => t.includes('Withdrawn by Sample Clinical Director') && t.includes('A slide needs correcting') && t.includes('Final approval by Sample BCBA') && t.includes('Module withdrawn') && t.includes('Module published')));
 ok('a withdrawn version cannot simply be published again (no control)', !(await cd.p.getByRole('button', { name: 'Publish' }).count()));
 ok('no page errors', errs.length === 0, errs.join(' | '));
+// Close every window this walk opened, so later tests are not slowed down by them.
+for (const c of b.contexts()) await c.close();
 console.log(`[checks] on-03-review-publish.spec.mjs: ${checks}`);
 });

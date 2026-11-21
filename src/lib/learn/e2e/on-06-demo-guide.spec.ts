@@ -80,7 +80,7 @@ test('the demo guide can be followed exactly as written', async ({ browser, base
     await click(/^Reviews/, 'link');
     await expect(page.getByText(/Gate 1 · PPTX sources/)).toBeVisible();
     await page.locator('.lc-queue-list > li', { hasText: 'Demo guide: calm mornings' }).getByRole('link', { name: /Open review/ }).click();
-    await settle();
+    await page.waitForURL(/\/reviews\/source\//);
     const ticks = page.locator('.lc-decision .lc-check-row input');
     await expect(ticks).toHaveCount(7);
     for (const box of await ticks.all()) await box.check();
@@ -93,6 +93,7 @@ test('the demo guide can be followed exactly as written', async ({ browser, base
     await become('Sample Producer');
     await click(/^Modules/, 'link');
     await page.locator('section[aria-labelledby="lc-mod-ready"] .lc-queue-list > li', { hasText: 'Demo guide: calm mornings' }).getByRole('link', { name: /Open/ }).click();
+    await page.waitForURL(/\/staff\/modules\/[^/]+$/);
     await settle();
     await click('Collect for production');
     await expect(page.getByRole('heading', { name: 'Import the module' })).toBeVisible();
@@ -108,11 +109,13 @@ test('the demo guide can be followed exactly as written', async ({ browser, base
     await click(/^Reviews/, 'link');
     await click(/Gate 2 · Final modules/, 'link');
     await page.locator('.lc-queue-list > li', { hasText: 'How group trainings work' }).getByRole('link', { name: /Open review/ }).click();
+    await page.waitForURL(/\/reviews\/module\//);
     await settle();
     const review = page.url();
     await click(/Preview in the lesson player/, 'link');
     await expect(page.locator('.lc-player, .lc-preview').first()).toBeVisible();
     await page.goto(review);
+    await page.waitForURL(/\/reviews\/module\//);
     const ticks = page.locator('.lc-decision .lc-check-row input');
     await expect(ticks).toHaveCount(7);
     for (const box of await ticks.all()) await box.check();
@@ -124,6 +127,7 @@ test('the demo guide can be followed exactly as written', async ({ browser, base
   await test.step('6. Publishing', async () => {
     await click(/^Modules/, 'link');
     await page.locator('section[aria-labelledby="lc-mod-approved"] .lc-queue-list > li').getByRole('link', { name: /Open/ }).click();
+    await page.waitForURL(/\/staff\/modules\/[^/]+$/);
     await settle();
     await click('Publish');
     await click('Yes, publish');
@@ -142,6 +146,7 @@ test('the demo guide can be followed exactly as written', async ({ browser, base
   await test.step('7. A training listing', async () => {
     await click(/^Trainings/, 'link');
     await page.locator('.lc-queue-list > li', { hasText: 'Visual schedules for mornings: live session' }).getByRole('link', { name: /Open/ }).click();
+    await page.waitForURL(/\/trainings\/seed-training-mornings/);
     await settle();
     const link = page.getByLabel(/Microsoft Teams registration link/);
     await link.fill('https://teams.microsoft.com/l/meetup-join/example');
@@ -162,6 +167,7 @@ test('the demo guide can be followed exactly as written', async ({ browser, base
     await expect(page.locator('[data-lc-tile="Registrations submitted"] .lc-metric-note')).toContainText('From 5 of 6 finished trainings');
     await expect(page.getByText('Not yet available').first()).toBeVisible();
     await page.locator('[data-lc-row="seed-training-questions"]').getByRole('link', { name: /Enter numbers/ }).click();
+    await page.waitForURL(/\/analytics\/reports\//);
     await settle();
     await page.getByLabel('Registrations submitted', { exact: true }).fill('20');
     await page.getByLabel('Approved registrations', { exact: true }).fill('18');
