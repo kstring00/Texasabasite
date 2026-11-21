@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect, useMemo, useState } from 'react';
+import { startTransition, useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { CalendarCheck, ArrowRight, Users, Check } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -27,6 +27,9 @@ const AGE_CHIPS = [
   ['13-plus', '13 and up'],
 ] as const;
 
+/** The order the fields appear in, used to find the first one that needs fixing. */
+const FIELD_ORDER = ['firstName', 'phone', 'center', 'times', 'email', 'age', 'language'] as const;
+
 export function TourForm({ defaultCenter, about, compact, contact }: { defaultCenter?: string; about?: string; compact?: boolean; contact?: string }) {
   const contactPerson = contact ? visiblePeople.find((p) => p.id === contact) ?? null : null;
   const [state, action, pending] = useActionState<TourRequestResult | null, FormData>(submitTourRequest, null);
@@ -43,6 +46,33 @@ export function TourForm({ defaultCenter, about, compact, contact }: { defaultCe
   }, [state, about]);
 
   const chosen = useMemo(() => getLocation(center), [center]);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // After a submit that needs fixing: put the cursor on the first field with a problem.
+  // If that field is inside the closed "optional" section, open it first so the message is visible.
+  useEffect(() => {
+    if (!state || state.ok) return;
+    const fields = state.fields ?? {};
+    const first = FIELD_ORDER.find((name) => fields[name]);
+    const el = first ? formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`) : null;
+    if (!el) return;
+    const fold = el.closest('details');
+    if (fold && !fold.open) fold.open = true;
+    el.focus();
+  }, [state]);
+
+  /**
+   * Send the form ourselves instead of letting the browser hand it to the action. When a form is
+   * handed over, React clears every field afterwards, so one mistake wiped everything a parent had
+   * typed. Sent this way the fields are left exactly as they are. Without JavaScript the form
+   * still posts through `action` as before.
+   */
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (pending) return;
+    const data = new FormData(event.currentTarget);
+    startTransition(() => action(data));
+  };
 
   if (state?.ok) return <Confirmation name={state.name} centerSlug={state.center} />;
 
@@ -51,7 +81,7 @@ export function TourForm({ defaultCenter, about, compact, contact }: { defaultCe
   const isMessage = about === 'message';
 
   return (
-    <form action={action} className={cn('rounded-[var(--radius)] border border-ink/15 bg-card space-y-6', compact ? 'p-5' : 'p-6 sm:p-8')} noValidate aria-describedby="tour-form-note">
+    <form ref={formRef} action={action} onSubmit={onSubmit} className={cn('rounded-[var(--radius)] border border-ink/15 bg-card space-y-6', compact ? 'p-5' : 'p-6 sm:p-8')} noValidate aria-describedby="tour-form-note">
       <div>
         <h2 className="h3">{isMessage ? (contactPerson ? `Send a message to ${firstName(contactPerson)}` : 'Send a message') : isCoverage ? 'Check my coverage' : 'Request a tour'}</h2>
         <p id="tour-form-note" className="mt-1 text-base text-body">
@@ -80,15 +110,15 @@ export function TourForm({ defaultCenter, about, compact, contact }: { defaultCe
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Your first name" id="firstName" error={err.firstName} required>
-          <input id="firstName" name="firstName" className="input-field" autoComplete="given-name" required aria-invalid={!!err.firstName} />
+          <input id="firstName" name="firstName" className="input-field" autoComplete="given-name" required aria-invalid={!!err.firstName} aria-describedby={err.firstName ? 'firstName-error' : undefined} />
         </Field>
         <Field label="Phone (we text)" id="phone" error={err.phone} required>
-          <input id="phone" name="phone" type="tel" className="input-field" autoComplete="tel" inputMode="tel" required aria-invalid={!!err.phone} />
+          <input id="phone" name="phone" type="tel" className="input-field" autoComplete="tel" inputMode="tel" required aria-invalid={!!err.phone} aria-describedby={err.phone ? 'phone-error' : undefined} />
         </Field>
       </div>
 
       <Field label="Preferred center" id="center" error={err.center} required>
-        <select id="center" name="center" className="input-field" value={center} onChange={(e) => setCenter(e.target.value)} required aria-invalid={!!err.center}>
+        <select id="center" name="center" className="input-field" value={center} onChange={(e) => setCenter(e.target.value)} required aria-invalid={!!err.center} aria-describedby={err.center ? 'center-error' : undefined}>
           <option value="">Choose a center</option>
           {locations.map((l) => (
             <option key={l.slug} value={l.slug}>
@@ -104,7 +134,7 @@ export function TourForm({ defaultCenter, about, compact, contact }: { defaultCe
         )}
       </Field>
 
-      <fieldset>
+      <fieldset aria-describedby={err.times ? 'times-error' : undefined}>
         <legend className="label">
           Days and times that usually work <span className="text-rose">*</span>
         </legend>
@@ -113,7 +143,11 @@ export function TourForm({ defaultCenter, about, compact, contact }: { defaultCe
             <Chip key={v} name="times" value={v} label={l} />
           ))}
         </div>
-        {err.times && <p className="mt-2 text-sm text-rose">{err.times}</p>}
+        {err.times && (
+          <p className="mt-2 text-sm text-rose" id="times-error">
+            {err.times}
+          </p>
+        )}
       </fieldset>
 
       <details className="group rounded-2xl border border-line p-4 open:bg-ink/[0.02]">
@@ -122,7 +156,7 @@ export function TourForm({ defaultCenter, about, compact, contact }: { defaultCe
         </summary>
         <div className="mt-5 space-y-5">
           <Field label="Email" id="email" error={err.email}>
-            <input id="email" name="email" type="email" className="input-field" autoComplete="email" />
+            <input id="email" name="email" type="email" className="input-field" autoComplete="email" aria-invalid={!!err.email} aria-describedby={err.email ? 'email-error' : undefined} />
           </Field>
           <fieldset>
             <legend className="label">Your child&rsquo;s age</legend>
