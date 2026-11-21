@@ -11,6 +11,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        /* Caregiver Learning Center zone only (tokens live on [data-zone="learn"] in src/app/learn/learn.css). */
+        lc: {
+          ink: 'var(--lc-ink)', 'ink-muted': 'var(--lc-ink-muted)', paper: 'var(--lc-paper)', canvas: 'var(--lc-canvas)',
+          navy: 'var(--lc-navy-900)', 'deep-teal': 'var(--lc-deep-teal)',
+          teal:  { 100: 'var(--lc-teal-100)',  300: 'var(--lc-teal-300)',  500: 'var(--lc-teal-500)',  600: 'var(--lc-teal-600)',  700: 'var(--lc-teal-700)' },
+          blue:  { 100: 'var(--lc-blue-100)',  300: 'var(--lc-blue-300)',  500: 'var(--lc-blue-500)',  600: 'var(--lc-blue-600)',  700: 'var(--lc-blue-700)' },
+          iris:  { 100: 'var(--lc-iris-100)',  300: 'var(--lc-iris-300)',  500: 'var(--lc-iris-500)',  600: 'var(--lc-iris-600)',  700: 'var(--lc-iris-700)' },
+          rose:  { 100: 'var(--lc-rose-100)',  300: 'var(--lc-rose-300)',  500: 'var(--lc-rose-500)',  600: 'var(--lc-rose-600)',  700: 'var(--lc-rose-700)' },
+          coral: { 100: 'var(--lc-coral-100)', 300: 'var(--lc-coral-300)', 500: 'var(--lc-coral-500)', 600: 'var(--lc-coral-600)', 700: 'var(--lc-coral-700)' },
+          amber: { 100: 'var(--lc-amber-100)', 300: 'var(--lc-amber-300)', 500: 'var(--lc-amber-500)', 600: 'var(--lc-amber-600)', 700: 'var(--lc-amber-700)' },
+        },
         ink: 'rgb(var(--ink) / <alpha-value>)',
         paper: 'rgb(var(--paper) / <alpha-value>)',
         card: 'rgb(var(--card) / <alpha-value>)',

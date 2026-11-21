@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import * as React from 'react';
-import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { Header } from '@/components/site/Header';
 import { Footer } from '@/components/site/Footer';
 import { MobileBar } from '@/components/site/MobileBar';
 import { PageEnter } from '@/components/site/PageEnter';
 import { MyCenterProvider } from '@/lib/site/myCenter';
+import { LcAnalytics } from '@/components/learn/LcAnalytics';
 import { site } from '@/data/site';
 
 export const metadata: Metadata = {
@@ -59,7 +59,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <MobileBar />
         <PageEnter />
-        <Analytics />
+        {/* The site's page-view analytics, with /learn/staff page views dropped (beforeSend). */}
+        <LcAnalytics />
         </MyCenterProvider>
       </body>
     </html>

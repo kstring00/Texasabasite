@@ -12,13 +12,16 @@ import { locations } from '@/data/locations';
 import { track } from '@/lib/site/analytics';
 import { cn } from '@/lib/site/utils';
 import { useNavScroll } from '@/lib/site/useNavScroll';
+import { learnFlags } from '@/lib/learn/flags';
 
-const primary: { href: string; label: string; mega?: boolean }[] = [
+const primary: { href: string; label: string; mega?: boolean; menuLabel?: string }[] = [
   { href: '/locations', label: 'Locations' },
   { href: '/services', label: 'Services' },
   { href: '/getting-started', label: 'Getting started' },
   { href: '/insurance', label: 'Insurance' },
   { href: '/families', label: 'Common Ground', mega: true },
+  // The Caregiver Learning Center: its own section, present only when its flag is on.
+  ...(learnFlags.enabled ? [{ href: '/learn', label: 'Learn', menuLabel: 'Learning Center' }] : []),
 ];
 const more = [
   { href: '/team', label: 'About' },
@@ -89,7 +92,7 @@ export function Header() {
             <Logo className={cn(light && 'brightness-0 invert')} />
           </Link>
 
-          <nav className="hidden items-center gap-8 min-[1280px]:flex xl:gap-10" aria-label="Main">
+          <nav className={cn('hidden items-center min-[1280px]:flex', primary.length > 5 ? 'gap-6' : 'gap-8 xl:gap-10')} aria-label="Main">
             {primary.map((n) => {
               const active = pathname === n.href || pathname.startsWith(n.href + '/');
               if (n.mega) return <MegaMenu key={n.href} href={n.href} label={n.label} active={active} />;
@@ -163,7 +166,7 @@ export function Header() {
                 {primary.map((n, i) => (
                   <motion.div key={n.href} initial={reduce ? false : { opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 + i * 0.05, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
                     <Link href={n.href} className="group flex items-baseline justify-between border-b border-paper/15 py-3 font-display text-[length:var(--t-2xl)] leading-none tracking-tight text-paper hover:text-butter sm:py-4">
-                      {n.label}
+                      {n.menuLabel ?? n.label}
                       <ArrowUpRight className="h-6 w-6 shrink-0 opacity-0 transition group-hover:opacity-100" aria-hidden />
                     </Link>
                   </motion.div>
