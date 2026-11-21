@@ -96,6 +96,22 @@ Vercel Analytics plus custom events: `tour_request_submit` (center), `call_tap` 
 
 The original Common Ground codebase lives here unchanged in substance. Its routes moved from `/support/*` to `/families/*` (old URLs redirect). Three hub pages were added on top and read from the site data: While You Wait, Parent Pulse (demo UI over the existing bandwidth check, device-only), and Your Care Team. The voice guide is in `docs-common-ground-voice.md`.
 
+## Learning Center (`/learn`)
+
+The Caregiver Learning Center is a separate section of this site, for families enrolled at the Sugar Land center. It is a local demo, not a clinical launch. The plan and rules are in `docs/learning-center/`.
+
+- **Off by default.** With no flags set, every `/learn` route is a 404 and the header has no "Learn" item.
+- **Flags** (see `.env.example`): `NEXT_PUBLIC_LEARN_ENABLED=1` turns the section on. `LEARN_DEMO_CONTENT=1` shows the labelled sample content and is ignored on Vercel production. `LEARN_DEMO_STAFF=1` turns on the fictional staff demo and is ignored anywhere on Vercel, so it only works on a local machine. The rules are in `src/lib/learn/flags.ts` and tested in `src/lib/learn/flags.test.ts`.
+- **Its own zone.** Pages live in `src/app/learn/`, components in `src/components/learn/`, data in `src/data/learn/`, logic in `src/lib/learn/`. Styles are in `src/app/learn/learn.css`: `--lc-*` tokens on `[data-zone="learn"]` and `lc-` classes. Nothing there changes the rest of the site, and `globals.css` is not touched.
+- **Staff demo.** With `LEARN_DEMO_STAFF=1` on a local machine, `/learn/staff` offers a fictional role picker and a working PowerPoint submission flow. Demo data and uploads are kept in the gitignored `.learn-demo/` folder and nowhere else. Without the flag, or anywhere on Vercel, every staff address shows one closed page and uploads and downloads are refused. This is not real sign-in.
+- **Reviews and publishing (local demo).** Two separate clinical approvals: Gate 1 for the source PowerPoint and Gate 2 for the finished module, by two different people. A producer collects an approved source and imports the module package, which is validated first. Only a module holding both approvals can be published, and a withdrawn module disappears from `/learn` at once. The rules are in `src/lib/learn/staff/pipeline.ts` and the role table in `src/lib/learn/staff/roles.ts`.
+- **Training listings and reporting (local demo).** Staff with the right role manage the website listing for each Microsoft Teams training (`src/lib/learn/staff/listings.ts`) and, afterwards, type in totals read from the Teams report (`src/lib/learn/staff/reports.ts`). The site is not connected to Teams, stores totals only, never holds a join link, and never shows a count under 5 for one center or source.
+- **Review sheet.** `docs/learning-center/REVIEW_SHEET.md` lists every line of draft wording for the Clinical Director and IT.
+- **Tests.** `npm test` runs the unit tests. `npm run test:e2e` runs the browser tests in three setups: switched off, as if on Vercel, and the full local demo. It rebuilds the site each time and keeps its data apart from yours. See `src/lib/learn/e2e/README.md`.
+- **Showing it.** `docs/learning-center/HOW_TO_DEMO.md` is a one-page, click-by-click guide. `docs/learning-center/IMPLEMENTATION_STATUS.md` says what is done and what waits on the organization, and `docs/learning-center/TEST_RESULTS.md` what was tested.
+- **Running it safely.** Use only the fictional roles, a blank PowerPoint and made-up numbers. Do not type a real person's name, upload a real presentation, or enter real attendance. Nothing in the demo is protected by real sign-in.
+- **Run the tests:** `npm test`.
+
 ## Design system: Open World
 
 Read `docs/REDESIGN-NOTES.md` first. The short version:
