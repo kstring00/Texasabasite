@@ -48,6 +48,10 @@ Don't answer with only a plan or a mockup. Build it.
 | `references/06`, `07` | New. The design guide's styles running inside this site, desktop and mobile. |
 | `CLAUDE_PPTX_CONVERSION_PROMPT.md` | For later, after a source PowerPoint is clinically approved. A short note at the top gives this repo's paths. |
 | `IT_APPROVAL_CHECKLIST.md` | The original checklist plus four items that come from building inside the existing site. |
+| `HOW_TO_DEMO.md` | Added during the build. One page: how to show the Learning Center, on a Vercel preview or a laptop, click by click. |
+| `IMPLEMENTATION_STATUS.md` | Added during the build. What is done, partly done, not started, and waiting on the organization. |
+| `TEST_RESULTS.md` | Added during the build. What was tested, how, and the results. |
+| `REVIEW_SHEET.md` | Added during the build. Every sentence written for the Learning Center, numbered, for the Clinical Director and IT to mark. |
 
 ## The launch boundary has not changed
 

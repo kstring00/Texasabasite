@@ -5,7 +5,7 @@ import { LcBack } from '@/components/learn/LcPageHead';
 import { LcReportForm } from '@/components/learn/staff/LcReportForm';
 import { getDemoStaff } from '@/data/learn/demo/staff';
 import { getStaffActor } from '@/lib/learn/staff/guard';
-import { LC_NOT_AVAILABLE, LC_REFERRAL_SOURCES, LC_REPORT_BANNER, LC_REPORT_CENTERS, LC_REPORT_SOURCES, canViewAnalytics, reportHistory, reportState, type LcAggregateReport, type LcReportInput } from '@/lib/learn/staff/reports';
+import { LC_NOT_AVAILABLE, LC_REFERRAL_SOURCES, LC_REPORT_BANNER, LC_REPORT_CENTERS, LC_REPORT_SOURCES, LC_REPORT_SPLITS, canViewAnalytics, reportHistory, reportState, type LcAggregateReport, type LcReportInput } from '@/lib/learn/staff/reports';
 import { getStaffStore } from '@/lib/learn/staff/store';
 import { ctDay, formatCtDate, formatCtDateTime, formatCtShortDate } from '@/lib/learn/time';
 
@@ -68,7 +68,7 @@ export default async function LearnStaffReportEntryPage({ params }: { params: Pr
         <h2 id="lc-rep-form" className="lc-h2">
           {latest ? `Correction to revision ${latest.revision}` : 'Totals for this training'}
         </h2>
-        <LcReportForm initial={initial} isCorrection={!!latest} hadCenter={!!latest?.centerCounts} hadSource={!!latest?.sourceCounts} cancelled={cancelled} sources={[...LC_REPORT_SOURCES]} centers={LC_REPORT_CENTERS} referrals={[...LC_REFERRAL_SOURCES]} today={today} />
+        <LcReportForm initial={initial} isCorrection={!!latest} hadCenter={!!latest?.centerCounts} hadSource={!!latest?.sourceCounts} splits={LC_REPORT_SPLITS} cancelled={cancelled} sources={[...LC_REPORT_SOURCES]} centers={LC_REPORT_CENTERS} referrals={[...LC_REFERRAL_SOURCES]} today={today} />
       </section>
 
       {history.length > 0 ? (

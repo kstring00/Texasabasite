@@ -77,6 +77,7 @@ You do not need to mark every line in one sitting. Hand the sheet back with what
 | 29 | A second sample module, used to demonstrate importing and publishing | Clinical Director |
 | 30 | Reporting: six decisions to confirm before any real numbers are entered, and open question 3 | Clinical Director, compliance, IT |
 | 31 to 34 | Training listings and the reporting pages, including what each number means | Clinical Director |
+| 35 | The error page | Clinical Director |
 
 **How drafts are marked in the product today**
 
@@ -778,6 +779,13 @@ section('34', 'Example training listings in the staff demo', 'Eight made-up list
   });
   st.reports.filter((r) => r.reason).forEach((r) => data('Reason on the example correction', r.reason));
 }
+
+h2('Added in phase 5');
+section('35', 'Error page, and one more refusal', 'Shown only when something goes wrong.');
+row('If a page fails to load', 'Something went wrong on this page');
+row('Under it', 'This is a problem on our side, not something you did. Please try again.');
+row('Buttons', 'Try again / Back to the Learning Center', false);
+row('Producer pastes something far too large', 'This package is too large to be a module. A module package is text only, well under 400,000 characters.');
 
 h2('Not listed above');
 out += `

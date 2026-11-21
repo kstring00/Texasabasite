@@ -32,6 +32,7 @@ export default async function LearnStaffLayout({ children }: { children: React.R
         <LcSubNav />
         <div className="wrap lc-page">
           <LcEmpty
+            pageTitle
             title="Staff sign-in is not set up yet"
             text="The staff workspace needs the organization’s approved sign-in before it can open. Nothing is available here yet."
             action={{ href: '/learn', label: 'Back to the Learning Center' }}

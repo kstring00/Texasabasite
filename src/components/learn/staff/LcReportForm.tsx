@@ -13,7 +13,7 @@ const ORDER: LcReportField[] = ['reportReviewedOn', 'sourceLabel', 'registration
  * Totals for one training, typed in by a member of staff from the Microsoft Teams report.
  * The only boxes are whole numbers, a date, and two fixed lists. There is nowhere to put a name.
  */
-export function LcReportForm({ initial, isCorrection, hadCenter, hadSource, cancelled, sources, centers, referrals, today }: { initial: LcReportInput; isCorrection: boolean; hadCenter: boolean; hadSource: boolean; cancelled: boolean; sources: string[]; centers: Option[]; referrals: Option[]; today: string }) {
+export function LcReportForm({ initial, isCorrection, hadCenter, hadSource, splits, cancelled, sources, centers, referrals, today }: { initial: LcReportInput; isCorrection: boolean; hadCenter: boolean; hadSource: boolean; splits: { byCenter: boolean; bySource: boolean }; cancelled: boolean; sources: string[]; centers: Option[]; referrals: Option[]; today: string }) {
   const router = useRouter();
   const uid = useId();
   const formRef = useRef<HTMLFormElement>(null);
@@ -133,8 +133,8 @@ export function LcReportForm({ initial, isCorrection, hadCenter, hadSource, canc
       {number('registrationsApproved', 'Approved registrations', 'How many of those requests were approved in Teams. Leave empty if you do not have this number.')}
       {number('attendancesTotal', 'Attendances', v.trainingHeld ? 'The attendee count on the Teams report for this one training. Leave empty if you do not have this number.' : 'Not used for a training that did not take place.', !v.trainingHeld)}
 
-      {split('centerCounts', 'centerKeep', hadCenter, 'Registrations by center', 'Only if the registration form asked families for their center. These are a split of registrations submitted. If they add up to less, the rest is shown as “Did not say”.', centers)}
-      {split('sourceCounts', 'sourceKeep', hadSource, 'Registrations by how families heard about it', 'Only if the registration form asked. These are a split of registrations submitted.', referrals)}
+      {splits.byCenter && split('centerCounts', 'centerKeep', hadCenter, 'Registrations by center', 'Only if the registration form asked families for their center. These are a split of registrations submitted. If they add up to less, the rest is shown as “Did not say”.', centers)}
+      {splits.bySource && split('sourceCounts', 'sourceKeep', hadSource, 'Registrations by how families heard about it', 'Only if the registration form asked. These are a split of registrations submitted.', referrals)}
 
       {isCorrection ? (
         <div className="lc-field">

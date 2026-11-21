@@ -79,6 +79,13 @@ Two more that follow directly from those:
 - [ ] **Example listings in the local demo.** Eight made-up listings with made-up totals are seeded on a local machine so the screens have something to show. Their dates are counted from the day the demo is reset. They never appear on a deployed site, and every reporting page carries the banner "Illustrative demo data — not actual caregiver attendance".
 - [ ] **Not built.** Registration deadline and capacity are left out, because nothing reliable supplies them yet and a guessed number of seats must never be shown. Page-view or module-completion figures are also left out of reporting: no approved, privacy-preserving analytics exists for them, and progress saved in a caregiver's browser is never read by the site.
 
+## Added during the build (phase 5: hardening and tests)
+- [ ] **Update Next.js on the whole site.** `npm audit` reports published security advisories against the site's current version, `next@15.5.15`, with fixes in `15.5.29`. This affects the existing public site, not only the Learning Center. The Learning Center build was told not to upgrade Next, so this needs its own small change on `main`, with the site re-checked afterwards.
+- [ ] **Accessibility testing by a person.** Automated scans, keyboard-only tests and small-screen checks all pass. Nobody has yet used the pages with a screen reader or on real phones and tablets. Do this before any family is pointed at the Learning Center.
+- [ ] **Browser tests before every release.** `npm run test:e2e` checks three setups: switched off, as if on Vercel, and the full local demo. Decide who runs it and when. A real release would also need the same checks against the real sign-in and storage once they exist.
+- [ ] **The demo store is one file on one machine.** Fine for one person showing the demo. It cannot be used by several people at once and has no backup. It must be replaced, not extended.
+- [ ] **A single switch for each optional split.** If the clinic decides the registration form will not ask for a family's center, or how they heard about the training, that split can be switched off in one place (`LC_REPORT_SPLITS`). The boxes then disappear and nothing is stored.
+
 ## Useful official references to verify when IT work begins
 - Microsoft Teams event planning: https://learn.microsoft.com/en-us/microsoftteams/plan-webinars
 - Teams registration form admin settings: https://learn.microsoft.com/en-us/microsoftteams/manage-registration-form-events

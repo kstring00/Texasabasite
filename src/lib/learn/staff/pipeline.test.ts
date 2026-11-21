@@ -123,6 +123,7 @@ describe('production', () => {
   });
   it('reports what is wrong with a module package in plain sentences', () => {
     expect(moduleImportProblems('not json', context).problems[0]).toMatch(/not valid JSON/);
+    expect(moduleImportProblems(`{"title":"${'x'.repeat(400_001)}"}`, context).problems[0]).toMatch(/too large/);
     expect(moduleImportProblems(pkg(), context).problems).toEqual([]);
     const text = (over: Record<string, unknown>) => moduleImportProblems(pkg(over), context).problems.join(' | ');
     expect(text({ slug: 'understanding-the-abcs-of-behavior' })).toMatch(/already uses the address/);

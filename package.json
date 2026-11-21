@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "check:content": "node scripts/check-content.mjs",
     "video:prep": "bash scripts/video-prep.sh",
-    "test": "vitest run --config src/lib/learn/vitest.config.ts"
+    "test": "vitest run --config src/lib/learn/vitest.config.ts",
+    "test:e2e": "node src/lib/learn/e2e/run.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^1.4.1",
@@ -26,9 +27,10 @@
     "react-dom": "19.2.5",
     "resend": "^4.0.1",
     "tailwind-merge": "^2.6.0",
-    "zod": "^3.25.76"
+    "zod": "4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

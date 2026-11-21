@@ -318,8 +318,8 @@ export default async function LearnStaffAnalyticsPage({ searchParams }: { search
       </section>
 
       <div className="lc-report-two">
-        <Breakdown id="lc-rep-centers" title="Registrations by center" what="Center" b={d.byCenter} minimum={d.minimum} />
-        <Breakdown id="lc-rep-sources" title="How families heard about it" what="Answer" b={d.bySource} minimum={d.minimum} />
+        {d.splits.byCenter ? <Breakdown id="lc-rep-centers" title="Registrations by center" what="Center" b={d.byCenter} minimum={d.minimum} /> : null}
+        {d.splits.bySource ? <Breakdown id="lc-rep-sources" title="How families heard about it" what="Answer" b={d.bySource} minimum={d.minimum} /> : null}
       </div>
 
       <section aria-labelledby="lc-rep-glossary" className="lc-solid lc-panel">

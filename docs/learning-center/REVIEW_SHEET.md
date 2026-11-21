@@ -36,6 +36,7 @@ You do not need to mark every line in one sitting. Hand the sheet back with what
 | 29 | A second sample module, used to demonstrate importing and publishing | Clinical Director |
 | 30 | Reporting: six decisions to confirm before any real numbers are entered, and open question 3 | Clinical Director, compliance, IT |
 | 31 to 34 | Training listings and the reporting pages, including what each number means | Clinical Director |
+| 35 | The error page | Clinical Director |
 
 **How drafts are marked in the product today**
 
@@ -1058,6 +1059,19 @@ Eight made-up listings and their made-up totals, so the screens have something t
 | 34.41 | Listing 7 objective | Know what to ask your clinical team about using one. | |
 | 34.42 | Listing 8 title | Working with your clinical team: live session | |
 | 34.43 | Reason on the example correction | The first entry was read before the Teams report was final. Attendances corrected. | |
+
+## Added in phase 5
+
+### 35. Error page, and one more refusal
+
+Shown only when something goes wrong.
+
+| No. | Where | Draft wording | OK, or change to |
+|---|---|---|---|
+| 35.1 | If a page fails to load | Something went wrong on this page | |
+| 35.2 | Under it | This is a problem on our side, not something you did. Please try again. | |
+| 35.3 | Buttons | Try again / Back to the Learning Center | |
+| 35.4 | Producer pastes something far too large | This package is too large to be a module. A module package is text only, well under 400,000 characters. | |
 
 ## Not listed above
 

@@ -1,12 +1,16 @@
 /* eslint-disable */
-import { chromium } from 'playwright';
-const B = 'http://localhost:3000', M = '/learn/modules/understanding-the-abcs-of-behavior';
-const b = await chromium.launch();
+// Run with: npm run test:e2e   (see README.md in this folder)
+import { test, expect } from '@playwright/test';
+
+test('caregiver pages: library, module, lesson player, trainings, help', async ({ browser: b, baseURL }) => {
+const B = baseURL, M = '/learn/modules/understanding-the-abcs-of-behavior';
 const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
 const p = await ctx.newPage();
 const errs = []; p.on('pageerror', e => errs.push(String(e).slice(0, 200)));
 const reqs = []; p.on('request', r => { const u = r.url(); if (/api\/chat|_vercel\/insights\/event|va\.vercel/.test(u)) reqs.push(u); });
-const ok = (name, cond, extra = '') => console.log(cond ? 'PASS' : 'FAIL', name, extra);
+let checks = 0;
+const ok = (name, cond, extra = '') => { checks++; expect.soft(!!cond, cond ? name : `${name} :: ${String(extra).slice(0, 400)}`).toBe(true); };
+{ const c = await b.newContext(); const r = await c.newPage(); await r.goto(B + '/learn/staff', { waitUntil: 'load' }); await r.getByRole('button', { name: 'Reset demo data' }).click(); await r.waitForLoadState('load'); await r.waitForTimeout(400); await c.close(); }
 const title = () => p.locator('#lc-step-title').innerText();
 const next = async () => { await p.locator('.lc-player-bottom .lc-btn-primary').click(); await p.waitForTimeout(350); };
 
@@ -100,4 +104,5 @@ await q.locator('.lc-player-bottom .lc-btn-primary').click(); await q.waitForTim
 ok('storage blocked: can still move on', (await q.locator('#lc-step-title').innerText()) === 'The ABC model');
 ok('no chat or tracking calls from /learn', reqs.length === 0, reqs.join(','));
 ok('no page errors', errs.length === 0, errs.join('|'));
-await b.close();
+console.log(`[checks] on-01-caregiver.spec.mjs: ${checks}`);
+});

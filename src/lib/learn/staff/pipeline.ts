@@ -167,7 +167,11 @@ export function collectForProduction(store: LcStaffStore, actor: LcStaffActor | 
 export type LcImportContext = { takenIds: string[]; takenSlugs: string[]; knownModuleIds: string[]; knownTrainingIds: string[] };
 
 /** Everything wrong with a module package, as sentences a producer can act on. Empty means it can be imported. */
+/** A module package is text only. Anything far larger than a real one is refused before it is read. */
+export const LC_MAX_PACKAGE_CHARS = 400_000;
+
 export function moduleImportProblems(raw: string, context: LcImportContext): { manifest: LcManifest | null; problems: string[] } {
+  if (raw.length > LC_MAX_PACKAGE_CHARS) return { manifest: null, problems: ['This package is too large to be a module. A module package is text only, well under 400,000 characters.'] };
   let data: unknown;
   try {
     data = JSON.parse(raw);

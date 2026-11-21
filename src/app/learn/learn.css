@@ -1021,3 +1021,6 @@ body:has([data-lc-chrome="app"]) > header, body:has([data-lc-chrome="app"]) > he
   [data-lc-scene="staff"] .lc-solid { box-shadow: none; border: 1px solid #c9ced8; break-inside: avoid; }
   [data-lc-scene="staff"] .lc-report-banner, [data-lc-scene="staff"] .lc-demo-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* ── Phase 5 ──────────────────────────────────────────────────────────────── */
+.lc-error-actions { justify-content: center; }

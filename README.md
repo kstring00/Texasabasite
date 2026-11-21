@@ -107,7 +107,9 @@ The Caregiver Learning Center is a separate section of this site, for families e
 - **Reviews and publishing (local demo).** Two separate clinical approvals: Gate 1 for the source PowerPoint and Gate 2 for the finished module, by two different people. A producer collects an approved source and imports the module package, which is validated first. Only a module holding both approvals can be published, and a withdrawn module disappears from `/learn` at once. The rules are in `src/lib/learn/staff/pipeline.ts` and the role table in `src/lib/learn/staff/roles.ts`.
 - **Training listings and reporting (local demo).** Staff with the right role manage the website listing for each Microsoft Teams training (`src/lib/learn/staff/listings.ts`) and, afterwards, type in totals read from the Teams report (`src/lib/learn/staff/reports.ts`). The site is not connected to Teams, stores totals only, never holds a join link, and never shows a count under 5 for one center or source.
 - **Review sheet.** `docs/learning-center/REVIEW_SHEET.md` lists every line of draft wording for the Clinical Director and IT.
-- **Scripted walks.** `src/lib/learn/e2e/` holds four browser scripts that click through the caregiver pages and the staff demo, including everything that must be refused. See the README in that folder.
+- **Tests.** `npm test` runs the unit tests. `npm run test:e2e` runs the browser tests in three setups: switched off, as if on Vercel, and the full local demo. It rebuilds the site each time and keeps its data apart from yours. See `src/lib/learn/e2e/README.md`.
+- **Showing it.** `docs/learning-center/HOW_TO_DEMO.md` is a one-page, click-by-click guide. `docs/learning-center/IMPLEMENTATION_STATUS.md` says what is done and what waits on the organization, and `docs/learning-center/TEST_RESULTS.md` what was tested.
+- **Running it safely.** Use only the fictional roles, a blank PowerPoint and made-up numbers. Do not type a real person's name, upload a real presentation, or enter real attendance. Nothing in the demo is protected by real sign-in.
 - **Run the tests:** `npm test`.
 
 ## Design system: Open World

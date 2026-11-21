@@ -20,6 +20,14 @@ import type { LcCtx, LcStaffStore } from './submissions';
 /** The smallest count that may be shown for one center or one source. A compliance decision; proposed value 5. */
 export const LC_SMALL_CELL_MINIMUM = 5;
 
+/**
+ * Whether each optional split is offered at all. A split only means something if the Microsoft Teams
+ * registration form asks the question. If the clinic decides not to ask, switch it off here: the
+ * boxes disappear from the entry page, nothing is stored, and the section leaves the report.
+ */
+export type LcReportSplits = { byCenter: boolean; bySource: boolean };
+export const LC_REPORT_SPLITS: LcReportSplits = { byCenter: true, bySource: true };
+
 export const LC_REPORT_SOURCES = ['Microsoft Teams organizer report', 'Other approved source'] as const;
 
 /** How a family heard about the training, if the registration form asked. A fixed list, so no free text is stored. */
@@ -143,7 +151,7 @@ export function reportState(l: LcListing, now: Date): LcReportState {
   return t.listingStatus === 'cancelled' || t.listingStatus === 'completed' || t.listingStatus === 'archived' || over ? 'ready' : 'not_finished';
 }
 
-export function saveReport(store: LcStaffStore, actor: LcStaffActor | null, raw: unknown, ctx: LcCtx): LcReportResult<LcAggregateReport> {
+export function saveReport(store: LcStaffStore, actor: LcStaffActor | null, raw: unknown, ctx: LcCtx, splits: LcReportSplits = LC_REPORT_SPLITS): LcReportResult<LcAggregateReport> {
   if (!actor || !canViewAnalytics(actor)) return FORBIDDEN;
   const input = sanitizeReportInput(raw);
   const listing = store.listings.find((l) => l.id === input.trainingId);
@@ -198,8 +206,9 @@ export function saveReport(store: LcStaffStore, actor: LcStaffActor | null, raw:
     if (!total.ok || total.value === null || sum > total.value) errors[field] = 'The split entered earlier no longer fits the registrations submitted. Choose “Type it in again”.';
     return earlier;
   };
-  const centerCounts = input.centerKeep && previous ? keep(previous.centerCounts, 'centerCounts') : split(input.centerCounts, 'centerCounts', 'center');
-  const sourceCounts = input.sourceKeep && previous ? keep(previous.sourceCounts, 'sourceCounts') : split(input.sourceCounts, 'sourceCounts', 'source');
+  // A split that is switched off is never stored, whatever the browser sent.
+  const centerCounts = !splits.byCenter ? null : input.centerKeep && previous ? keep(previous.centerCounts, 'centerCounts') : split(input.centerCounts, 'centerCounts', 'center');
+  const sourceCounts = !splits.bySource ? null : input.sourceKeep && previous ? keep(previous.sourceCounts, 'sourceCounts') : split(input.sourceCounts, 'sourceCounts', 'source');
 
   if (previous) {
     if (input.reason.length < 10) errors.reason = 'Say in a sentence why the numbers are changing.';
@@ -285,6 +294,7 @@ export type LcDashboard = {
   byCenter: LcBreakdown | null;
   bySource: LcBreakdown | null;
   minimum: number;
+  splits: LcReportSplits;
 };
 
 export type LcDashboardFilter = { from: string; to: string; categoryId?: string; trainingId?: string };
@@ -314,7 +324,7 @@ function breakdown(reports: { counts: Record<string, number> | null; total: numb
 }
 
 /** Everything the analytics page shows, worked out from the listings and the latest revision of each report. */
-export function buildDashboard(store: LcStaffStore, actor: LcStaffActor | null, filter: LcDashboardFilter, now: Date, min: number = LC_SMALL_CELL_MINIMUM): LcDashboard | null {
+export function buildDashboard(store: LcStaffStore, actor: LcStaffActor | null, filter: LcDashboardFilter, now: Date, min: number = LC_SMALL_CELL_MINIMUM, splits: LcReportSplits = LC_REPORT_SPLITS): LcDashboard | null {
   if (!canViewAnalytics(actor)) return null;
   const inScope = store.listings.filter((l) => {
     const t = l.training;
@@ -389,9 +399,10 @@ export function buildDashboard(store: LcStaffStore, actor: LcStaffActor | null, 
     attendances: sum(heldOrAwaiting.map((r) => r.attendancesTotal), heldOrAwaiting.length),
     rate: { value: comparable.length > 0 ? attended / approvedForRate : null, attended, approved: approvedForRate, counted: comparable.length, of: heldRows.length },
     topics, buckets,
-    byCenter: breakdown(reported.map((r) => ({ counts: r.centerCounts, total: r.registrationsTotal })), LC_REPORT_CENTERS, min),
-    bySource: breakdown(reported.map((r) => ({ counts: r.sourceCounts, total: r.registrationsTotal })), LC_REFERRAL_SOURCES, min),
+    byCenter: splits.byCenter ? breakdown(reported.map((r) => ({ counts: r.centerCounts, total: r.registrationsTotal })), LC_REPORT_CENTERS, min) : null,
+    bySource: splits.bySource ? breakdown(reported.map((r) => ({ counts: r.sourceCounts, total: r.registrationsTotal })), LC_REFERRAL_SOURCES, min) : null,
     minimum: min,
+    splits,
   };
 }
 

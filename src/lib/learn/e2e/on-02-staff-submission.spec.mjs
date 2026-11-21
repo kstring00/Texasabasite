@@ -1,11 +1,14 @@
 /* eslint-disable */
-import { chromium } from 'playwright';
-const B = 'http://localhost:3000', ST = B + '/learn/staff';
-const b = await chromium.launch();
+// Run with: npm run test:e2e   (see README.md in this folder)
+import { test, expect } from '@playwright/test';
+
+test('staff demo: sign-in, permissions, PowerPoint submission wizard', async ({ browser: b, baseURL }) => {
+const B = baseURL, ST = B + '/learn/staff';
 const ctx = await b.newContext({ viewport: { width: 1366, height: 768 } });
 const p = await ctx.newPage();
 const errs = []; p.on('pageerror', e => errs.push(String(e).slice(0, 200)));
-let fails = 0; const ok = (name, cond, extra = '') => { if (!cond) fails++; console.log(cond ? 'PASS' : 'FAIL', name, cond ? '' : extra); };
+let checks = 0;
+const ok = (name, cond, extra = '') => { checks++; expect.soft(!!cond, cond ? name : `${name} :: ${String(extra).slice(0, 400)}`).toBe(true); };
 const signIn = async (who) => { await p.goto(ST, { waitUntil: 'load' }); await p.waitForTimeout(450); await p.getByRole('button', { name: new RegExp(`Continue as ${who}$|Continue as ${who}\\b`) }).first().click(); await p.waitForLoadState('load'); await p.waitForTimeout(400); };
 const signOut = async () => { await p.goto(ST, { waitUntil: 'load' }); await p.waitForTimeout(450); await p.getByRole('button', { name: 'Switch demo role' }).click(); await p.waitForLoadState('load'); await p.waitForTimeout(300); };
 const status = async (u) => (await ctx.request.get(B + u)).status();
@@ -193,5 +196,5 @@ ok('reset puts the seeded submissions back', (await p.locator('.lc-table-title')
 }
 
 ok('no page errors', errs.length === 0, errs.join(' | '));
-console.log(fails ? `${fails} FAILED` : 'ALL PASSED');
-await b.close();
+console.log(`[checks] on-02-staff-submission.spec.mjs: ${checks}`);
+});

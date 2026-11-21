@@ -263,6 +263,20 @@ describe('the dashboard', () => {
   });
 });
 
+describe('switching a split off', () => {
+  it('stores nothing for it and leaves it out of the report, whatever the browser sends', () => {
+    const { store, ids } = finished();
+    const off = { byCenter: false, bySource: true };
+    const r = saveReport(store, director, entry(ids[0], { centerCounts: { 'sugar-land': '10', katy: '7' }, sourceCounts: { clinical_team: '12', website: '8' } }), at(AFTER), off);
+    expect(r.ok && r.value.centerCounts).toBeNull();
+    expect(r.ok && r.value.sourceCounts).toMatchObject({ clinical_team: 12, website: 8 });
+    const d = buildDashboard(store, director, july, new Date(AFTER), LC_SMALL_CELL_MINIMUM, off)!;
+    expect(d.byCenter).toBeNull();
+    expect(d.bySource).not.toBeNull();
+    expect(dashboardCsv(d, { period: '', filters: '', banner: '', generatedOn: '' })).not.toContain('by center');
+  });
+});
+
 describe('choosing the period', () => {
   const now = new Date('2026-11-21T15:00:00.000Z');
   it('understands the presets in Central Time', () => {

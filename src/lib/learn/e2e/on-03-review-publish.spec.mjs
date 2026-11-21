@@ -1,9 +1,12 @@
 /* eslint-disable */
-import { chromium } from 'playwright';
-const B = 'http://localhost:3000', ST = B + '/learn/staff';
-const b = await chromium.launch();
-let fails = 0; const errs = [];
-const ok = (name, cond, extra = '') => { if (!cond) fails++; console.log(cond ? 'PASS' : 'FAIL', name, cond ? '' : String(extra).slice(0, 300)); };
+// Run with: npm run test:e2e   (see README.md in this folder)
+import { test, expect } from '@playwright/test';
+
+test('two approvals, producer import, publish and withdraw, with everything that must be refused', async ({ browser: b, baseURL }) => {
+const B = baseURL, ST = B + '/learn/staff';
+const errs = [];
+let checks = 0;
+const ok = (name, cond, extra = '') => { checks++; expect.soft(!!cond, cond ? name : `${name} :: ${String(extra).slice(0, 400)}`).toBe(true); };
 const settle = (p, ms = 450) => p.waitForTimeout(ms);
 /** A browser with its own cookie jar, signed in as one fictional role. */
 async function as(who) {
@@ -26,7 +29,7 @@ const rbt = await as('Sample RBT'), bcba = await as('Sample BCBA'), cd = await a
 const good = await (await rbt.ctx.request.get(B + '/learn/staff/api/uploads/seed-abcs-asset-v1')).body();
 const statusOf = async (id) => { await cd.go('/submissions/' + id); return (await cd.p.locator('.lc-staff-head .lc-chip').first().innerText()).trim(); };
 
-console.log('--- Gate 1: source review ---');
+// ── Gate 1: source review ──
 ok('RBT: no Reviews or Modules in the menu', (await rbt.p.locator('.lc-shell-nav a').allInnerTexts()).join('|') === 'Overview|My submissions');
 ok('RBT: the review queue address is not found', await notFound(rbt, '/reviews'));
 ok('RBT: a source review address is not found', await notFound(rbt, '/reviews/source/seed-abcs'));
@@ -80,7 +83,7 @@ await rbt.go('/submissions/seed-abcs');
 ok('contributor sees Source approved with a Gate 1 record', await text(rbt.p).then(t => t.includes('Source approved') && t.includes('Gate 1 · Source PowerPoint') && t.includes('Approved as a source by Sample Clinical Director')));
 ok('contributor still has no approve, publish or module controls', !(await rbt.p.getByRole('link', { name: /Open the source review|Open the module workspace/ }).count()));
 
-console.log('--- Production ---');
+// ── Production ──
 ok('Producer menu: Overview and Modules only', (await prod.p.locator('.lc-shell-nav a').allInnerTexts()).join('|') === 'Overview|Modules');
 ok('Producer: review queue not found', await notFound(prod, '/reviews'));
 ok('Producer: All submissions not found', await notFound(prod, '/submissions/all'));
@@ -119,7 +122,7 @@ await prod.p.getByRole('button', { name: 'Check and import' }).click(); await pr
 const yId = (await prod.p.getByRole('link', { name: /Preview/ }).first().getAttribute('href')).split('/').pop();
 await prod.p.getByRole('button', { name: 'Send for final review' }).click(); await prod.p.locator('.lc-versions .lc-chip', { hasText: 'Final review' }).waitFor(); await settle(prod.p);
 
-console.log('--- Gate 2: final module review ---');
+// ── Gate 2: final module review ──
 await cd.go('/reviews?gate=module');
 ok('Clinical Director: sees the module in Gate 2 but is told a second reviewer is needed', await text(cd.p).then(t => t.includes('How group trainings work') && t.includes('You approved the source PowerPoint. The final module needs a second reviewer')));
 await cd.go('/reviews/module/' + xId);
@@ -156,7 +159,7 @@ await bcba.go('/modules/seed-group-trainings');
 ok('BCBA can approve but has no publish control', await text(bcba.p).then(t => t.includes('Final approval by Sample BCBA') && t.includes('Waiting for someone with permission to publish.')) && !(await bcba.p.getByRole('button', { name: 'Publish' }).count()));
 ok('approved but not published is still not public', (await pub.go(B + '/learn/modules/how-group-trainings-work')).status() === 404);
 
-console.log('--- Publish ---');
+// ── Publish ──
 await cd.go('/modules/seed-abcs');
 ok('a module without its final approval shows no publish control', !(await cd.p.getByRole('button', { name: 'Publish' }).count()) && await text(cd.p).then(t => t.includes('Unapproved sample module') || t.includes('Final review')));
 await cd.go('/modules/seed-group-trainings');
@@ -188,7 +191,7 @@ ok('public: its topic page lists it', (await pub.p.locator('.lc-mcard-title').al
 await rbt.go('/submissions/seed-group-trainings');
 ok('contributor sees Published and two separate review records', await text(rbt.p).then(t => t.includes('Published') && t.includes('Gate 1 · Source PowerPoint') && t.includes('Gate 2 · Final module') && t.includes('Final module approved by Sample BCBA')));
 
-console.log('--- Withdraw ---');
+// ── Withdraw ──
 await cd.go('/modules/seed-group-trainings'); await cd.p.getByRole('button', { name: 'Withdraw' }).click();
 await cd.become('Sample RBT'); await cd.p.getByLabel('Why is it being withdrawn?').fill('An RBT trying to withdraw a module.'); await cd.p.getByRole('button', { name: 'Yes, withdraw' }).click();
 ok('RBT: the server refuses to withdraw', (await refusal(cd.p)).includes('Your role does not allow that.'), await refusal(cd.p));
@@ -211,5 +214,5 @@ await cd.go('/modules/seed-group-trainings');
 ok('withdrawn: staff keep the full record, with the reason and both approvals', await text(cd.p).then(t => t.includes('Withdrawn by Sample Clinical Director') && t.includes('A slide needs correcting') && t.includes('Final approval by Sample BCBA') && t.includes('Module withdrawn') && t.includes('Module published')));
 ok('a withdrawn version cannot simply be published again (no control)', !(await cd.p.getByRole('button', { name: 'Publish' }).count()));
 ok('no page errors', errs.length === 0, errs.join(' | '));
-console.log(fails ? `${fails} FAILED` : 'ALL PASSED');
-await b.close();
+console.log(`[checks] on-03-review-publish.spec.mjs: ${checks}`);
+});

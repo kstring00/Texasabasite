@@ -14,7 +14,8 @@ import type { LcStaffStore } from './submissions';
  * A real deployment replaces this file with organization-approved private storage, malware
  * scanning and a database. The functions in submissions.ts do not change.
  */
-const DIR = path.join(process.cwd(), '.learn-demo');
+// The browser tests keep their own copy in a subfolder, so running them never wipes a demo someone has set up by hand.
+const DIR = path.join(process.cwd(), '.learn-demo', process.env.LEARN_DEMO_STORE === 'e2e' ? 'e2e' : '');
 const UPLOADS = path.join(DIR, 'uploads');
 const STORE_FILE = path.join(DIR, 'store.json');
 const SECRET_FILE = path.join(DIR, 'secret');

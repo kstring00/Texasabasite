@@ -1,11 +1,14 @@
 /* eslint-disable */
+// Run with: npm run test:e2e   (see README.md in this folder)
+import { test, expect } from '@playwright/test';
+
+test('training listings and aggregate-only reporting, with everything that must be refused', async ({ browser: b, baseURL }) => {
 // Phase 4 walk: training listings and aggregate-only reporting, including what must be refused.
 // Needs the site running locally with all three flags on. Resets the local demo store first.
-import { chromium } from 'playwright';
-const B = 'http://localhost:3000', ST = B + '/learn/staff';
-const b = await chromium.launch();
-let fails = 0; const errs = [];
-const ok = (name, cond, extra = '') => { if (!cond) fails++; console.log(cond ? 'PASS' : 'FAIL', name, cond ? '' : String(extra).slice(0, 400)); };
+const B = baseURL, ST = B + '/learn/staff';
+const errs = [];
+let checks = 0;
+const ok = (name, cond, extra = '') => { checks++; expect.soft(!!cond, cond ? name : `${name} :: ${String(extra).slice(0, 400)}`).toBe(true); };
 const settle = (p, ms = 700) => p.waitForTimeout(ms);
 async function as(who) {
   const ctx = await b.newContext({ viewport: { width: 1366, height: 800 } }); const p = await ctx.newPage();
@@ -31,7 +34,7 @@ const nextYear = new Date().getFullYear() + 1;
 { const x = await as(null); await x.go(''); await x.p.getByRole('button', { name: 'Reset demo data' }).click(); await x.p.waitForLoadState('load'); await settle(x.p); await x.ctx.close(); }
 const cd = await as('Sample Clinical Director'), pub = await as(null);
 
-console.log('--- Who can open trainings and reporting ---');
+// ── Who can open trainings and reporting ──
 for (const who of ['Sample RBT', 'Sample Apprentice', 'Sample BCBA', 'Sample Producer']) {
   const x = await as(who);
   const menu = (await x.p.locator('.lc-shell-nav a').allInnerTexts()).join('|');
@@ -46,7 +49,7 @@ for (const who of ['Sample RBT', 'Sample Apprentice', 'Sample BCBA', 'Sample Pro
 { const csv = await pub.ctx.request.get(ST + '/api/reports/export?range=ytd'); ok('signed out: the download is "not found"', csv.status() === 404, csv.status()); }
 { const menu = (await cd.p.locator('.lc-shell-nav a').allInnerTexts()).join('|'); ok('Clinical Director: Trainings and Reporting are in the menu', /Trainings/.test(menu) && /Reporting/.test(menu), menu); }
 
-console.log('--- Reporting: what the Clinical Director sees ---');
+// ── Reporting: what the Clinical Director sees ──
 await cd.go('/analytics');
 ok('demo banner uses the exact words', (await text(cd.p)).includes('Illustrative demo data — not actual caregiver attendance'));
 ok('last 90 days: trainings held is 3', (await tile(cd.p, 'Trainings held')) === '3', await tile(cd.p, 'Trainings held'));
@@ -88,7 +91,7 @@ ok('"View as table" shows the same figures as a table, by month', (await cd.p.lo
 await press(cd.p, 'View as chart');
 ok('"View as chart" brings the chart back', (await cd.p.locator('.lc-chart-canvas canvas').count()) === 1);
 
-console.log('--- Reporting: the download ---');
+// ── Reporting: the download ──
 { const r = await cd.ctx.request.get(ST + '/api/reports/export?range=ytd'); const csv = await r.text();
   ok('download: a spreadsheet file, marked never to be cached', r.status() === 200 && (r.headers()['content-type'] ?? '').includes('text/csv') && r.headers()['cache-control'] === 'no-store' && (r.headers()['content-disposition'] ?? '').includes('learning-center-participation'));
   ok('download: carries the demo banner and the definitions', csv.includes('Illustrative demo data — not actual caregiver attendance') && csv.includes('"What the numbers mean"') && csv.includes('"Not yet available","The number has not been entered. It does not mean zero."'));
@@ -98,7 +101,7 @@ console.log('--- Reporting: the download ---');
   ok('download: no center or source figure under 5', centerPart.length > 0 && small.length === 0, small.join(','));
   ok('download: nothing that looks like a person', !/@/.test(csv) && !/attendee name|email/i.test(csv)); }
 
-console.log('--- Reporting: entering numbers ---');
+// ── Reporting: entering numbers ──
 await cd.go('/analytics/reports/seed-training-questions');
 ok('entry page: banner and the "totals only" guidance', await text(cd.p).then(t => t.includes('Illustrative demo data — not actual caregiver attendance') && t.includes('Do not paste names, email addresses, attendance spreadsheets')));
 ok('entry page: every box is a number, a date or a fixed list (no free text on a first entry)', (await cd.p.locator('form.lc-form textarea').count()) === 0 && (await cd.p.locator('form.lc-form input[type="file"]').count()) === 0);
@@ -140,7 +143,7 @@ await tab2.getByLabel('Registrations submitted', { exact: true }).fill('99'); aw
 ok('a second tab saving over it from an old page is refused', (await refusal(tab2)).includes('changed somewhere else'));
 await tab2.close();
 
-console.log('--- Reporting: correcting numbers ---');
+// ── Reporting: correcting numbers ──
 await cd.go('/analytics/reports/seed-training-questions');
 { const t = await text(cd.p);
   ok('correction page: says which revision, and shows the entry with who and when', t.includes('Correction to revision 1') && t.includes('Revision 1 · in use') && t.includes('Entered by Sample Clinical Director'));
@@ -160,7 +163,7 @@ await cd.go('/analytics/reports/seed-training-communication');
 ok('seeded training with a count of 2 for one center: the 2 is not on its entry page either', await text(cd.p).then(async t => !/Cedar Hill\s*2/.test(t) && !(await cd.p.content()).includes('value="2"')));
 ok('numbers cannot be entered for a draft or an upcoming training', (await notFound(cd, '/analytics/reports/seed-training-team')) && (await notFound(cd, '/analytics/reports/seed-training-mornings')));
 
-console.log('--- Listings: creating and what is refused ---');
+// ── Listings: creating and what is refused ──
 await cd.go('/trainings');
 ok('trainings list groups listings by where they are', await text(cd.p).then(t => t.includes('Public and upcoming') && t.includes('Finished, not yet marked completed') && t.includes('Drafts') && t.includes('Completed') && t.includes('Cancelled')));
 await cd.go('/trainings/new');
@@ -203,6 +206,8 @@ await f.summary().fill('A made-up listing created by the scripted walk to test t
 await f.topic().selectOption('cat-routines'); await f.date().fill(`${nextYear}-07-15`); await f.start().fill('18:00'); await f.end().fill('19:00');
 await cd.p.getByLabel('Understanding the ABCs of Behavior').check();
 await press(cd.p, 'Save draft'); await cd.p.locator('.lc-saved', { hasText: 'Saved.' }).waitFor(); await settle(cd.p);
+// The page refreshes itself after a save. Give the preview a moment to show the new date.
+await cd.p.locator('.lc-listing-preview', { hasText: `July 15, ${nextYear}` }).waitFor({ timeout: 10000 }).catch(() => {});
 ok('the preview shows the Central Time date and time', await cd.p.locator('.lc-listing-preview').innerText().then(t => t.includes(`July 15, ${nextYear}`) && t.includes('6:00 to 7:00 PM CT')));
 await press(cd.p, 'Publish listing'); await press(cd.p, 'Yes, publish'); await cd.p.locator('.lc-staff-head .lc-chip', { hasText: 'Scheduled' }).waitFor(); await settle(cd.p);
 ok('published without a link: staff are warned', (await text(cd.p)).includes('No registration link has been added. Caregivers will see “Registration details coming soon”'));
@@ -219,7 +224,7 @@ await f.topic().selectOption('cat-communication'); await f.date().fill(`${nextYe
 await press(cd.p, 'Create draft'); await cd.p.waitForURL(/saved=1/); await settle(cd.p);
 const winterId = cd.p.url().split('/').pop().split('?')[0];
 await press(cd.p, 'Publish listing'); await press(cd.p, 'Yes, publish'); await cd.p.locator('.lc-staff-head .lc-chip', { hasText: 'Scheduled' }).waitFor(); await settle(cd.p);
-{ const store = JSON.parse(await (await import('node:fs/promises')).readFile('.learn-demo/store.json', 'utf8'));
+{ const store = JSON.parse(await (await import('node:fs/promises')).readFile('.learn-demo/e2e/store.json', 'utf8'));
   const iso = (id) => store.listings.find(l => l.id === id).training.startAtUtc;
   ok('daylight saving: 6 PM in July is stored as 23:00 UTC, 6 PM in January as 00:00 UTC the next day', iso(summerId) === `${nextYear}-07-15T23:00:00.000Z` && iso(winterId) === `${nextYear}-01-16T00:00:00.000Z`, iso(summerId) + ' ' + iso(winterId));
   ok('the stored listing has no join link, no registrant and no family field', !JSON.stringify(store.listings).match(/meetup-join|attendee|registrant|email/i)); }
@@ -227,7 +232,7 @@ await pub.go(B + '/learn/trainings/walk-test-winter-session');
 { const a = pub.p.locator('main a[href^="https://events.teams.microsoft.com/"]');
   ok('public page with a checked link: an active registration button that opens Teams in a new tab', (await a.count()) >= 1 && (await a.first().getAttribute('target')) === '_blank' && ((await a.first().getAttribute('rel')) ?? '').includes('noopener') && (await pub.p.locator('main').innerText()).includes('6:00 to 7:00 PM CT')); }
 
-console.log('--- Listings: close, reopen, cancel, complete, archive ---');
+// ── Listings: close, reopen, cancel, complete, archive ──
 await cd.go('/trainings/' + winterId);
 const tabB = await cd.ctx.newPage(); await cd.go('/trainings/' + winterId, tabB);
 await press(cd.p, 'Close registration'); await cd.p.locator('.lc-staff-head .lc-chip', { hasText: 'Registration closed' }).waitFor(); await settle(cd.p);
@@ -281,11 +286,23 @@ await press(cd.p, 'Archive listing'); await press(cd.p, 'Yes, archive'); await c
 await cd.go('/analytics');
 ok('archiving a finished training keeps its numbers in reporting', (await cellOf('seed-training-questions', 'Registrations')) === '20' && (await tile(cd.p, 'Trainings held')) === '4');
 
-console.log('--- Public pages stay clean ---');
+// ── A session that has ended ──
+{ const x = await as('Sample Clinical Director');
+  await x.go('/trainings/seed-training-mornings');
+  await x.ctx.clearCookies();
+  await press(x.p, 'Close registration');
+  ok('signed out with a listing open: the button is refused and says the session has ended', (await refusal(x.p)).includes('Your demo session has ended'));
+  await x.go('/analytics');
+  ok('signed out: the reporting address shows the role picker, not the report', (await x.p.getByRole('button', { name: /Continue as/ }).count()) > 0 && !(await x.p.content()).includes('Registrations submitted'));
+  await pub.go(B + '/learn/trainings/example-mornings-live-session');
+  ok('... and the listing did not change', !(await pub.p.locator('main').innerText()).includes('Registration closed'));
+  await x.ctx.close(); }
+
+// ── Public pages stay clean ──
 for (const u of ['/learn', '/learn/trainings', '/learn/trainings/walk-test-summer-session']) {
   const html = await (await pub.go(B + u)).text();
   ok(`${u}: no participation number, staff address or join link reaches caregivers`, !/Registrations submitted|Attendances|meetup-join|\/learn\/staff\/analytics|\/learn\/staff\/trainings/.test(html));
 }
 ok('no page errors', errs.length === 0, errs.join(' | '));
-console.log(fails ? `${fails} FAILED` : 'ALL PASSED');
-await b.close();
+console.log(`[checks] on-04-trainings-reporting.spec.mjs: ${checks}`);
+});
