@@ -2,7 +2,7 @@
 
 Written at the end of phase 5. Plain words, for Kyle, the Clinical Director and IT.
 
-**In one paragraph.** The Caregiver Learning Center is built as a working demo inside the existing Texas ABA Centers site, under `/learn`. It is switched off by default, and with it off the existing site is unchanged. The caregiver side can be shown on a Vercel preview. The staff side only runs on a local machine, with fictional roles and made-up data. Nothing is merged into `main`, nothing is deployed for the public, and nothing is clinically approved. It is ready to be shown and reviewed. It is not ready for real families, real staff or real files.
+**In one paragraph.** The Caregiver Learning Center is built as a working demo inside the existing Texas ABA Centers site, under `/learn`. It is switched off by default, and with it off the existing site is unchanged. The caregiver side can be shown on a Vercel preview. The staff side only runs on a local machine, with fictional roles and made-up data. The code is merged into `main` with every setting off, so the public site looks and works exactly as before. Nothing is switched on for the public, and nothing is clinically approved. It is ready to be shown and reviewed. It is not ready for real families, real staff or real files.
 
 How to show it: `HOW_TO_DEMO.md`. What was tested: `TEST_RESULTS.md`. What needs sign-off: `IT_APPROVAL_CHECKLIST.md`. Every sentence to review: `REVIEW_SHEET.md`.
 

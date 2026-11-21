@@ -15,25 +15,25 @@ The staff side is built to refuse to open anywhere on Vercel. That is on purpose
 
 ## Option A: the caregiver side on a Vercel preview
 
-Nothing has been changed in Vercel. To turn the caregiver side on for previews of this branch only:
+Nothing has been changed in Vercel. The Learning Center code is on `main` with every setting off, so the public site is unchanged. To turn the caregiver side on for preview links only:
 
 1. In Vercel, open the project **siteforthetexas**, then **Settings**, then **Environment Variables**.
-2. Add `NEXT_PUBLIC_LEARN_ENABLED` with the value `1`. Tick **Preview** only. Leave Production and Development unticked. If Vercel offers a branch box, type `feat/learning-center`.
+2. Add `NEXT_PUBLIC_LEARN_ENABLED` with the value `1`. Tick **Preview** only. Leave Production and Development unticked.
 3. Add `LEARN_DEMO_CONTENT` with the value `1`, the same way.
-4. Go to **Deployments**, find the newest one for `feat/learning-center`, open its menu and choose **Redeploy**. The first setting is read when the site is built, so a redeploy is needed.
+4. Go to **Deployments**, find the newest Preview deployment, for example the one for `feat/learning-center`, open its menu and choose **Redeploy**. The first setting is read when the site is built, so a redeploy is needed.
 5. Open https://siteforthetexas-git-feat-learning-center-kstring00s-projects.vercel.app/learn
 
-Do not add `LEARN_DEMO_STAFF`. It is ignored on Vercel. Do not tick Production for either setting.
-
-What the preview shows: the Learning Center home, the library with one sample module, the lesson player, one example training with no date, help, and the amber "Demo mode" banner on every page. The pages are hidden from search engines. If the link asks for a Vercel login, that is Vercel's own preview protection, and sharing your screen is the simpler route.
+What the preview shows, tested by running the site locally the way a Vercel preview runs it: the **Learn** link in the header, the Learning Center home, the library with one sample module, the lesson player, one example training with no date, help, and the amber "Demo mode" banner on every page. The pages are hidden from search engines. **Staff sign-in** shows "Staff sign-in is not set up yet", and stays that way even if `LEARN_DEMO_STAFF` is added by mistake. If the link asks for a Vercel login, that is Vercel's own preview protection, and sharing your screen is the simpler route.
 
 To switch it off again, delete the two settings and redeploy.
+
+**If you tick Production instead.** Only do this as a deliberate public launch. `NEXT_PUBLIC_LEARN_ENABLED` in Production puts the **Learn** link in the header of the live site and opens `/learn` to everyone. `LEARN_DEMO_CONTENT` is ignored in Production on purpose, so visitors would see an empty library ("Resources are being prepared for clinical review") and no trainings. The pages would also be listed in the site map and open to search engines, with wording that is still draft. The staff side stays closed there too.
 
 ## Option B: the full demo on your laptop
 
 **Set up once**
 
-1. In the project folder, switch to the `feat/learning-center` branch and run `npm install`.
+1. In the project folder, switch to the `main` branch, pull the latest, and run `npm install`.
 2. Create a file named `.env.local` in the project folder with these three lines:
    ```
    NEXT_PUBLIC_LEARN_ENABLED=1

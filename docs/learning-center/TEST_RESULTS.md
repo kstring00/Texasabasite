@@ -1,6 +1,6 @@
 # Learning Center: test results
 
-Written at the end of phase 5, November 2026. Every command below was run on the `feat/learning-center` branch and the result is what it printed.
+Written at the end of phase 5, November 2026. Every command below was run on the `feat/learning-center` branch, and the result is what it printed.
 
 ## Summary
 
@@ -17,15 +17,17 @@ Written at the end of phase 5, November 2026. Every command below was run on the
 | Automated accessibility scan | part of `npm run test:e2e -- on` | 169 screens, no findings |
 | Existing site unchanged when switched off | `node src/lib/learn/tools/site-shots.mjs` | 86 of 86 pictures identical to `main` |
 
-The final run of every setup passed completely.
+The final run of every setup passed completely. It was made after `main`, including the tour form and page-transition fixes, had been merged into the Learning Center branch.
+
+**One thing that is not a test failure.** Two older Common Ground pages download their fonts from Google while the site is being built. In one run that download failed twice in the test machine and those builds stopped. Google's font server was reachable, the next builds succeeded, and Vercel's own builds have not shown it. It is unrelated to the Learning Center, which downloads no fonts.
 
 **How the browser tests got there.** Five earlier full runs during phase 5 each ended with one failed check out of about 300. Each was looked into before it was accepted as fixed:
 
 | What failed | Cause | What was done |
 |---|---|---|
 | Three different checks, one per run, each reading a page a moment too early | The four long walks left their browser windows open, so the machine was crowded and slow by the time later tests ran | Each walk now closes its windows. Tests wait for the page itself, not for a fixed pause. The run fell from about 18 minutes to 10 |
-| A key press on the staff menu was ignored | The existing site ignores clicks and key presses for about half a second after every page change. A separate pull request to `main` fixes it (`fix/tour-form-and-page-transitions`) | Until that fix is brought into this branch, the tests wait half a second after a page change, as a person naturally would |
-| The browser reported a React "hydration" error once, during the reporting walk | Not found. It did not happen again in four repeats of that walk, or in 196 loads of the pages it visits. React recovers from this error by redrawing the page, so nothing visible breaks | The tests now record which page an error came from. To be rechecked after the page-transition fix reaches this branch, because that fix removes an experimental React feature from every page |
+| A key press on the staff menu was ignored | The existing site ignores clicks and key presses for about half a second after every page change. A separate pull request to `main` fixes it (`fix/tour-form-and-page-transitions`) | That fix is now part of this code. The tests still pause briefly after a page change, as a person naturally would |
+| The browser reported a React "hydration" error once, during the reporting walk | Not found. It did not happen again in four repeats of that walk, or in 196 loads of the pages it visits. React recovers from this error by redrawing the page, so nothing visible breaks | The tests now record which page an error came from. After the page-transition fix was merged in, a full run of every setup reported no page error |
 
 ## Unit tests
 
@@ -118,7 +120,7 @@ Each of these is tried by a test, nearly all of them in the browser. "Session sw
 The integration brief asks for before and after pictures of four pages. This check covers 43 pages, each at 1440 and 390 wide, 86 pictures in all, compared pixel by pixel with `main`.
 
 - 86 of 86 are identical.
-- One page, `/families/care-plan`, sometimes differs between two captures of the very same build of `main`. It was captured three more times from `main` and matched the Learning Center branch exactly each time.
+- One page, `/families/care-plan`, can come out with its list of choices one pixel higher or lower between two captures of the very same build. Comparing `main` with itself shows the same thing. Captured again by itself three times from each build, it matched exactly every time.
 - Only the existing files the brief allows were changed. `src/app/globals.css` is untouched.
 
 ## Accessibility
