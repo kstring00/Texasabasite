@@ -11,8 +11,10 @@
 //
 // Each page is taken full length at 1440 and 390 wide with reduced motion. It is scrolled through
 // first so lazy pictures have loaded, and videos are held on their first frame, so two runs of the
-// same site give the same picture. One page, /families/care-plan, can still differ between two
-// runs of the very same build; when it does, shoot that page again before reading anything into it.
+// same site give the same picture, with one known exception: /families/care-plan can come out with
+// its list of choices one pixel higher or lower, even between two runs of the very same build. If it
+// is the only page that differs, compare a build with itself as a control, or picture that page
+// again by itself: LC_SHOTS_ONLY=/families/care-plan node ... shoot <folder>.
 import { chromium } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -35,6 +37,7 @@ if (mode === 'shoot' && a) {
   fs.mkdirSync(a, { recursive: true });
   const browser = await chromium.launch();
   for (const [width, height] of [[1440, 900], [390, 844]]) {
+    // One browser session per width, so pictures and videos are already downloaded when a page is pictured.
     const context = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
     const page = await context.newPage();
     for (const address of only) {
