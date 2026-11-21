@@ -4,7 +4,7 @@ import { OneNextStep } from '@/components/site/acts/OneNextStep';
 import { GettingStarted } from '@/components/getting-started/GettingStarted';
 import { Locations } from '@/components/locations/Locations';
 import { ServiceExplorer } from '@/components/site/acts/ServiceExplorer';
-import { CommonGroundSection } from '@/components/site/acts/CommonGroundSection';
+import { CommonGroundBand } from '@/components/site/acts/CommonGroundBand';
 import { InsuranceExplainer } from '@/components/site/acts/InsuranceExplainer';
 import { CareMap } from '@/components/site/acts/CareMap';
 import { Closing } from '@/components/site/acts/Closing';
@@ -27,7 +27,7 @@ export default function HomePage() {
       <OneNextStep />
 
       <GettingStarted />
-      <CommonGroundSection />
+      <CommonGroundBand />
 
       <Locations />
 

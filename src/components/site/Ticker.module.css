@@ -1,0 +1,49 @@
+/* A line of phrases gliding sideways. The line is clipped, so it never widens the page. */
+.ticker { position: relative; display: flex; align-items: center; overflow: hidden; }
+.viewport { flex: 1 1 auto; min-width: 0; overflow: hidden; }
+.track { display: flex; width: max-content; animation: ticker-slide 120s linear infinite; will-change: transform; }
+.group { display: flex; flex: none; align-items: center; }
+.item { display: inline-flex; align-items: center; flex: none; }
+.phrase { white-space: nowrap; }
+.star { flex: none; color: rgb(var(--butter)); }
+.ticker[data-paused] .track { animation-play-state: paused; }
+
+@keyframes ticker-slide {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* One line of words */
+.line { min-height: 64px; }
+.line .phrase { font-family: var(--font-sans); font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.005em; }
+.line .item { gap: 28px; padding-right: 28px; }
+.line .star { width: 14px; height: 14px; }
+.cobalt { background: rgb(var(--cobalt)); color: #fff; }
+.ink { background: rgb(var(--ink)); color: rgb(var(--paper)); }
+.ink.line .phrase { font-family: var(--font-display); font-weight: 500; font-size: 1.25rem; }
+.ink.line { min-height: 72px; }
+
+/* Oversized outlined words, decoration only */
+.outline { color: transparent; }
+.giant .phrase { font-family: var(--font-display); font-weight: 500; font-size: clamp(3.5rem, 9vw, 7.5rem); line-height: 1; letter-spacing: -0.03em; color: transparent; -webkit-text-stroke: 1px rgb(var(--paper) / 0.32); }
+.giant .item { gap: clamp(24px, 4vw, 56px); padding-right: clamp(24px, 4vw, 56px); }
+.giant .star { width: clamp(22px, 3vw, 40px); height: clamp(22px, 3vw, 40px); }
+
+/* Pause and play. Sits at the end of the band, on the band's own colour, so the words slide under it. */
+.control { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; margin-inline: 4px 8px; border: 0; border-radius: 999px; background: transparent; color: inherit; cursor: pointer; }
+.control svg { width: 18px; height: 18px; }
+.control:hover { background: rgb(255 255 255 / 0.16); }
+.control:focus-visible { outline: 3px solid rgb(var(--butter)); outline-offset: -3px; }
+
+@media (max-width: 767px) {
+  .line { min-height: 56px; }
+  .line .phrase { font-size: 1rem; }
+  .ink.line .phrase { font-size: 1.0625rem; }
+  .ink.line { min-height: 60px; }
+}
+
+/* Reduced motion: nothing moves, and there is nothing to pause. */
+@media (prefers-reduced-motion: reduce) {
+  .track { animation: none; }
+  .control { display: none; }
+}
