@@ -5,11 +5,9 @@ import './globals.css';
 import { Header } from '@/components/site/Header';
 import { Footer } from '@/components/site/Footer';
 import { MobileBar } from '@/components/site/MobileBar';
+import { PageEnter } from '@/components/site/PageEnter';
 import { MyCenterProvider } from '@/lib/site/myCenter';
 import { site } from '@/data/site';
-
-// React's View Transitions component (available through Next's experimental.viewTransition flag).
-const ViewTransition = ((React as any).unstable_ViewTransition ?? React.Fragment) as React.ComponentType<{ children: React.ReactNode }>;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -56,10 +54,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <Header />
         <main id="main" className="flex-1">
-          <ViewTransition>{children}</ViewTransition>
+          {children}
         </main>
         <Footer />
         <MobileBar />
+        <PageEnter />
         <Analytics />
         </MyCenterProvider>
       </body>
