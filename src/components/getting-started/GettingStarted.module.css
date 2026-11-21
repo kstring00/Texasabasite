@@ -283,3 +283,34 @@
   .evRun { height: calc(100% - 28px); }
   .evIc { background: var(--gs-yellow) !important; border-color: var(--gs-yellow) !important; color: var(--gs-on-yellow) !important; }
 }
+
+/* ---------- One screen ---------- */
+/* Laptop: the steps swap in place. Only the chosen step shows its detail; the others are one row each. */
+@media (min-width: 981px) {
+  /* The panel takes the full height on the left; the heading sits above the steps on the right. */
+  .wrap { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); grid-template-rows: auto 1fr; column-gap: 56px; padding-block: 36px 40px; }
+  .grid { display: contents; }
+  .panelCol { grid-column: 1; grid-row: 1 / span 2; }
+  .head { grid-column: 2; grid-row: 1; max-width: none; margin-bottom: 22px; }
+  .grid > :last-child { grid-column: 2; grid-row: 2; min-width: 0; }
+  .panel { position: relative; top: auto; padding: 36px 32px 20px; gap: 14px; border-radius: 96px 96px 28px 28px; }
+  .steps { gap: 12px; }
+  .step::after { bottom: -12px; }
+  .card { padding: 18px 26px; border-radius: 22px; }
+  .step:not(.on) .card h3 { margin-bottom: 0; font-size: clamp(20px, 1.9vw, 26px); }
+  .step:not(.on) .card > p, .step:not(.on) .meet, .step:not(.on) .alt { display: none; }
+  .step.on .card > p, .step.on .meet, .step.on .alt { animation: fadeUp 0.45s ease-out both; }
+  .alt { margin-top: 8px; }
+}
+/* Phone: snap cards to swipe. */
+@media (max-width: 980px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .grid > * { min-width: 0; }
+  .steps { display: flex; gap: 12px; margin-inline: -16px; overflow-x: auto; padding: 4px 16px 8px; scroll-padding-inline: 16px; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .steps::-webkit-scrollbar { display: none; }
+  .step { display: block; flex: 0 0 88%; max-width: 30rem; scroll-snap-align: start; }
+  .step::after { display: none; }
+  .num { margin-bottom: 10px; }
+  .head { margin-bottom: 24px; }
+}
+@media (max-width: 480px) { .wrap { padding-block: 36px 44px; } }

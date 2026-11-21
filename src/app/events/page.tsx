@@ -82,7 +82,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
           </ul>
         </Section>
       )}
-      <FinalCta title="Want to see a center before an event?" text="A tour is the easiest first visit. Thirty to forty-five minutes, no commitment." />
+      <FinalCta title="Want to see a center before an event?" />
     </>
   );
 }

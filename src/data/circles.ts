@@ -38,5 +38,4 @@ export const whileYouWait = [
   { title: 'What is ABA, in plain words', text: 'No jargon. What a session looks like and what your role is.', href: '/families/what-is-aba' },
   { title: 'Help at home right now', text: 'Routines, transitions, and the hard moments.', href: '/families/at-home' },
   { title: 'Paying for care', text: 'Insurance, Medicaid, waivers, and grants explained.', href: '/families/financial' },
-  { title: 'Parent Pulse', text: 'A one-minute weekly check-in on you.', href: '/families/pulse' },
 ];

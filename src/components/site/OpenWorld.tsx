@@ -48,7 +48,7 @@ export function ArchFrame({ className, tone = 'cobalt', strokeWidth = 2 }: { cla
 }
 
 /** Abstract "room" art for a center with no photos yet: a lit doorway, clearly not a photo. */
-export function Doorway({ seed = 0, label, className }: { seed?: number; label: string; className?: string }) {
+export function Doorway({ seed = 0, label, className, small = false }: { seed?: number; label: string; className?: string; small?: boolean }) {
   const tones = ['cobalt', 'persimmon', 'sage', 'butter', 'lavender', 'ink'];
   const t = tones[seed % tones.length];
   return (
@@ -56,7 +56,7 @@ export function Doorway({ seed = 0, label, className }: { seed?: number; label: 
       <div className="absolute inset-x-[18%] bottom-0 top-[14%] portal" style={{ background: `rgb(var(--${t}))` }} />
       <div className="absolute inset-x-[30%] bottom-0 top-[34%] portal bg-paper/90" />
       <div className="absolute inset-x-0 bottom-[12%] h-px bg-paper/40" />
-      <span className="absolute bottom-4 left-4 rounded-full bg-paper/90 px-3 py-1 font-sans text-xs font-semibold text-ink">Center photos coming</span>
+      {!small && <span className="absolute bottom-4 left-4 rounded-full bg-paper/90 px-3 py-1 font-sans text-xs font-semibold text-ink">Center photos coming</span>}
     </div>
   );
 }

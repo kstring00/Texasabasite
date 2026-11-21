@@ -1,0 +1,123 @@
+/* Getting Started: one pinned stage on laptops, snap cards on phones. Transform and opacity only. */
+.section { background: rgb(var(--ink)); color: rgb(var(--paper)); }
+.track { position: relative; }
+.stage { padding-block: var(--s-4); }
+.inner { display: flex; width: 100%; flex-direction: column; gap: 1.25rem; }
+
+.head { display: flex; flex-direction: column; gap: 0.75rem; }
+.eyebrow { font-family: var(--font-sans); font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--butter)); }
+.h1 { margin-top: 0.5rem; font-family: var(--font-display); font-size: var(--t-2xl); line-height: 1.02; letter-spacing: -0.03em; color: rgb(var(--paper)); }
+.h1 em { font-family: var(--font-editorial); font-style: italic; font-weight: 400; letter-spacing: -0.01em; color: rgb(var(--butter)); }
+.lede { max-width: 30rem; font-size: var(--t-base); line-height: 1.45; color: rgb(var(--paper) / 0.82); }
+
+.main { display: none; }
+
+/* ── Laptop ─────────────────────────────────────────────── */
+@media (min-width: 1024px) {
+  .stage { display: flex; min-height: min(calc(100svh - var(--nav-h)), 44rem); align-items: center; padding-block: var(--s-3); }
+  .inner { gap: clamp(0.9rem, 2.8vh, 1.9rem); }
+  .head { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 3rem; border-bottom: 1px solid rgb(var(--paper) / 0.14); padding-bottom: clamp(0.75rem, 2vh, 1.25rem); }
+  .lede { text-align: right; }
+  .main { display: grid; grid-template-columns: 2.75rem minmax(0, clamp(15rem, 40vh, 23rem)) minmax(0, 1fr); gap: 0 clamp(1.5rem, 3vw, 3.5rem); align-items: stretch; }
+  .swipe { display: none; }
+}
+/* Pinned: the track is taller than the stage, and scrolling through it advances the steps. */
+@media (min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference) {
+  .track { height: calc(100svh - var(--nav-h) + 4 * 62vh); }
+  .stage { position: sticky; top: var(--nav-h); height: calc(100svh - var(--nav-h)); min-height: 0; overflow: hidden; padding-block: clamp(1.25rem, 5vh, 3.25rem); align-items: stretch; }
+  .main { flex: 1; min-height: 0; }
+}
+
+/* The rail: a progress line with five dots. The dots are the tabs. */
+.rail { position: relative; }
+.railLine { position: absolute; left: 50%; top: 1.375rem; bottom: 1.375rem; width: 2px; margin-left: -1px; overflow: hidden; border-radius: 2px; background: rgb(var(--paper) / 0.18); }
+.railFill { position: absolute; inset: 0; background: rgb(var(--butter)); transform-origin: top; }
+.dots { position: relative; display: flex; height: 100%; flex-direction: column; justify-content: space-between; }
+.dot { display: grid; width: 2.75rem; height: 2.75rem; place-items: center; border: 1.5px solid rgb(var(--paper) / 0.35); border-radius: 50%; background: rgb(var(--ink)); color: rgb(var(--paper) / 0.85); font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; transition: background-color 0.3s, color 0.3s, border-color 0.3s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.dot:hover { border-color: rgb(var(--butter)); }
+.dot[data-done='true'] { border-color: rgb(var(--butter)); color: rgb(var(--butter)); }
+.dot[aria-selected='true'] { transform: scale(1.14); border-color: rgb(var(--butter)); background: rgb(var(--butter)); color: rgb(var(--ink)); }
+.dot:focus-visible, .ctl:focus-visible, .drawerBtn:focus-visible, .swipeDot:focus-visible, .scroller:focus-visible, .cardDrawer > summary:focus-visible { outline: 3px solid rgb(var(--butter)); outline-offset: 3px; }
+
+/* The arch: the number rolls, and the door opens a little more at each step. */
+.arch { position: relative; height: 100%; min-height: 20rem; overflow: hidden; border-radius: var(--portal); background: linear-gradient(to bottom, rgb(var(--cobalt)) 0%, #1c2b80 100%); box-shadow: inset 0 0 0 1.5px rgb(var(--butter) / 0.75); }
+.archGlow { position: absolute; inset: auto -20% -30% -20%; height: 70%; background: radial-gradient(closest-side, rgb(184 196 255 / 0.4), transparent); }
+.archLabel { position: relative; margin-top: clamp(2.2rem, 7vh, 4rem); text-align: center; font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: rgb(var(--butter)); }
+.num { position: relative; display: flex; justify-content: center; font-family: var(--font-display); font-size: clamp(4.75rem, 17vh, 9.5rem); line-height: 1; letter-spacing: -0.05em; color: rgb(var(--paper)); }
+.reel { display: inline-block; height: 1em; overflow: hidden; }
+.reelInner { display: flex; flex-direction: column; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); }
+.reelInner span { display: block; height: 1em; line-height: 1; }
+.doorway { position: absolute; bottom: 0; left: 22%; right: 22%; height: 44%; overflow: hidden; border-radius: 9999px 9999px 0 0; }
+.light { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 100%, rgb(var(--butter)) 0%, #f7e7b0 48%, rgb(var(--paper)) 100%); }
+.leaf { position: absolute; inset: 0; background: linear-gradient(90deg, #101b2b, rgb(var(--ink))); transform-origin: left; transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+.leaf::after { content: ''; position: absolute; right: 0.6rem; top: 58%; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: rgb(var(--butter)); }
+
+/* One step at a time. All five are in the page; the others are hidden and inert. */
+.right { display: flex; min-width: 0; flex-direction: column; justify-content: center; gap: clamp(0.7rem, 2.2vh, 1.25rem); }
+.panels { display: grid; }
+.panel { grid-area: 1 / 1; display: flex; min-width: 0; flex-direction: column; opacity: 0; visibility: hidden; transform: translateY(1.75rem); transition: opacity 0.35s ease-out, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s 0.35s; }
+.panel[data-dir='before'] { transform: translateY(-1.75rem); }
+.panel[data-on='true'] { opacity: 1; visibility: visible; transform: none; transition: opacity 0.5s ease-out 0.12s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.12s, visibility 0s; }
+.kicker { font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--butter)); }
+.title { margin-top: 0.4rem; font-family: var(--font-display); font-size: clamp(1.9rem, 6.4vh, 3.6rem); line-height: 1.02; letter-spacing: -0.03em; color: rgb(var(--paper)); }
+.short { margin-top: 0.5rem; font-size: var(--t-lg); line-height: 1.35; color: rgb(var(--paper) / 0.86); }
+
+.tilesWrap { position: relative; margin-top: clamp(0.75rem, 2.4vh, 1.5rem); overflow: hidden; border-radius: 1.1rem; }
+.tiles { display: grid; height: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+.tile { border: 1px solid rgb(var(--paper) / 0.14); border-radius: 1.1rem; background: rgb(var(--paper) / 0.06); padding: clamp(0.65rem, 1.7vh, 0.95rem) 1rem; }
+.tile dt { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--butter)); }
+.tile dt span { margin-left: 0.4rem; font-weight: 500; letter-spacing: 0; text-transform: none; color: rgb(var(--paper) / 0.75); }
+.tile dd { margin-top: 0.3rem; font-size: clamp(0.95rem, 2.2vh, 1.06rem); line-height: 1.35; color: rgb(var(--paper) / 0.94); }
+.panel .tile { opacity: 0; transform: translateY(0.9rem); transition: opacity 0.2s, transform 0.2s; }
+.panel[data-on='true'] .tile { opacity: 1; transform: none; transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); transition-delay: calc(0.2s + var(--i) * 0.07s); }
+
+/* The drawer slides up over the tiles. Nothing below it moves. */
+.drawer { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; border-radius: 1.1rem; background: rgb(var(--paper)); padding: 1.1rem 1.4rem; color: rgb(var(--ink)); opacity: 0; visibility: hidden; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s, visibility 0s 0.5s; }
+.drawer[data-open='true'] { opacity: 1; visibility: visible; transform: none; transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s, visibility 0s; }
+.drawerTitle { font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--cobalt)); }
+.drawer ul { margin-top: 0.6rem; display: grid; gap: 0.5rem; }
+.drawer li, .cardDrawer li { display: flex; gap: 0.7rem; font-size: 0.98rem; line-height: 1.4; }
+.drawer li::before, .cardDrawer li::before { content: ''; margin-top: 0.5em; width: 0.4rem; height: 0.4rem; flex: none; border-radius: 50%; background: rgb(var(--cobalt)); }
+
+.controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.drawerBtn { display: inline-flex; min-height: 2.75rem; align-items: center; gap: 0.5rem; border: 1px solid rgb(var(--paper) / 0.3); border-radius: 9999px; padding: 0.3rem 1.1rem; font-size: 0.95rem; font-weight: 600; color: rgb(var(--paper)); transition: background-color 0.25s, color 0.25s, border-color 0.25s; }
+.drawerBtn:hover, .drawerBtn[aria-expanded='true'] { border-color: rgb(var(--butter)); background: rgb(var(--butter)); color: rgb(var(--ink)); }
+.drawerBtn svg { width: 1rem; height: 1rem; transition: transform 0.3s; }
+.drawerBtn[aria-expanded='true'] svg { transform: rotate(180deg); }
+.hint { font-size: 0.85rem; color: rgb(var(--paper) / 0.75); }
+.arrows { display: flex; gap: 0.5rem; }
+.ctl { display: grid; width: 2.75rem; height: 2.75rem; place-items: center; border: 1px solid rgb(var(--paper) / 0.3); border-radius: 50%; color: rgb(var(--paper)); transition: background-color 0.25s, color 0.25s, opacity 0.25s; }
+.ctl:hover:not(:disabled) { background: rgb(var(--paper)); color: rgb(var(--ink)); }
+.ctl:disabled { opacity: 0.35; }
+.ctl svg { width: 1.1rem; height: 1.1rem; }
+
+/* ── Phone: swipeable snap cards with dots ──────────────── */
+.scroller { display: flex; gap: 0.75rem; margin-inline: -1.25rem; overflow-x: auto; padding-inline: 1.25rem; scroll-padding-inline: 1.25rem; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.scroller::-webkit-scrollbar { display: none; }
+@media (min-width: 640px) { .scroller { margin-inline: -2rem; padding-inline: 2rem; scroll-padding-inline: 2rem; } }
+.card { flex: 0 0 86%; max-width: 26rem; scroll-snap-align: start; border: 1px solid rgb(var(--paper) / 0.16); border-radius: 1.5rem; background: rgb(var(--paper) / 0.06); padding: 1.15rem 1.15rem 0.6rem; }
+.cardNo { display: flex; align-items: baseline; gap: 0.6rem; font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--butter)); }
+.cardNum { font-family: var(--font-display); font-size: 2.4rem; line-height: 1; letter-spacing: -0.05em; color: rgb(var(--paper)); }
+.card h2 { margin-top: 0.6rem; font-size: 1.6rem; line-height: 1.05; color: rgb(var(--paper)); }
+.cardShort { margin-top: 0.4rem; font-size: 1rem; line-height: 1.35; color: rgb(var(--paper) / 0.86); }
+.cardFacts { margin-top: 0.8rem; }
+.cardFacts > div { border-top: 1px solid rgb(var(--paper) / 0.14); padding-block: 0.55rem; }
+.cardFacts dt { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--butter)); }
+.cardFacts dt span { margin-left: 0.4rem; font-weight: 500; letter-spacing: 0; text-transform: none; color: rgb(var(--paper) / 0.75); }
+.cardFacts dd { margin-top: 0.15rem; font-size: 0.94rem; line-height: 1.35; color: rgb(var(--paper) / 0.94); }
+.cardDrawer { border-top: 1px solid rgb(var(--paper) / 0.14); }
+.cardDrawer > summary { display: flex; min-height: 2.9rem; cursor: pointer; align-items: center; justify-content: space-between; list-style: none; font-size: 0.95rem; font-weight: 600; }
+.cardDrawer > summary::-webkit-details-marker { display: none; }
+.cardDrawer > summary svg { width: 1rem; height: 1rem; transition: transform 0.3s; }
+.cardDrawer[open] > summary svg { transform: rotate(180deg); }
+.cardDrawer ul { display: grid; gap: 0.45rem; padding-bottom: 0.7rem; color: rgb(var(--paper) / 0.92); }
+.cardDrawer li::before { background: rgb(var(--butter)); }
+.swipeDots { margin-top: 0.4rem; display: flex; justify-content: center; }
+.swipeDot { display: grid; width: 2.75rem; height: 2.75rem; place-items: center; }
+.swipeDot::before { content: ''; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: rgb(var(--paper) / 0.35); transition: transform 0.3s, background-color 0.3s; }
+.swipeDot[aria-current='step']::before { transform: scale(1.5); background: rgb(var(--butter)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel, .panel .tile, .drawer, .reelInner, .leaf, .dot { transition: none !important; }
+  .scroller { scroll-behavior: auto; }
+}

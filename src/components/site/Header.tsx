@@ -5,14 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { Phone, X, ArrowUpRight, ChevronDown } from 'lucide-react';
+import { Phone, ChevronDown } from 'lucide-react';
 import { CG_NEXT_STEP, cgGroups } from '@/data/commonGround';
 import { site } from '@/data/site';
-import { locations } from '@/data/locations';
 import { track } from '@/lib/site/analytics';
 import { cn } from '@/lib/site/utils';
 import { useNavScroll } from '@/lib/site/useNavScroll';
 import { learnFlags } from '@/lib/learn/flags';
+import { SiteMenu } from './SiteMenu';
 
 const primary: { href: string; label: string; mega?: boolean; menuLabel?: string }[] = [
   { href: '/locations', label: 'Locations' },
@@ -140,89 +140,7 @@ export function Header() {
       </header>
       {!home && <div aria-hidden className="h-16 shrink-0 lg:h-20" />}
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            id="site-menu"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Site menu"
-            className="fixed inset-0 z-50 flex flex-col bg-ink text-paper"
-            initial={reduce ? { opacity: 1 } : { clipPath: 'inset(0 0 100% 0 round 0 0 48px 48px)' }}
-            animate={reduce ? { opacity: 1 } : { clipPath: 'inset(0 0 0% 0 round 0 0 0px 0px)' }}
-            exit={reduce ? { opacity: 0 } : { clipPath: 'inset(0 0 100% 0 round 0 0 48px 48px)' }}
-            transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
-          >
-            <div className="mx-auto flex h-[88px] w-full max-w-[1600px] items-center justify-between px-5 sm:px-8">
-              <Link href="/" className="inline-flex rounded-md" aria-label="Texas ABA Centers home" onClick={() => setOpen(false)}>
-                <Logo className="brightness-0 invert" />
-              </Link>
-              <button type="button" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-paper/30 px-4 font-sans text-[15px] font-semibold text-paper hover:bg-paper hover:text-ink" onClick={() => setOpen(false)} autoFocus>
-                <X className="h-4 w-4" aria-hidden /> Close
-              </button>
-            </div>
-            <div className="mx-auto grid w-full max-w-[1600px] flex-1 content-start gap-10 overflow-y-auto px-5 pb-28 pt-4 sm:px-8 lg:grid-cols-[1.4fr_1fr] lg:items-end lg:pb-12">
-              <nav aria-label="Menu" className="flex flex-col">
-                {primary.map((n, i) => (
-                  <motion.div key={n.href} initial={reduce ? false : { opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 + i * 0.05, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
-                    <Link href={n.href} className="group flex items-baseline justify-between border-b border-paper/15 py-3 font-display text-[length:var(--t-2xl)] leading-none tracking-tight text-paper hover:text-butter sm:py-4">
-                      {n.menuLabel ?? n.label}
-                      <ArrowUpRight className="h-6 w-6 shrink-0 opacity-0 transition group-hover:opacity-100" aria-hidden />
-                    </Link>
-                  </motion.div>
-                ))}
-                <div className="mt-8 grid gap-6 sm:grid-cols-2">
-                  {cgGroups.map((g) => (
-                    <div key={g.id}>
-                      <p className="font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em] text-butter">Common Ground · {g.label}</p>
-                      <ul className="mt-2 space-y-1.5">
-                        {g.pages.map((pg) => (
-                          <li key={pg.href}>
-                            <Link href={pg.href} className="font-sans text-[length:var(--t-base)] font-semibold text-paper/85 underline-offset-4 hover:text-paper hover:underline">
-                              {pg.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
-                  {more.map((n) => (
-                    <Link key={n.href} href={n.href} lang={n.href === '/es' ? 'es' : undefined} className="font-sans text-[length:var(--t-base)] font-semibold text-paper/75 underline-offset-4 hover:text-paper hover:underline">
-                      {n.label}
-                    </Link>
-                  ))}
-                  <a href={site.careersUrl} target="_blank" rel="noopener noreferrer" className="font-sans text-[length:var(--t-base)] font-semibold text-paper/75 underline-offset-4 hover:text-paper hover:underline">
-                    Careers ↗
-                  </a>
-                </div>
-              </nav>
-              <div className="flex flex-col gap-6">
-                <p className="font-sans text-[length:var(--t-base)] text-paper/75">Six centers across Texas. One phone number, answered by a person.</p>
-                <div className="flex flex-wrap gap-2">
-                  {locations.map((l) => (
-                    <Link key={l.slug} href={`/locations/${l.slug}`} className="rounded-full border border-paper/25 px-3 py-1.5 font-sans text-[length:var(--t-sm)] font-semibold text-paper hover:bg-paper hover:text-ink">
-                      {l.name}
-                    </Link>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  <Link href="/request-a-tour" className="btn-sun" onClick={() => setOpen(false)}>
-                    Request a tour →
-                  </Link>
-                  <Link href="/locations" className="btn border border-paper/30 text-paper hover:bg-paper hover:text-ink" onClick={() => setOpen(false)}>
-                    Find a center
-                  </Link>
-                  <a href={`tel:${site.phone.tel}`} className="btn border border-paper/30 text-paper hover:bg-paper hover:text-ink" onClick={() => track({ name: 'call_tap', center: 'main', place: 'menu' })}>
-                    <Phone className="h-4 w-4" aria-hidden /> {site.phone.display}
-                  </a>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <AnimatePresence>{open && <SiteMenu items={primary} more={more} onClose={() => setOpen(false)} />}</AnimatePresence>
     </>
   );
 }

@@ -33,7 +33,7 @@ export function StepRail({ activeIndex, onSelect, register }: Props) {
             {i + 1}
           </span>
           <div className={styles.col}>
-            <StepCard step={s} index={i} onSelect={onSelect} meetExtra={(i === 1 || i === 3) && directorLine ? directorLine : null} />
+            <StepCard step={s} index={i} open={i === activeIndex} onSelect={onSelect} meetExtra={(i === 1 || i === 3) && directorLine ? directorLine : null} />
             {i === 0 && showWalk && (
               <p className={styles.alt}>
                 Want to look around first?{' '}
@@ -64,7 +64,7 @@ export function StepRail({ activeIndex, onSelect, register }: Props) {
   );
 }
 
-function StepCard({ step, index, onSelect, meetExtra }: { step: Step; index: number; onSelect: (i: number) => void; meetExtra?: string | null }) {
+function StepCard({ step, index, open, onSelect, meetExtra }: { step: Step; index: number; open: boolean; onSelect: (i: number) => void; meetExtra?: string | null }) {
   const stageRef = useRef<HTMLDivElement>(null);
   // Bumping the key remounts the inline scene, which restarts its CSS animations.
   const [playKey, setPlayKey] = useState(0);
@@ -88,7 +88,7 @@ function StepCard({ step, index, onSelect, meetExtra }: { step: Step; index: num
   };
 
   return (
-    <div className={styles.card} role="button" tabIndex={0} onClick={() => onSelect(index)} onKeyDown={onKey}>
+    <div className={styles.card} role="button" tabIndex={0} aria-pressed={open} onClick={() => onSelect(index)} onKeyDown={onKey}>
       {/* The accessible name is the card's own text, so it always matches what is visible. */}
       <h3>
         <span className="sr-only">Step {index + 1}: </span>

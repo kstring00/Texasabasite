@@ -1,0 +1,46 @@
+/* Footer motion. Transform and opacity only. `data-enter` comes from useEnter: idle = finished state. */
+
+/* The gold line along the top edge: a progress graph trending upward. */
+.graph { position: relative; height: 44px; overflow: hidden; }
+.graphWindow, .graphInner { position: absolute; inset: 0; }
+.graph svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.graph polyline { fill: none; stroke: rgb(var(--butter)); stroke-width: 1.5; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.dot { position: absolute; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: rgb(var(--butter)); box-shadow: 0 0 0 3px rgb(var(--ink)); }
+
+/* The line is uncovered left to right: the window slides in while its content slides back by the same amount. */
+[data-enter='armed'] .graphWindow { transform: translateX(-100%); }
+[data-enter='armed'] .graphInner { transform: translateX(100%); }
+[data-enter='armed'] .dot { opacity: 0; transform: scale(0.2); }
+[data-enter='in'] .graphWindow, [data-enter='in'] .graphInner { transition: transform 1.8s cubic-bezier(0.45, 0, 0.2, 1); }
+[data-enter='in'] .dot { transition: opacity 0.4s ease-out, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); transition-delay: calc(var(--at) * 1.5s + 0.15s); }
+
+/* The logo petals bloom once. */
+.petal { transform-origin: 0 0; }
+[data-enter='armed'] .petal { opacity: 0; transform: scale(0.1) rotate(-50deg); }
+[data-enter='armed'] .star { opacity: 0; transform: scale(0.3); }
+[data-enter='in'] .petal { transition: opacity 0.5s ease-out, transform 0.9s cubic-bezier(0.34, 1.4, 0.64, 1); transition-delay: calc(var(--i) * 0.09s + 0.2s); }
+[data-enter='in'] .star { transform-origin: 0 0; transition: opacity 0.4s ease-out 0.7s, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.7s; }
+
+/* Footer links: an underline drawn left to right. */
+.link { position: relative; display: inline-block; padding-block: 0.2rem; color: rgb(var(--paper) / 0.85); transition: color 0.2s; }
+.link::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0.1rem; height: 1px; background: rgb(var(--butter)); transform: scaleX(0); transform-origin: left; transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+.link:hover, .link:focus-visible { color: rgb(var(--paper)); }
+.link:hover::after, .link:focus-visible::after { transform: scaleX(1); }
+.link:focus-visible, .pill:focus-visible, .drawer > summary:focus-visible { outline: 3px solid rgb(var(--butter)); outline-offset: 3px; border-radius: 0.35rem; }
+
+.pill { display: inline-flex; min-height: 2.5rem; align-items: center; border: 1px solid rgb(var(--paper) / 0.28); border-radius: 9999px; padding: 0.3rem 0.95rem; color: rgb(var(--paper)); font-weight: 600; transition: background-color 0.25s, color 0.25s, border-color 0.25s; }
+.pill:hover { background: rgb(var(--butter)); border-color: rgb(var(--butter)); color: rgb(var(--ink)); }
+
+/* Phones: each link column is a short drawer. From 768px up they are always open. */
+.drawer > summary { display: flex; min-height: 3rem; cursor: pointer; align-items: center; justify-content: space-between; list-style: none; }
+.drawer > summary::-webkit-details-marker { display: none; }
+.drawer > summary svg { transition: transform 0.25s; }
+.drawer[open] > summary svg { transform: rotate(180deg); }
+@media (min-width: 768px) {
+  .drawer > summary { min-height: 0; cursor: default; pointer-events: none; }
+  .drawer > summary svg { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graphWindow, .graphInner, .dot, .petal, .star { transform: none !important; opacity: 1 !important; transition: none !important; }
+}

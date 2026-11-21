@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Activity, BookOpen, Clock3, Compass, HeartHandshake, HeartPulse, HelpCircle, Lightbulb, Search, Stethoscope, Users, Wallet } from 'lucide-react';
+import { BookOpen, Clock3, Compass, HeartHandshake, HeartPulse, HelpCircle, Lightbulb, Search, Stethoscope, Users, Wallet } from 'lucide-react';
 import { AT_HOME_STRATEGIES_LABEL, MARRIAGE_RELATIONSHIPS_LABEL, RESOURCE_HUB_LABEL } from '@/lib/supportNavLabels';
 
 /**
@@ -31,7 +31,6 @@ export const cgGroups: CgGroup[] = [
     blurb: 'What is happening at Texas ABA Centers, and who is on your side.',
     pages: [
       { href: '/families/while-you-wait', label: 'While You Wait', icon: Clock3, description: 'What to do between the first call and the first day. Free, before you are enrolled anywhere.' },
-      { href: '/families/pulse', label: 'Parent Pulse', icon: Activity, description: 'A one-minute weekly check-in on how you are doing, not just your child. Stays on your device.' },
       { href: '/families/care-team', label: 'Your Care Team', icon: Stethoscope, description: 'Who is on your child’s team, what a BCBA and an RBT do, and how to reach a real person.' },
     ],
   },
@@ -65,6 +64,8 @@ export const cgPages: CgPage[] = cgGroups.flatMap((g) => g.pages);
 const extraTitles: Record<string, string> = {
   '/families/intake': 'Find my next step',
   '/families/check-in': 'Check-in',
+  // Not a live feature. The page is kept but nothing links to it.
+  '/families/pulse': 'Parent Pulse',
   '/families/hard-days': 'Grounding for hard days',
   '/families/sleep': 'Sleep',
   '/families/crisis': 'Crisis support',
