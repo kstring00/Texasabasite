@@ -55,12 +55,13 @@ out += `# Learning Center review sheet
 
 You do not need to mark every line in one sitting. Hand the sheet back with whatever you have marked, and the changes will be made by number. Lines you leave blank stay as drafts.
 
-**Two questions need an answer first.** They are short, and each has tick boxes.
+**Three questions need an answer first.** They are short, and each has tick boxes.
 
 | | Question | Who | Where |
 |---|---|---|---|
 | 1 | Is the main phone number, ${site.phone.display}, the approved contact for Learning Center questions? | Clinical Director | Section 1, just below |
 | 2 | Are \`events.teams.microsoft.com\` and \`teams.microsoft.com\` the right addresses for registration pages in our Microsoft Teams? | IT | Section 2, just below |
+| 3 | Will the Microsoft Teams registration form ask every family which center their child attends? Per-center numbers only work if it does. | Clinical Director, IT | Section 30, line 30.7 |
 
 **One more thing for the Clinical Director.** Section 24 lists three rules about who may approve what. They are built in and switched on. Please confirm them or say what the clinic's rule is.
 
@@ -74,7 +75,7 @@ You do not need to mark every line in one sitting. Hand the sheet back with what
 | 23 | Wording taken word for word from the project briefs. Listed for reference, not for re-review | |
 | 24 to 28 | The staff workspace: the two clinical approvals, building the module, publishing | Clinical Director |
 | 29 | A second sample module, used to demonstrate importing and publishing | Clinical Director |
-| 30 | Reporting: six decisions to confirm before any real numbers are entered | Clinical Director, compliance, IT |
+| 30 | Reporting: six decisions to confirm before any real numbers are entered, and open question 3 | Clinical Director, compliance, IT |
 | 31 to 34 | Training listings and the reporting pages, including what each number means | Clinical Director |
 
 **How drafts are marked in the product today**
@@ -116,7 +117,7 @@ Anything else is treated as "no link yet", and the page shows "Registration deta
 - [ ] No. Registration pages for our tenant are on: ______________________
 - [ ] Our tenant uses a different event type (for example Town hall or a third-party form). Details: ______________________
 
-Messages staff will see when a link is refused (shown in the listing editor, built in a later phase):
+Messages staff will see when a link is refused (shown in the listing editor):
 `;
 for (const [label, sample] of [['Nothing entered', ''], ['Not a web address', 'not a link'], ['Not https', 'http://events.teams.microsoft.com/event/1'], ['Has a username or password', 'https://u:p@events.teams.microsoft.com/event/1'], ['Another website', 'https://example.com/event'], ['A join link', 'https://teams.microsoft.com/l/meetup-join/abc']] as const) {
   const r = checkRegistrationUrl(sample);
@@ -600,6 +601,7 @@ These are built in as described. Each one is a choice the clinic should confirm 
 | 30.4 | In the demo, only the Clinical Director role can open reporting, enter numbers, correct them and manage listings. The master prompt allows a BCBA to be given this "if assigned". Who should have it? | |
 | 30.5 | The same permission covers entering numbers and seeing the report. The person entering can type a small count; nobody is shown one afterwards, on any screen or in the download. Should entering and viewing be two separate permissions? | |
 | 30.6 | The five "how did you hear about it" answers in section 33 are placeholders. They should match the question on the real Teams registration form, if the clinic decides to ask one, with whatever notice to families is required. | |
+| 30.7 | **Open question 3 from the cover.** The "Registrations by center" figures can only come from one place: a question on the Microsoft Teams registration form asking which center the child attends. The website cannot work it out, and staff must not estimate it or look families up. | ☐ Yes. The form will ask, as a required question, with the six centers as a fixed list, on every training.<br>☐ No. We will not ask. Switch per-center reporting off.<br>☐ Not decided yet. Leave the per-center boxes empty until it is. |
 `;
 
 section('31', 'Staff: training listings', 'Pages under /learn/staff/trainings. The audience line "Currently enrolled families only" and the button names on the public pages come from the master prompt.');

@@ -4,10 +4,11 @@ This project has a **locally runnable prototype-first** plan. The following item
 
 ## Required before any real use
 
-These are not optional and nothing below replaces them. The demo deliberately has neither, and says so on its own screens. **Do not put a real staff member, a real PowerPoint or a real family anywhere near the staff workspace until both are in place and signed off.**
+These are not optional and nothing below replaces them. The demo deliberately has none of the three, and says so on its own screens. **Do not put a real staff member, a real PowerPoint or a real family anywhere near the staff workspace until the first two are in place and signed off. Do not enter or quote a per-center number until the third is.**
 
 - [ ] **Real staff sign-in.** Staff must sign in through the organization's approved identity provider, with accounts that can be added, changed and removed by IT. What exists today is a demo role picker with five fictional roles and no password. It is not authentication. It works only on a local machine and is refused on every deployment (`LEARN_DEMO_STAFF` is ignored whenever `VERCEL` is set).
 - [ ] **Malware scanning of every uploaded file.** Every PowerPoint must be scanned by an approved service before anyone can open or download it, with a clear state for "scan pending" and "scan failed". What exists today only checks that a file really is a `.pptx` and is under 40 MB. Every stored file is marked "not scanned", and the screens say "Not scanned for malware in the demo".
+- [ ] **The Microsoft Teams registration form asks every family which center their child attends.** The "Registrations by center" figures on the reporting page can only come from this one question. The website has no other way to know a family's center, and staff must never estimate it or look families up to fill it in. Before the first real training: add the question to the registration form as a required question with the six centers as a fixed list (Pearland, Sugar Land, Katy, Plano, Cedar Hill, Austin), use the same form for every training, tell families on the form why it is asked, and confirm who may see the answers inside Teams. Until this is done, leave the per-center boxes empty when entering numbers. The reporting page then says "Not yet available" for centers, which is correct. If the clinic decides not to ask, per-center reporting should be switched off, not left empty.
 
 Two more that follow directly from those:
 
