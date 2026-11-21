@@ -52,6 +52,13 @@ export function getStaffStore(): LcStaffStore {
     if (parsed && parsed.v === 1 && Array.isArray(parsed.submissions)) {
       // A store written before modules existed gains an empty list.
       if (!Array.isArray(parsed.modules)) parsed.modules = [];
+      // A store written before training listings existed gains the seeded examples.
+      if (!Array.isArray(parsed.listings) || !Array.isArray(parsed.reports)) {
+        const fresh = buildDemoStaffStore().store;
+        parsed.listings = fresh.listings;
+        parsed.reports = fresh.reports;
+        parsed.audit.push(...fresh.audit.filter((a) => a.targetType !== 'submission'));
+      }
       store = parsed;
     }
   } catch {

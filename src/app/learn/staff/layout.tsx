@@ -8,6 +8,7 @@ import { LcStaffShell, type LcStaffNavItem } from '@/components/learn/staff/LcSt
 import { learnFlags } from '@/lib/learn/flags';
 import { getStaffActor } from '@/lib/learn/staff/guard';
 import { canOpenProduction, reviewQueue } from '@/lib/learn/staff/pipeline';
+import { reportTargets } from '@/lib/learn/staff/reports';
 import { LC_ROLE_LABEL, can } from '@/lib/learn/staff/roles';
 import { getStaffStore } from '@/lib/learn/staff/store';
 import { signOutAction } from './actions';
@@ -59,6 +60,11 @@ export default async function LearnStaffLayout({ children }: { children: React.R
     nav.push({ href: '/learn/staff/reviews', label: 'Reviews', icon: 'reviews', count: q.sources.filter((x) => !x.blocked).length + q.modules.filter((x) => !x.blocked).length });
   }
   if (canOpenProduction(actor)) nav.push({ href: '/learn/staff/modules', label: 'Modules', icon: 'modules' });
+  if (can(actor, 'training.manage')) nav.push({ href: '/learn/staff/trainings', label: 'Trainings', icon: 'trainings' });
+  if (can(actor, 'analytics.view')) {
+    const waiting = reportTargets(getStaffStore(), actor, new Date()).filter((x) => x.report === null).length;
+    nav.push({ href: '/learn/staff/analytics', label: 'Reporting', icon: 'reporting', count: waiting });
+  }
 
   return (
     <div data-lc-chrome="app" data-lc-scene="staff" className="lc-staff">

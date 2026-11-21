@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Clock, MessageSquareWarning, PencilLine, CircleCheck, FileStack, Layers, Plus, Presentation } from 'lucide-react';
+import { ArrowRight, CalendarDays, ChartColumn, Clock, MessageSquareWarning, PencilLine, CircleCheck, FileStack, Layers, Plus, Presentation } from 'lucide-react';
 import { getDemoStaff } from '@/data/learn/demo/staff';
 import { LcStatusChip } from '@/components/learn/staff/LcStatusChip';
 import { getStaffActor } from '@/lib/learn/staff/guard';
+import { listListings } from '@/lib/learn/staff/listings';
 import { canOpenProduction, productionList, reviewQueue } from '@/lib/learn/staff/pipeline';
+import { reportTargets } from '@/lib/learn/staff/reports';
 import { can } from '@/lib/learn/staff/roles';
 import { getStaffStore } from '@/lib/learn/staff/store';
 import { LC_STATUS, listSubmissions } from '@/lib/learn/staff/submissions';
@@ -32,6 +34,13 @@ export default async function LearnStaffOverviewPage() {
   const queue = reviewQueue(store, actor);
   const production = canOpenProduction(actor);
   const producing = productionList(store, actor);
+  const managesTrainings = can(actor, 'training.manage');
+  const seesReporting = can(actor, 'analytics.view');
+  const listings = listListings(store, actor);
+  const nowMs = Date.now();
+  const upcomingListings = listings.filter((l) => (l.training.listingStatus === 'scheduled' || l.training.listingStatus === 'registration_closed') && (!l.training.endAtUtc || new Date(l.training.endAtUtc).getTime() >= nowMs)).length;
+  const draftListings = listings.filter((l) => l.training.listingStatus === 'draft').length;
+  const numbersWaiting = reportTargets(store, actor, new Date(nowMs)).filter((x) => x.report === null).length;
 
   return (
     <>
@@ -141,6 +150,32 @@ export default async function LearnStaffOverviewPage() {
             <Layers width={20} height={20} strokeWidth={1.75} aria-hidden="true" />
             Open modules
           </Link>
+        </section>
+      ) : null}
+
+      {managesTrainings || seesReporting ? (
+        <section aria-labelledby="lc-trainings-title" className="lc-solid lc-panel" data-cast="coral">
+          <h2 id="lc-trainings-title" className="lc-h2">
+            Trainings and reporting
+          </h2>
+          <p className="lc-muted">
+            {managesTrainings ? `${upcomingListings} upcoming public ${upcomingListings === 1 ? 'listing' : 'listings'}, ${draftListings} in draft. ` : ''}
+            {seesReporting ? `${numbersWaiting} finished ${numbersWaiting === 1 ? 'training is' : 'trainings are'} waiting for numbers.` : ''}
+          </p>
+          <div className="lc-action-row">
+            {managesTrainings ? (
+              <Link href="/learn/staff/trainings" className="lc-btn lc-btn-secondary">
+                <CalendarDays width={20} height={20} strokeWidth={1.75} aria-hidden="true" />
+                Open trainings
+              </Link>
+            ) : null}
+            {seesReporting ? (
+              <Link href="/learn/staff/analytics" className="lc-btn lc-btn-secondary">
+                <ChartColumn width={20} height={20} strokeWidth={1.75} aria-hidden="true" />
+                Open reporting
+              </Link>
+            ) : null}
+          </div>
         </section>
       ) : null}
 

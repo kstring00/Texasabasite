@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ctDateParts, formatCtDate, formatCtTimeRange, minutesBetween } from './time';
+import { ctDateParts, ctDay, ctInputParts, ctMonthKey, ctWallTimeToUtc, formatCtDate, formatCtTimeRange, minutesBetween } from './time';
 
 describe('Central Time formatting', () => {
   it('shows standard time (CST, UTC-6) in winter', () => {
@@ -26,5 +26,33 @@ describe('Central Time formatting', () => {
   it('gives the pieces for a date block and the length in minutes', () => {
     expect(ctDateParts('2026-07-15T23:00:00Z')).toEqual({ month: 'JUL', day: '15', weekday: 'Wed', year: '2026' });
     expect(minutesBetween('2026-07-15T23:00:00Z', '2026-07-16T00:30:00Z')).toBe(90);
+  });
+});
+
+describe('Central Time form input', () => {
+  it('uses the summer offset in summer and the winter offset in winter', () => {
+    expect(ctWallTimeToUtc('2026-07-15', '18:00')).toBe('2026-07-15T23:00:00.000Z');
+    expect(ctWallTimeToUtc('2026-12-15', '18:00')).toBe('2026-12-16T00:00:00.000Z');
+  });
+  it('gets both sides of the March change right', () => {
+    expect(ctWallTimeToUtc('2026-03-07', '18:00')).toBe('2026-03-08T00:00:00.000Z');
+    expect(ctWallTimeToUtc('2026-03-08', '18:00')).toBe('2026-03-08T23:00:00.000Z');
+  });
+  it('refuses the hour that is skipped in March', () => {
+    expect(ctWallTimeToUtc('2026-03-08', '02:30')).toBeNull();
+  });
+  it('resolves the repeated hour in November to the first one', () => {
+    expect(ctWallTimeToUtc('2026-11-01', '01:30')).toBe('2026-11-01T06:30:00.000Z');
+  });
+  it('refuses dates and times that are not real', () => {
+    expect(ctWallTimeToUtc('2026-02-30', '18:00')).toBeNull();
+    expect(ctWallTimeToUtc('2026-13-01', '18:00')).toBeNull();
+    expect(ctWallTimeToUtc('tomorrow', '6pm')).toBeNull();
+  });
+  it('reads a stored instant back as the same form values', () => {
+    const iso = ctWallTimeToUtc('2026-03-12', '18:00')!;
+    expect(ctInputParts(iso)).toEqual({ date: '2026-03-12', time: '18:00' });
+    expect(ctDay('2026-12-16T00:00:00.000Z')).toBe('2026-12-15');
+    expect(ctMonthKey('2026-12-01T03:00:00.000Z')).toBe('2026-11');
   });
 });

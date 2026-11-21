@@ -46,12 +46,16 @@ export function trainingView(t: LcTraining, now: Date): LcTrainingView {
   return checkRegistrationUrl(t.registrationUrl).ok ? 'open' : 'details_soon';
 }
 
-/** Upcoming first by date; listings with no date yet go last; finished and cancelled after those. */
+/** Behind us: finished, or cancelled with its date already gone. A cancelled training that is still ahead stays with the upcoming ones, so families see the change. */
+export function isPastTraining(t: LcTraining, now: Date): boolean {
+  const v = trainingView(t, now);
+  if (v === 'completed') return true;
+  return v === 'cancelled' && !!t.endAtUtc && new Date(t.endAtUtc).getTime() < now.getTime();
+}
+
+/** Upcoming first by date; listings with no date yet go last; cancelled after those; past trainings last, newest first. */
 export function sortTrainings(list: LcTraining[], now: Date): LcTraining[] {
-  const rank = (t: LcTraining) => {
-    const v = trainingView(t, now);
-    return v === 'completed' ? 2 : v === 'cancelled' ? 1 : 0;
-  };
+  const rank = (t: LcTraining) => (isPastTraining(t, now) ? 2 : trainingView(t, now) === 'cancelled' ? 1 : 0);
   const time = (t: LcTraining) => (t.startAtUtc ? new Date(t.startAtUtc).getTime() : Number.MAX_SAFE_INTEGER);
-  return [...list].sort((a, b) => rank(a) - rank(b) || time(a) - time(b));
+  return [...list].sort((a, b) => rank(a) - rank(b) || (rank(a) === 2 ? time(b) - time(a) : time(a) - time(b)));
 }

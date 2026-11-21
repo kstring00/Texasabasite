@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowLeft, ClipboardCheck, FileStack, Layers, LayoutDashboard, Menu, Presentation, X, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, CalendarDays, ChartColumn, ClipboardCheck, FileStack, Layers, LayoutDashboard, Menu, Presentation, X, type LucideIcon } from 'lucide-react';
 
-export type LcStaffNavItem = { href: string; label: string; icon: 'overview' | 'mine' | 'all' | 'reviews' | 'modules'; count?: number };
-const ICONS: Record<LcStaffNavItem['icon'], LucideIcon> = { overview: LayoutDashboard, mine: Presentation, all: FileStack, reviews: ClipboardCheck, modules: Layers };
+export type LcStaffNavItem = { href: string; label: string; icon: 'overview' | 'mine' | 'all' | 'reviews' | 'modules' | 'trainings' | 'reporting'; count?: number };
+const ICONS: Record<LcStaffNavItem['icon'], LucideIcon> = { overview: LayoutDashboard, mine: Presentation, all: FileStack, reviews: ClipboardCheck, modules: Layers, trainings: CalendarDays, reporting: ChartColumn };
 
 /**
  * The staff workspace frame: a dark sidebar beside the content on a desktop, a drawer opened by

@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { lcCategories } from '@/data/learn/categories';
 import type { LcManifest } from '../manifest';
 import { can, type LcStaffActor, type LcStaffRole } from './roles';
+import type { LcListing } from './listings';
+import type { LcAggregateReport } from './reports';
 
 /**
  * PowerPoint submissions: the records, the rules and every change a contributor can make.
@@ -89,7 +91,7 @@ export type LcReview = {
   targetHash?: string;
 };
 
-export type LcAuditEvent = { id: string; actorId: string; actorRole: LcStaffRole; action: string; targetType: 'submission'; targetId: string; targetVersionId: string | null; at: string; note: string };
+export type LcAuditEvent = { id: string; actorId: string; actorRole: LcStaffRole; action: string; targetType: 'submission' | 'training' | 'report'; targetId: string; targetVersionId: string | null; at: string; note: string };
 
 export type LcModuleStatus = 'draft' | 'final_review' | 'changes_requested' | 'rejected' | 'final_approved' | 'published' | 'withdrawn';
 
@@ -118,8 +120,12 @@ export type LcModuleVersion = {
   withdrawnReason: string;
 };
 
-export type LcStaffStore = { v: 1; submissions: LcSubmission[]; versions: LcSubmissionVersion[]; assets: LcAsset[]; reviews: LcReview[]; audit: LcAuditEvent[]; modules: LcModuleVersion[] };
-export const emptyStaffStore = (): LcStaffStore => ({ v: 1, submissions: [], versions: [], assets: [], reviews: [], audit: [], modules: [] });
+export type LcStaffStore = {
+  v: 1; submissions: LcSubmission[]; versions: LcSubmissionVersion[]; assets: LcAsset[]; reviews: LcReview[]; audit: LcAuditEvent[]; modules: LcModuleVersion[];
+  /** Website listings for Teams trainings, and the aggregate counts typed in after each one. */
+  listings: LcListing[]; reports: LcAggregateReport[];
+};
+export const emptyStaffStore = (): LcStaffStore => ({ v: 1, submissions: [], versions: [], assets: [], reviews: [], audit: [], modules: [], listings: [], reports: [] });
 
 /* ── Input ───────────────────────────────────────────────────────────────── */
 

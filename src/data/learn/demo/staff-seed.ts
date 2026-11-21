@@ -1,5 +1,9 @@
 import { createHash } from 'node:crypto';
 import { LC_PPTX_MIME, makeSyntheticPptx } from '@/lib/learn/staff/pptx';
+import type { LcListing } from '@/lib/learn/staff/listings';
+import type { LcAggregateReport, LcReportValues } from '@/lib/learn/staff/reports';
+import { ctDay, ctWallTimeToUtc } from '@/lib/learn/time';
+import type { LcListingStatus } from '@/lib/learn/trainings';
 import { emptyChecklist, emptyStaffStore, type LcAsset, type LcChecklistState, type LcStaffStore, type LcSubmission, type LcSubmissionVersion, type LcWorkflowStatus } from '@/lib/learn/staff/submissions';
 
 /**
@@ -44,8 +48,116 @@ const SEEDS: Seed[] = [
   },
 ];
 
-export function buildDemoStaffStore(): { store: LcStaffStore; files: Map<string, Uint8Array> } {
+/**
+ * DEMO SAMPLE. Example training listings and made-up totals for the local staff demo.
+ * Dates are counted from the day the demo is reset, so the reporting page always has something
+ * in "last 30 days" and "last 90 days". No date here is a real event, no number here is real
+ * attendance, and no presenter is named. Every listing is labelled as an example on the public pages.
+ */
+type TrainingSeed = {
+  id: string; title: string; summary: string; description: string[]; objectives: string[]; categoryId: string; related?: string[];
+  /** Days from the reset day. Negative is in the past. */
+  dayOffset: number; status: LcListingStatus;
+  reports?: (Omit<LcReportValues, 'reportReviewedOn' | 'sourceLabel'> & { reviewedAfterDays: number; reason?: string })[];
+};
+
+const none = { registrationsApproved: null, attendancesTotal: null, centerCounts: null, sourceCounts: null };
+const TRAINING_SEEDS: TrainingSeed[] = [
+  {
+    id: 'seed-training-groups', title: 'How group trainings work: live session', categoryId: 'cat-caregiver-support', dayOffset: -110, status: 'completed',
+    summary: 'An example listing. A walk through what a live caregiver group training is and what to expect when you join.',
+    description: ['This is an example listing for the staff demo. It is not a real event.', 'The session explains how virtual group trainings work, who they are for, and where registration and joining details come from.'],
+    objectives: ['Explain what happens in a group training.', 'Know where registration and joining details come from.'],
+    reports: [{ reviewedAfterDays: 2, trainingHeld: true, registrationsTotal: 24, registrationsApproved: 21, attendancesTotal: 17, centerCounts: { pearland: 4, 'sugar-land': 11, katy: 7, plano: 0, 'cedar-hill': 0, austin: 0 }, sourceCounts: { clinical_team: 14, center_message: 6, website: 2, another_family: 1, other: 1 } }],
+  },
+  {
+    id: 'seed-training-abcs', title: 'Understanding the ABCs of Behavior: live session', categoryId: 'cat-understanding-behavior', related: ['abcs-of-behavior'], dayOffset: -75, status: 'completed',
+    summary: 'An example listing. The ABC model explained live, with time for general questions.',
+    description: ['This is an example listing for the staff demo. It is not a real event.', 'The session goes alongside the self-paced module of the same name and uses made-up everyday examples.'],
+    objectives: ['Hear the ABC model explained and ask general questions.', 'Practice sorting everyday examples into the three parts.'],
+    reports: [{ reviewedAfterDays: 1, trainingHeld: true, registrationsTotal: 31, registrationsApproved: 28, attendancesTotal: 22, centerCounts: { pearland: 6, 'sugar-land': 13, katy: 9, plano: 3, 'cedar-hill': 0, austin: 0 }, sourceCounts: null }],
+  },
+  {
+    id: 'seed-training-routines', title: 'Everyday routines: questions and answers', categoryId: 'cat-routines', dayOffset: -47, status: 'completed',
+    summary: 'An example listing. A general question and answer session about mornings, mealtimes and bedtime.',
+    description: ['This is an example listing for the staff demo. It is not a real event.', 'Caregivers bring general questions about daily routines. Nothing in the session is advice for an individual child.'],
+    objectives: ['Hear general ideas about daily routines.', 'Leave with questions to take to your own clinical team.'],
+    // Approved registrations were not on the report, so that number is left unknown. It is not zero.
+    reports: [{ reviewedAfterDays: 3, trainingHeld: true, registrationsTotal: 18, registrationsApproved: null, attendancesTotal: 14, centerCounts: null, sourceCounts: null }],
+  },
+  {
+    id: 'seed-training-cancelled', title: 'Getting ready for transitions: live session', categoryId: 'cat-routines', dayOffset: -33, status: 'cancelled',
+    summary: 'An example listing. General ideas about moving from one activity to the next.',
+    description: ['This is an example listing for the staff demo. It is not a real event.', 'It is shown as cancelled so staff can see how a cancelled training looks to caregivers.'],
+    objectives: ['Describe what a transition is.', 'List questions to bring to your clinical team about transitions.'],
+    reports: [{ reviewedAfterDays: 1, trainingHeld: false, registrationsTotal: 9, ...none }],
+  },
+  {
+    id: 'seed-training-communication', title: 'Many ways to communicate: live session', categoryId: 'cat-communication', dayOffset: -19, status: 'completed',
+    summary: 'An example listing. A general look at the different ways children communicate.',
+    description: ['This is an example listing for the staff demo. It is not a real event.', 'The session uses made-up examples only and points families to their own clinical team for anything specific.'],
+    objectives: ['Name several ways a child may communicate.', 'Know what to share with your clinical team.'],
+    reports: [
+      { reviewedAfterDays: 1, trainingHeld: true, registrationsTotal: 27, registrationsApproved: 25, attendancesTotal: 16, centerCounts: { pearland: 5, 'sugar-land': 12, katy: 8, plano: 0, 'cedar-hill': 2, austin: 0 }, sourceCounts: null },
+      { reviewedAfterDays: 4, reason: 'The first entry was read before the Teams report was final. Attendances corrected.', trainingHeld: true, registrationsTotal: 27, registrationsApproved: 25, attendancesTotal: 19, centerCounts: { pearland: 5, 'sugar-land': 12, katy: 8, plano: 0, 'cedar-hill': 2, austin: 0 }, sourceCounts: null },
+    ],
+  },
+  {
+    // Finished, and nobody has entered its numbers yet. The reporting page shows that plainly.
+    id: 'seed-training-questions', title: 'Questions to bring to your BCBA: live session', categoryId: 'cat-caregiver-support', dayOffset: -8, status: 'scheduled',
+    summary: 'An example listing. Preparing general questions for your next meeting with your clinical team.',
+    description: ['This is an example listing for the staff demo. It is not a real event.', 'The session helps caregivers prepare for meetings with their own clinical team.'],
+    objectives: ['Prepare three questions for your next meeting with your clinical team.'],
+  },
+  {
+    id: 'seed-training-mornings', title: 'Visual schedules for mornings: live session', categoryId: 'cat-routines', dayOffset: 16, status: 'scheduled',
+    summary: 'An example listing. What a visual schedule is and how families talk about them with their clinical team.',
+    description: ['This is an example listing for the staff demo. It is not a real event, and its date is counted from the day the demo was reset.', 'No registration link has been added, so caregivers see “Registration details coming soon”.'],
+    objectives: ['Say what a visual schedule is.', 'Know what to ask your clinical team about using one.'],
+  },
+  {
+    id: 'seed-training-team', title: 'Working with your clinical team: live session', categoryId: 'cat-aba-foundations', dayOffset: 44, status: 'draft',
+    summary: '', description: [], objectives: [],
+  },
+];
+
+const dayPlus = (day: string, n: number) => new Date(Date.parse(`${day}T12:00:00Z`) + n * 86400000).toISOString().slice(0, 10);
+
+function seedTrainings(store: LcStaffStore, now: Date) {
+  const today = ctDay(now.toISOString());
+  const stamp = (day: string, time: string) => ctWallTimeToUtc(day, time) ?? `${day}T18:00:00.000Z`;
+  for (const s of TRAINING_SEEDS) {
+    const day = dayPlus(today, s.dayOffset);
+    const created = stamp(dayPlus(day, -30), '10:00');
+    const published = s.status === 'draft' ? null : stamp(dayPlus(day, -28), '10:00');
+    const listing: LcListing = {
+      id: s.id, rev: 1, presenterApproved: false, createdBy: 'demo-director', createdAt: created, updatedBy: 'demo-director', updatedAt: published ?? created, publishedAt: published,
+      training: {
+        id: s.id, slug: `example-${s.id.replace('seed-training-', '')}-live-session`, title: s.title, summary: s.summary, description: s.description, objectives: s.objectives,
+        startAtUtc: stamp(day, '18:00'), endAtUtc: stamp(day, '19:00'), timeZone: 'America/Chicago', presenterLabel: null, categoryId: s.categoryId, relatedModuleIds: s.related ?? [],
+        registrationUrl: null, listingStatus: s.status, isExample: true, lastUpdated: published ?? created,
+      },
+    };
+    store.listings.push(listing);
+    const log = (n: number, action: string, at: string, type: 'training' | 'report' = 'training', note = '', versionId: string | null = null) =>
+      store.audit.push({ id: `${s.id}-a${n}`, actorId: 'demo-director', actorRole: 'clinical_director', action, targetType: type, targetId: s.id, targetVersionId: versionId, at, note });
+    log(1, 'listing_created', created);
+    if (published) log(2, 'listing_published', published);
+    if (s.status === 'completed') log(3, 'listing_completed', stamp(dayPlus(day, 1), '09:00'));
+    if (s.status === 'cancelled') log(3, 'listing_cancelled', stamp(dayPlus(day, -2), '09:00'));
+    (s.reports ?? []).forEach((r, i) => {
+      const { reviewedAfterDays, reason, ...values } = r;
+      const reviewed = dayPlus(day, reviewedAfterDays);
+      const report: LcAggregateReport = { ...values, id: `${s.id}-r${i + 1}`, trainingId: s.id, revision: i + 1, reason: reason ?? '', reportReviewedOn: reviewed, sourceLabel: 'Microsoft Teams organizer report', enteredBy: 'demo-director', enteredAt: stamp(reviewed, '11:00') };
+      store.reports.push(report);
+      log(10 + i, i === 0 ? 'report_entered' : 'report_corrected', report.enteredAt, 'report', i === 0 ? 'Revision 1' : `Revision ${i + 1}: ${reason ?? ''}`, report.id);
+    });
+  }
+}
+
+export function buildDemoStaffStore(now: Date = new Date()): { store: LcStaffStore; files: Map<string, Uint8Array> } {
   const store = emptyStaffStore();
+  seedTrainings(store, now);
   const files = new Map<string, Uint8Array>();
   for (const s of SEEDS) {
     const submission: LcSubmission = {

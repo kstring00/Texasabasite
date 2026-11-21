@@ -33,6 +33,8 @@ You do not need to mark every line in one sitting. Hand the sheet back with what
 | 23 | Wording taken word for word from the project briefs. Listed for reference, not for re-review | |
 | 24 to 28 | The staff workspace: the two clinical approvals, building the module, publishing | Clinical Director |
 | 29 | A second sample module, used to demonstrate importing and publishing | Clinical Director |
+| 30 | Reporting: six decisions to confirm before any real numbers are entered | Clinical Director, compliance, IT |
+| 31 to 34 | Training listings and the reporting pages, including what each number means | Clinical Director |
 
 **How drafts are marked in the product today**
 
@@ -319,7 +321,7 @@ This is the whole sample module, word for word as it appears on screen. It was w
 |---|---|---|---|
 | 11.1 | Under the page title | Virtual group sessions for currently enrolled families, held in Microsoft Teams. This training is available to currently enrolled families. | |
 | 11.2 | Under the page title | You’ll complete registration through Microsoft Teams. All times are Central Time (CT). | |
-| 11.3 | Section headings | Upcoming / Finished | |
+| 11.3 | Section headings | Upcoming / Past trainings | |
 | 11.4 | Date block with no date | Example / Date to come | |
 | 11.5 | Card, no date | No date. This is an example listing. | |
 | 11.6 | Card, no date, real listing | Date and time to be announced. | |
@@ -799,6 +801,261 @@ A synthetic module used to demonstrate importing, final review, publishing and w
 | 29.53 | Completion screen takeaway | A group training is a live online session on a general topic, for enrolled families. | |
 | 29.54 | Completion screen takeaway | You register in Microsoft Teams, and joining details come by email. | |
 | 29.55 | Completion screen takeaway | Questions about your own child go to your clinical team. | |
+
+## Training listings and reporting (added in phase 4)
+
+### 30. For the Clinical Director, compliance and IT: reporting decisions to confirm
+
+These are built in as described. Each one is a choice the clinic should confirm or change before any real number is entered. They are not wording.
+
+| No. | What is built | Please confirm or change |
+|---|---|---|
+| 30.1 | A count under **5** for one center, or one "how did you hear" answer, at one training is never shown. It is added to "Other / not displayed" together with at least one other count, so it cannot be worked out by subtracting. The master prompt proposes 5 and says compliance sets the number. | |
+| 30.2 | The splits by center and by "how did you hear" count **registrations submitted**, because that is where the Teams registration form would ask. They do not count attendances. | |
+| 30.3 | The attendance rate is **attendances divided by approved registrations**, using only trainings that have both numbers, and leaving out any training where attendances are higher than approved registrations. | |
+| 30.4 | In the demo, only the Clinical Director role can open reporting, enter numbers, correct them and manage listings. The master prompt allows a BCBA to be given this "if assigned". Who should have it? | |
+| 30.5 | The same permission covers entering numbers and seeing the report. The person entering can type a small count; nobody is shown one afterwards, on any screen or in the download. Should entering and viewing be two separate permissions? | |
+| 30.6 | The five "how did you hear about it" answers in section 33 are placeholders. They should match the question on the real Teams registration form, if the clinic decides to ask one, with whatever notice to families is required. | |
+
+### 31. Staff: training listings
+
+Pages under /learn/staff/trainings. The audience line "Currently enrolled families only" and the button names on the public pages come from the master prompt.
+
+| No. | Where | Draft wording | OK, or change to |
+|---|---|---|---|
+| 31.1 | Menu and page title | Trainings | |
+| 31.2 | Page heading | Website listings for live trainings | |
+| 31.3 | Under the heading | The training, its registration and its attendance all live in Microsoft Teams. A listing here is only the public notice. It never holds a link for joining a meeting. | |
+| 31.4 | Button | New listing | |
+| 31.5 | Group headings | Public and upcoming / Finished, not yet marked completed / Drafts / Completed / Cancelled / Archived | |
+| 31.6 | Empty groups | No upcoming training is listed. / No drafts. | |
+| 31.7 | Row, no date | No date yet | |
+| 31.8 | Chip on a public listing with no link | No registration link | |
+| 31.9 | New listing, under the heading | Create the event in Microsoft Teams first. This saves a draft that only staff can see. You can add the rest later and publish when it is ready. | |
+| 31.10 | Field labels | Title / Short summary / Description / Learning objectives / Topic / Date and time / Date / Starts / Ends / Presenter / Related modules / Microsoft Teams registration link | |
+| 31.11 | Hint, summary | One or two sentences. Shown on the training card. | |
+| 31.12 | Hint, description | General education only. Leave a blank line between paragraphs. Nothing about a real child or family. | |
+| 31.13 | Hint, objectives | One per line, in plain language. | |
+| 31.14 | Hint, date and time | Central Time (CT). The site works out daylight saving time for the date you choose. | |
+| 31.15 | Hint, presenter | Leave empty unless the presenter has agreed to be named. In this demo, do not type a real person’s name. | |
+| 31.16 | Tick box, presenter | The presenter has agreed to be named on the public page. | |
+| 31.17 | Related modules, none published | No module is published yet, so there is nothing to link. | |
+| 31.18 | Hint, related modules | Only published modules can be linked. | |
+| 31.19 | Hint, registration link | Paste the event’s registration page from Microsoft Teams. It starts with https://events.teams.microsoft.com. Never paste a link for joining the meeting. Without a link, caregivers see “Registration details coming soon”. | |
+| 31.20 | Under the form | Audience: Currently enrolled families only. This is shown on every listing and cannot be changed here. | |
+| 31.21 | Save buttons | Create draft / Save draft / Save changes to the public listing | |
+| 31.22 | After creating | Draft created. Only staff can see it until you publish. | |
+| 31.23 | Refused: no title | Give the training a title. | |
+| 31.24 | Refused: topic | Choose a topic from the list. | |
+| 31.25 | Refused: date parts missing | Add the date. / Add the start time. / Add the end time. | |
+| 31.26 | Refused: a time that does not exist | That date and start time do not exist in Central Time. Check the date, and remember the clocks change in March. | |
+| 31.27 | Refused: end before start | The end time must be after the start time. | |
+| 31.28 | Refused: too long | A training cannot be longer than eight hours. | |
+| 31.29 | Refused: presenter not confirmed | Tick the box to confirm the presenter has agreed to be named, or leave the name out. | |
+| 31.30 | Refused: module not published | Only published modules can be linked to a training. | |
+| 31.31 | Refused link: not a full address | This is not a complete web address. | |
+| 31.32 | Refused link: not https | The link must start with https://. | |
+| 31.33 | Refused link: not Teams | The link must be a Microsoft Teams registration page. | |
+| 31.34 | Refused link: a join link | This looks like a link for joining a meeting. Use the event registration link instead. | |
+| 31.35 | Refused: any field | Some details need another look. Nothing was saved. | |
+| 31.36 | Refused: public listing left incomplete | This listing is public, so it has to stay complete. Nothing was saved. | |
+| 31.37 | Refused: edited elsewhere | This listing was changed somewhere else since you opened it. Reload the page to see the latest version, then try again. | |
+| 31.38 | Refused: role | Your role cannot manage training listings. | |
+| 31.39 | Refused: closed listing | A completed, cancelled or archived listing can no longer be edited. | |
+| 31.40 | Status: Draft | Only staff can see this. Caregivers cannot. | |
+| 31.41 | Status: Scheduled | Public. Caregivers can see this listing. | |
+| 31.42 | Status: Registration closed | Public, with no registration button. | |
+| 31.43 | Status: Completed | Public, shown as finished. | |
+| 31.44 | Status: Cancelled | Public, shown as cancelled. | |
+| 31.45 | Status: Archived | Removed from the public pages. | |
+| 31.46 | Preview headings | How caregivers see it / Preview | |
+| 31.47 | Under the preview: link checked | Caregivers see a “Request registration” button. It opens the Microsoft Teams registration page in a new tab. | |
+| 31.48 | Under the preview: no link | Caregivers see “Registration details coming soon” and no registration button. | |
+| 31.49 | Under the preview: closed | Caregivers see “Registration closed” and no registration button. | |
+| 31.50 | Under the preview: completed | Caregivers see this training as completed, with no registration button. | |
+| 31.51 | Under the preview: cancelled | Caregivers see this training as cancelled, with no registration button. | |
+| 31.52 | Warning, no link | No registration link has been added. Caregivers will see “Registration details coming soon” and no registration button. | |
+| 31.53 | Before publishing | Before this can be published: | |
+| 31.54 | What is missing | Add a title. / Add a short summary, one or two sentences. / Add a description. / Add at least one learning objective. / Choose a topic. / Add the date, start time and end time. / The start time has already passed. Choose a date in the future. | |
+| 31.55 | Refused: not ready | This listing is not ready to publish yet. | |
+| 31.56 | Status buttons | Publish listing / Archive draft / Close registration / Reopen registration / Cancel training / Mark completed / Archive listing | |
+| 31.57 | Confirm publish | Publish this listing? Caregivers will be able to see it straight away. | |
+| 31.58 | Confirm cancel | Cancel this training? The public page will say it was cancelled. This cannot be undone here. | |
+| 31.59 | Confirm archive, draft | Archive this draft? It was never public. It will move to the archived list. | |
+| 31.60 | Confirm archive, finished or cancelled | Archive this listing? It will be removed from the public pages. Any numbers entered for it stay in reporting. | |
+| 31.61 | Confirm buttons | Yes, publish / Yes, cancel it / Yes, archive / Not yet | |
+| 31.62 | End time has passed | This training’s end time has passed. Caregivers already see it as completed. Mark it completed to finish the listing. | |
+| 31.63 | Refused: already finished | This training has already finished. Mark it completed instead. | |
+| 31.64 | Refused: not finished | This training has not finished yet. It can be marked completed after its end time. | |
+| 31.65 | Public listing, above the form | This listing is public. A saved change shows to caregivers straight away, with today as the “last updated” date. | |
+| 31.66 | Numbers, none yet | No totals have been entered for this training yet. | |
+| 31.67 | Numbers buttons | Enter the numbers / Correct the numbers | |
+| 31.68 | History entries | Draft created / Draft saved / Public listing updated / Published / Registration closed / Registration reopened / Cancelled / Marked completed / Archived | |
+| 31.69 | Staff overview panel | Trainings and reporting | |
+| 31.70 | Staff overview buttons | Open trainings / Open reporting | |
+
+### 32. Staff: the reporting page
+
+The page at /learn/staff/analytics, and the file it can download. **The eight definitions at the end are what every reader will rely on to understand the numbers. Please read them closely.** The banner is the master prompt’s exact wording.
+
+| No. | Where | Draft wording | OK, or change to |
+|---|---|---|---|
+| 32.1 | Banner on every reporting page and in the download (master prompt wording) | Illustrative demo data — not actual caregiver attendance | |
+| 32.2 | Menu and page title | Reporting | |
+| 32.3 | Page heading | Caregiver participation | |
+| 32.4 | Under the heading | Totals only, typed in by staff from the Microsoft Teams report after each training. This page cannot show who registered or attended, and nothing here is connected to Teams. | |
+| 32.5 | Buttons | Download totals (CSV) / Print / Show | |
+| 32.6 | Filter labels | Period / From / To / Topic / Training | |
+| 32.7 | Period choices | Last 30 days / Last 90 days / Year to date / Custom dates | |
+| 32.8 | Beside From and To | custom dates only | |
+| 32.9 | Topic and training choices | All topics / All trainings | |
+| 32.10 | Dates not readable | Those dates could not be read, so this shows the last 90 days instead. | |
+| 32.11 | Dates the wrong way round | The start date is after the end date, so this shows the last 90 days instead. | |
+| 32.12 | Period too long | That is more than three years, so this shows the last 90 days instead. | |
+| 32.13 | Summary tiles | Trainings held / Registrations submitted / Approved registrations / Attendances / Attendance rate | |
+| 32.14 | When a number has not been entered | Not yet available | |
+| 32.15 | Under "Trainings held" | Recorded by staff as having taken place. | |
+| 32.16 | Under "Trainings held", when some are waiting | [n] more finished, numbers not entered yet. [n] cancelled or not held. | |
+| 32.17 | Under a total | No finished trainings in this period. | |
+| 32.18 | Under a total | Not entered yet for any of the [n] finished trainings. | |
+| 32.19 | Under a total | From [n] of [n] finished trainings. [n] not yet available. | |
+| 32.20 | Under a total | From all [n] finished trainings. | |
+| 32.21 | Under "Attendances" | One caregiver at three trainings counts three times. | |
+| 32.22 | Under the rate | [n] attendances out of [n] approved registrations, from [n] of [n] trainings held. | |
+| 32.23 | Under the rate, none | No trainings held in this period. | |
+| 32.24 | Under the rate, not comparable | Needs attendances and approved registrations for the same training. | |
+| 32.25 | Section | Numbers waiting to be entered | |
+| 32.26 | Section | Participation over time | |
+| 32.27 | Under it | By [week or month]. A [week or month] with no number entered has no point on the chart. It is not drawn as zero. | |
+| 32.28 | Chart buttons | View as chart / View as table | |
+| 32.29 | Table headings | Week starting / Month / Trainings held / Registrations submitted / Attendances | |
+| 32.30 | Table, a period with no trainings | No trainings | |
+| 32.31 | Section | Most-attended topics | |
+| 32.32 | Section, empty | No training was held in this period. | |
+| 32.33 | Section | By training | |
+| 32.34 | Table headings | Training / Status / Registrations / Approved / Attendances | |
+| 32.35 | Status of each training | Held / Not held / Cancelled / Held, numbers not entered yet / Upcoming | |
+| 32.36 | Cells | Not due yet / Not held | |
+| 32.37 | Row buttons | Enter numbers / Correct | |
+| 32.38 | Section, empty | No training falls in this period. Try a longer period or a different topic. | |
+| 32.39 | Sections | Registrations by center / How families heard about it | |
+| 32.40 | Row with nothing to show | None, or too few to show | |
+| 32.41 | Row | Other / not displayed | |
+| 32.42 | Under a split | [n] registrations from [n] of [n] trainings with numbers entered. A count under 5 for one training is never shown on its own. It is added to “Other / not displayed” together with at least one other count, so it cannot be worked out by subtracting. | |
+| 32.43 | Split not entered | No training in this period has this split entered. | |
+| 32.44 | Section | What the numbers mean | |
+| 32.45 | Definition: Trainings held | Trainings in the period that a member of staff recorded as having taken place. | |
+| 32.46 | Definition: Registrations submitted | How many registration requests Microsoft Teams received for a training, whether or not they were approved. | |
+| 32.47 | Definition: Approved registrations | How many of those requests staff approved in Microsoft Teams. | |
+| 32.48 | Definition: Attendances | The attendee count on the Microsoft Teams report for one training. Teams counts each training separately, so one caregiver who came to three trainings is three attendances. This is not a count of different people. | |
+| 32.49 | Definition: Attendance rate | Attendances divided by approved registrations, using only trainings that have both numbers. It is left out when the two numbers cannot be compared. | |
+| 32.50 | Definition: By center and by source | Registrations submitted, split by the center or the answer a family chose when registering. Shown only when the registration form asked. | |
+| 32.51 | Definition: Other / not displayed | Counts under 5 for a single center or source at one training are never shown on their own. They are added together here, with at least one other count, so no small group can be worked out. | |
+| 32.52 | Definition: Not yet available | The number has not been entered. It does not mean zero. | |
+| 32.53 | After saving | Numbers saved. | |
+| 32.54 | After a correction | Correction saved. The earlier entry is kept in the history. | |
+
+### 33. Staff: entering and correcting the numbers
+
+The page reached from "Enter numbers" or "Correct". It has boxes for whole numbers, a date and fixed lists only.
+
+| No. | Where | Draft wording | OK, or change to |
+|---|---|---|---|
+| 33.1 | Headings | Enter the numbers / Correct the numbers / Totals for this training / Correction to revision [n] | |
+| 33.2 | Guidance at the top | These are totals only. Read them from the Microsoft Teams organizer report and type them in. Do not paste names, email addresses, attendance spreadsheets, or anything about a child or family. This page has nowhere to keep them. | |
+| 33.3 | Label | Date you read the report | |
+| 33.4 | Hint | The day you looked at the numbers, in Central Time. | |
+| 33.5 | Label | Where the numbers came from | |
+| 33.6 | Choices | Microsoft Teams organizer report / Other approved source | |
+| 33.7 | Hint | Type the totals in by hand. Do not upload or paste the report itself. | |
+| 33.8 | Question | Was the training held? | |
+| 33.9 | Answers | Yes, it took place / No, it did not take place | |
+| 33.10 | Cancelled listing | This listing is marked cancelled, so it is recorded as not held. | |
+| 33.11 | Hint, registrations submitted | How many registration requests Teams received, approved or not. Leave empty if you do not have this number. | |
+| 33.12 | Hint, approved registrations | How many of those requests were approved in Teams. Leave empty if you do not have this number. | |
+| 33.13 | Hint, attendances | The attendee count on the Teams report for this one training. Leave empty if you do not have this number. | |
+| 33.14 | Hint, attendances, not held | Not used for a training that did not take place. | |
+| 33.15 | Label | Registrations by center | |
+| 33.16 | Hint | Only if the registration form asked families for their center. These are a split of registrations submitted. If they add up to less, the rest is shown as “Did not say”. | |
+| 33.17 | Label | Registrations by how families heard about it | |
+| 33.18 | Hint | Only if the registration form asked. These are a split of registrations submitted. | |
+| 33.19 | "How did you hear" answers (placeholders, see 30.6) | Their clinical team / A message from the center / This website / Another family / Something else | |
+| 33.20 | On a correction | Keep the split as entered / Type it in again | |
+| 33.21 | On a correction, split kept | The split entered earlier stays as it is. It is not shown here because some of its counts may be small. | |
+| 33.22 | On a correction, retyping | Leave every box empty to remove the split. | |
+| 33.23 | Label | Why are the numbers changing? | |
+| 33.24 | Hint | One sentence about the numbers. The earlier entry is kept, with this reason beside the new one. No names, email addresses or phone numbers. | |
+| 33.25 | Buttons | Save numbers / Save correction | |
+| 33.26 | Refused: not a whole number | Use a whole number, 0 or more. Leave the box empty if the number is not known. | |
+| 33.27 | Refused: approved above submitted | Approved registrations cannot be more than registrations submitted. | |
+| 33.28 | Refused: attendances for a training not held | A training that was not held has no attendances. Leave this empty. | |
+| 33.29 | Refused: cancelled but marked held | This training is marked cancelled, so it cannot be recorded as held. | |
+| 33.30 | Refused: split with no total | Enter registrations submitted first. The [center or source] counts are a split of that number. | |
+| 33.31 | Refused: split too large | These add up to [n], which is more than the [n] registrations submitted. | |
+| 33.32 | Refused: kept split no longer fits | The split entered earlier no longer fits the registrations submitted. Choose “Type it in again”. | |
+| 33.33 | Refused: date | Add the date you read the report. / This date is in the future. / This date is before the training took place. | |
+| 33.34 | Refused: source | Choose where the numbers came from. | |
+| 33.35 | Refused: no reason | Say in a sentence why the numbers are changing. | |
+| 33.36 | Refused: contact details in the reason | Leave out names, email addresses and phone numbers. Describe the change to the numbers only. | |
+| 33.37 | Refused: nothing changed | Nothing was changed, so there is nothing to correct. | |
+| 33.38 | Refused: any entry | Some entries need another look. Nothing was saved. | |
+| 33.39 | Refused: edited elsewhere | These numbers were changed somewhere else since you opened this page. Reload to see the latest entry, then try again. | |
+| 33.40 | Refused: role | Your role cannot see or enter participation numbers. | |
+| 33.41 | Refused: not public | Numbers can only be entered for a training that was listed publicly. | |
+| 33.42 | Refused: not finished | This training has not finished yet. Enter its numbers after it ends. | |
+| 33.43 | History heading | Every entry for this training | |
+| 33.44 | Under it | Reporting uses the newest entry. Earlier entries are kept and never edited. | |
+| 33.45 | History line | Split by center: [entered or not collected]. Split by how families heard: [entered or not collected]. | |
+
+### 34. Example training listings in the staff demo
+
+Eight made-up listings and their made-up totals, so the screens have something to show on a local machine. Their dates are counted from the day the demo is reset. They never appear on a deployed site. Each is labelled "Example listing" on the caregiver pages. **None is a real event, and none of the numbers is real attendance.**
+
+| No. | Where | Draft wording | OK, or change to |
+|---|---|---|---|
+| 34.1 | Listing 1 title | How group trainings work: live session | |
+| 34.2 | Listing 1 summary | An example listing. A walk through what a live caregiver group training is and what to expect when you join. | |
+| 34.3 | Listing 1 description | This is an example listing for the staff demo. It is not a real event. | |
+| 34.4 | Listing 1 description | The session explains how virtual group trainings work, who they are for, and where registration and joining details come from. | |
+| 34.5 | Listing 1 objective | Explain what happens in a group training. | |
+| 34.6 | Listing 1 objective | Know where registration and joining details come from. | |
+| 34.7 | Listing 2 title | Understanding the ABCs of Behavior: live session | |
+| 34.8 | Listing 2 summary | An example listing. The ABC model explained live, with time for general questions. | |
+| 34.9 | Listing 2 description | This is an example listing for the staff demo. It is not a real event. | |
+| 34.10 | Listing 2 description | The session goes alongside the self-paced module of the same name and uses made-up everyday examples. | |
+| 34.11 | Listing 2 objective | Hear the ABC model explained and ask general questions. | |
+| 34.12 | Listing 2 objective | Practice sorting everyday examples into the three parts. | |
+| 34.13 | Listing 3 title | Everyday routines: questions and answers | |
+| 34.14 | Listing 3 summary | An example listing. A general question and answer session about mornings, mealtimes and bedtime. | |
+| 34.15 | Listing 3 description | This is an example listing for the staff demo. It is not a real event. | |
+| 34.16 | Listing 3 description | Caregivers bring general questions about daily routines. Nothing in the session is advice for an individual child. | |
+| 34.17 | Listing 3 objective | Hear general ideas about daily routines. | |
+| 34.18 | Listing 3 objective | Leave with questions to take to your own clinical team. | |
+| 34.19 | Listing 4 title | Getting ready for transitions: live session | |
+| 34.20 | Listing 4 summary | An example listing. General ideas about moving from one activity to the next. | |
+| 34.21 | Listing 4 description | This is an example listing for the staff demo. It is not a real event. | |
+| 34.22 | Listing 4 description | It is shown as cancelled so staff can see how a cancelled training looks to caregivers. | |
+| 34.23 | Listing 4 objective | Describe what a transition is. | |
+| 34.24 | Listing 4 objective | List questions to bring to your clinical team about transitions. | |
+| 34.25 | Listing 5 title | Many ways to communicate: live session | |
+| 34.26 | Listing 5 summary | An example listing. A general look at the different ways children communicate. | |
+| 34.27 | Listing 5 description | This is an example listing for the staff demo. It is not a real event. | |
+| 34.28 | Listing 5 description | The session uses made-up examples only and points families to their own clinical team for anything specific. | |
+| 34.29 | Listing 5 objective | Name several ways a child may communicate. | |
+| 34.30 | Listing 5 objective | Know what to share with your clinical team. | |
+| 34.31 | Listing 6 title | Questions to bring to your BCBA: live session | |
+| 34.32 | Listing 6 summary | An example listing. Preparing general questions for your next meeting with your clinical team. | |
+| 34.33 | Listing 6 description | This is an example listing for the staff demo. It is not a real event. | |
+| 34.34 | Listing 6 description | The session helps caregivers prepare for meetings with their own clinical team. | |
+| 34.35 | Listing 6 objective | Prepare three questions for your next meeting with your clinical team. | |
+| 34.36 | Listing 7 title | Visual schedules for mornings: live session | |
+| 34.37 | Listing 7 summary | An example listing. What a visual schedule is and how families talk about them with their clinical team. | |
+| 34.38 | Listing 7 description | This is an example listing for the staff demo. It is not a real event, and its date is counted from the day the demo was reset. | |
+| 34.39 | Listing 7 description | No registration link has been added, so caregivers see “Registration details coming soon”. | |
+| 34.40 | Listing 7 objective | Say what a visual schedule is. | |
+| 34.41 | Listing 7 objective | Know what to ask your clinical team about using one. | |
+| 34.42 | Listing 8 title | Working with your clinical team: live session | |
+| 34.43 | Reason on the example correction | The first entry was read before the Teams report was final. Attendances corrected. | |
 
 ## Not listed above
 

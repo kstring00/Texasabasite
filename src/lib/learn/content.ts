@@ -3,6 +3,7 @@ import { validateManifest, type LcManifest } from './manifest';
 import { isPubliclyListed, type LcTraining } from './trainings';
 import { demoAbcsOfBehavior } from '@/data/learn/demo/abcs-of-behavior';
 import { demoTrainings } from '@/data/learn/demo/trainings';
+import { publicTrainings } from './staff/listings';
 import { publishedManifests } from './staff/pipeline';
 import { getStaffStore } from './staff/store';
 
@@ -50,11 +51,15 @@ let cached: LcContentAdapter | null = null;
 export function getLcContent(): LcContentAdapter {
   if (!cached) cached = learnFlags.demoContent ? buildDemoAdapter() : emptyAdapter;
   if (!learnFlags.demoStaff) return cached;
-  // With the staff demo on, published modules are read fresh each time, so publish and withdraw show at once.
+  // With the staff demo on, published modules and public listings are read fresh each time, so changes show at once.
   const base = cached;
   const samples = base.listModules();
   const published = demoWorkflowModules(new Set(samples.flatMap((m) => [m.manifest.slug, m.manifest.id])));
-  return { listModules: () => [...samples, ...published], listTrainings: base.listTrainings };
+  // Listings made public in the local staff demo join the example listing. Drafts and archived listings never do.
+  const sampleTrainings = base.listTrainings();
+  const taken = new Set(sampleTrainings.flatMap((t) => [t.id, t.slug]));
+  const listed = publicTrainings(getStaffStore()).filter((t) => !taken.has(t.id) && !taken.has(t.slug));
+  return { listModules: () => [...samples, ...published], listTrainings: () => [...sampleTrainings, ...listed] };
 }
 
 /* ── Read helpers used by the pages ── */

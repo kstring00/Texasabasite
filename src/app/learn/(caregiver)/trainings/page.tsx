@@ -3,7 +3,7 @@ import { LcEmpty } from '@/components/learn/LcEmpty';
 import { LcPageHead } from '@/components/learn/LcPageHead';
 import { LcTrainingCard } from '@/components/learn/LcTraining';
 import { listTrainings } from '@/lib/learn/content';
-import { sortTrainings, trainingView } from '@/lib/learn/trainings';
+import { isPastTraining, sortTrainings, trainingView } from '@/lib/learn/trainings';
 
 export const metadata: Metadata = { title: 'Live Trainings', alternates: { canonical: '/learn/trainings' } };
 // What counts as upcoming depends on today's date.
@@ -11,9 +11,9 @@ export const revalidate = 300;
 
 export default function LearnTrainingsPage() {
   const now = new Date();
-  const all = sortTrainings(listTrainings(), now).map((training) => ({ training, view: trainingView(training, now) }));
-  const upcoming = all.filter((t) => t.view !== 'completed');
-  const past = all.filter((t) => t.view === 'completed');
+  const all = sortTrainings(listTrainings(), now).map((training) => ({ training, view: trainingView(training, now), isPast: isPastTraining(training, now) }));
+  const upcoming = all.filter((t) => !t.isPast);
+  const past = all.filter((t) => t.isPast);
   return (
     <>
       <LcPageHead
@@ -43,7 +43,7 @@ export default function LearnTrainingsPage() {
       {past.length > 0 ? (
         <section aria-labelledby="lc-trainings-past" className="lc-section">
           <h2 id="lc-trainings-past" className="lc-h2">
-            Finished
+            Past trainings
           </h2>
           <ul className="lc-training-list">
             {past.map(({ training, view }) => (

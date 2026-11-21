@@ -791,8 +791,8 @@ body:has([data-lc-chrome="app"]) > header, body:has([data-lc-chrome="app"]) > he
 .lc-table-feedback { max-width: 44ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lc-table-action { text-align: right; width: 1%; white-space: nowrap; }
 /* Cards when the table's own box is narrow, whatever the screen: the sidebar takes 248px on a laptop. */
-.lc-table-box { container-type: inline-size; }
-@container (max-width: 989px) {
+.lc-table-box { container: lc-table / inline-size; }
+@container lc-table (max-width: 989px) {
   .lc-table-wrap { background: none; border: 0; box-shadow: none; overflow: visible; }
   .lc-table, .lc-table tbody, .lc-table tr, .lc-table th, .lc-table td { display: block; }
   .lc-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
@@ -895,7 +895,7 @@ body:has([data-lc-chrome="app"]) > header, body:has([data-lc-chrome="app"]) > he
 .lc-steps-list { list-style: decimal; }
 .lc-table .lc-chip { white-space: nowrap; }
 .lc-table td[data-label="Updated"] { white-space: nowrap; }
-@container (max-width: 989px) {
+@container lc-table (max-width: 989px) {
   .lc-table td[data-label] > .lc-chip { justify-self: start; white-space: normal; }
   .lc-table td[data-label] { grid-template-columns: 92px minmax(0, 1fr); }
   .lc-table td[data-label="Updated"] { white-space: normal; }
@@ -949,3 +949,75 @@ body:has([data-lc-chrome="app"]) > header, body:has([data-lc-chrome="app"]) > he
 .lc-versions li > div { flex: 1 1 320px; }
 /* A few staff buttons carry long labels. On a very narrow phone they may wrap instead of pushing the page sideways. */
 @media (max-width: 479px) { .lc-btn-wrap { white-space: normal; text-align: center; line-height: 1.25; padding-block: var(--lc-s-3); } }
+
+/* ── Phase 4: training listings and reporting ─────────────────────────────── */
+.lc-optional { margin-left: 6px; font: 400 var(--lc-text-small)/1 var(--lc-font-body); color: var(--lc-ink-muted); }
+.lc-label-sub { font-weight: 500; font-size: var(--lc-text-small); color: var(--lc-ink-muted); }
+.lc-when-grid { display: grid; gap: var(--lc-s-3); grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 599px) { .lc-when-grid { grid-template-columns: minmax(0, 1fr); } }
+.lc-count-grid { display: grid; gap: var(--lc-s-3); grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.lc-count-grid .lc-input-short { width: 100%; max-width: none; }
+.lc-saved { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: var(--lc-s-2); align-items: start; margin: 0; padding: var(--lc-s-2) var(--lc-s-3); border-radius: var(--lc-r-xs); background: var(--lc-teal-100); color: var(--lc-ink); font-weight: 600; }
+.lc-saved svg { margin-top: 3px; color: var(--lc-teal-700); }
+.lc-saved:not(:has(svg)) { display: block; }
+.lc-listing-preview { max-width: 760px; }
+.lc-listing-preview .lc-tcard { box-shadow: inset 0 0 0 1px var(--lc-border-strong); }
+.lc-note > div { display: grid; gap: var(--lc-s-2); min-width: 0; }
+.lc-note p { margin: 0; }
+
+/* The line nobody may miss: in demo mode every figure on these pages is made up. */
+.lc-report-banner { margin: 0; padding: var(--lc-s-3) var(--lc-s-4); border-radius: var(--lc-r-sm); background: var(--lc-amber-300); box-shadow: inset 0 0 0 1.5px var(--lc-amber-600); color: var(--lc-ink); font: 600 1rem/1.4 var(--lc-font-body); text-align: center; }
+.lc-report-filter { display: grid; gap: var(--lc-s-4); grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); align-items: end; }
+.lc-report-filter .lc-btn { justify-self: start; }
+.lc-report-period { margin: 0; font-size: var(--lc-text-body-dense); color: var(--lc-ink); }
+.lc-metrics-report { grid-template-columns: repeat(auto-fit, minmax(176px, 1fr)); }
+.lc-metrics-report .lc-metric { gap: var(--lc-s-2); }
+.lc-metrics-report .lc-metric:hover { box-shadow: inset 0 0 0 1px var(--lc-border); }
+.lc-metrics-report .lc-metric-label { font-weight: 600; color: var(--lc-ink); }
+.lc-metric-note { font-size: var(--lc-text-small); line-height: 1.45; color: var(--lc-ink-muted); }
+/* "Not yet available" is words, so it is set smaller than a figure and can wrap. */
+.lc-metric-na { font: 600 1.25rem/1.25 var(--lc-font-display); letter-spacing: -0.01em; color: var(--lc-ink-muted); }
+.lc-chart { display: grid; gap: var(--lc-s-4); min-width: 0; }
+.lc-chart-canvas { position: relative; height: 320px; min-width: 0; }
+@media (max-width: 599px) { .lc-chart-canvas { height: 260px; } }
+.lc-toggle { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: var(--lc-r-pill); background: var(--lc-slate-100); justify-self: start; }
+.lc-toggle button { display: inline-flex; align-items: center; gap: var(--lc-s-2); min-height: 44px; padding: 0 var(--lc-s-4); border: 0; border-radius: var(--lc-r-pill); background: transparent; color: var(--lc-ink); font: 500 0.9375rem/1 var(--lc-font-body); cursor: pointer; }
+.lc-toggle button[aria-pressed="true"] { background: var(--lc-white); box-shadow: var(--lc-shadow-1); font-weight: 600; }
+.lc-toggle button:focus-visible { outline: none; box-shadow: var(--lc-ring); }
+.lc-table-numbers td { font-variant-numeric: tabular-nums; }
+/* Tables of figures have short columns, so they stay tables on a laptop and only become cards on a phone. */
+.lc-numbers-box { container: lc-numbers / inline-size; min-width: 0; }
+@container lc-numbers (max-width: 719px) {
+  .lc-table-wrap { background: none; border: 0; box-shadow: none; overflow: visible; }
+  .lc-table, .lc-table tbody, .lc-table tr, .lc-table th, .lc-table td { display: block; }
+  .lc-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  .lc-table tbody { display: grid; gap: var(--lc-s-3); }
+  .lc-table tbody tr { padding: var(--lc-s-4); border-radius: var(--lc-r-sm); background: var(--lc-white); box-shadow: inset 0 0 0 1px var(--lc-border), var(--lc-shadow-1); display: grid; gap: var(--lc-s-2); }
+  .lc-table tbody th, .lc-table td { height: auto; padding: 0; border: 0; }
+  .lc-table td[data-label] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--lc-s-3); align-items: baseline; }
+  .lc-table td[data-label]::before { content: attr(data-label); font: 600 var(--lc-text-small)/1.3 var(--lc-font-body); color: var(--lc-ink-muted); }
+  .lc-table-action { width: auto; text-align: left; margin-top: var(--lc-s-2); }
+  .lc-table-action .lc-btn { width: 100%; }
+}
+.lc-staff-head > .lc-action-row { display: flex; }
+.lc-table-plain tbody th { font-weight: 600; }
+.lc-table-plain thead th { white-space: normal; }
+@media (max-width: 479px) { .lc-table-plain thead th, .lc-table-plain tbody th, .lc-table-plain td { padding-inline: var(--lc-s-2); overflow-wrap: anywhere; } }
+/* One column that can shrink, so a long button label never widens a form past a narrow phone. */
+.lc-form { grid-template-columns: minmax(0, 1fr); }
+.lc-report-two { display: grid; gap: var(--lc-s-5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: start; }
+.lc-glossary { margin: 0; display: grid; gap: var(--lc-s-4); }
+.lc-glossary > div { display: grid; gap: 2px; }
+.lc-glossary dt { font-weight: 600; }
+.lc-glossary dd { margin: 0; color: var(--lc-ink-muted); max-width: 78ch; }
+@media (max-width: 479px) { .lc-report-filter .lc-btn { width: 100%; justify-self: stretch; } }
+
+/* Printing the report: the figures and their definitions, with the demo banner kept and everything clickable dropped. */
+@media print {
+  body:has([data-lc-scene="staff"]) { background: #fff !important; }
+  [data-lc-scene="staff"] .lc-shell-side, [data-lc-scene="staff"] .lc-shell-bar, [data-lc-scene="staff"] .lc-shell-scrim, [data-lc-scene="staff"] .lc-print-hide, [data-lc-scene="staff"] .lc-toggle, [data-lc-scene="staff"] .lc-atmosphere { display: none !important; }
+  [data-lc-scene="staff"] .lc-shell-frame { display: block; }
+  [data-lc-scene="staff"] .lc-shell-main { padding: 0; }
+  [data-lc-scene="staff"] .lc-solid { box-shadow: none; border: 1px solid #c9ced8; break-inside: avoid; }
+  [data-lc-scene="staff"] .lc-report-banner, [data-lc-scene="staff"] .lc-demo-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
