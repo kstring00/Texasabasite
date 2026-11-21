@@ -3,7 +3,7 @@ import { site } from '@/data/site';
 import { services } from '@/data/services';
 import { visiblePeople } from '@/data/people';
 import { Section } from '@/components/site/Section';
-import { PeopleCards } from '@/components/site/PeopleCards';
+import { PersonCard } from '@/components/people/PersonCard';
 import { CallButton } from '@/components/site/Buttons';
 
 export const metadata: Metadata = {
@@ -17,7 +17,9 @@ export default function ProvidersPage() {
   return (
     <>
       <Section titleAs="h1" eyebrow="For providers" title="Refer a family in one call." lede="Pediatricians, therapists, ECI, and school teams: we take referrals directly and we do the diagnostic evaluation in-house, so a family you refer is not sent to a second waitlist.">
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)] lg:items-start">
+        <div className="min-w-0">
+        <div className="grid gap-4 max-md:snap-row md:grid-cols-3" role="group" aria-label="How a referral works. Swipe on a phone to see all three." tabIndex={0}>
           <div className="card">
             <p className="eyebrow">Who to contact</p>
             <p className="mt-2 text-base text-body">{contact[0] ? `${contact[0].name}, ${contact[0].title}.` : 'Our admissions team.'} Call {site.phone.display}.</p>
@@ -35,17 +37,23 @@ export default function ProvidersPage() {
             <p className="mt-2 text-base text-body">We reach the family within one business day and tell you when we have.</p>
           </div>
         </div>
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-6 flex flex-wrap gap-3">
           <CallButton place="providers" variant="primary" label={`Call ${site.phone.display}`} />
         </div>
+        </div>
         {contact.length > 0 && (
-          <div className="mt-10">
-            <PeopleCards people={contact} compact />
-          </div>
+          <ul className="grid gap-4">
+            {contact.map((c) => (
+              <li key={c.id}>
+                <PersonCard person={c} place="providers" compact className="h-full" />
+              </li>
+            ))}
+          </ul>
         )}
+        </div>
       </Section>
       <Section tone="tint" title="What we offer families you refer">
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-3 max-sm:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
             <li key={s.slug} className="card">
               <p className="font-semibold text-ink">{s.name}</p>

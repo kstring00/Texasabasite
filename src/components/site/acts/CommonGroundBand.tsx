@@ -14,7 +14,7 @@ import styles from './CommonGroundBand.module.css';
  */
 const DOORS = [
   { href: '/families/while-you-wait', sub: 'Between the first call and the first day', pills: ['Free', 'Before you’re enrolled anywhere'] },
-  { href: '/families/pulse', sub: 'A one-minute weekly check-in', pills: ['One minute a week', 'Stays on your device'] },
+  { href: '/families/caregiver', sub: 'Tools for the hard moments', pills: ['Before, during and after', 'Saved on this device'] },
   { href: '/families/connect', sub: 'A moderated space for parents', pills: ['Moderated', 'For parents'] },
 ]
   .map((d) => ({ ...d, page: cgPages.find((p) => p.href === d.href) }))
@@ -25,7 +25,6 @@ const TICKER = ['Free for every family', 'No account', 'Open before your child i
 
 /**
  * Home page only: Common Ground as a full-width blue band with a door and three ways through it.
- * The Getting Started page still uses the earlier card version, `CommonGroundSection`, unchanged.
  */
 export function CommonGroundBand() {
   const [active, setActive] = useState(0);

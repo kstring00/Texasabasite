@@ -145,3 +145,49 @@
 @media (prefers-reduced-motion: reduce) {
   .wrap *, .wrap *::before, .wrap *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------- One screen ---------- */
+/* Laptop: heading and map beside the card, and the six centers on one row underneath. */
+@media (min-width: 981px) {
+  .wrap { padding-block: 40px 44px; }
+  .grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); grid-template-areas: 'lead card' 'index index'; gap: 18px 48px; align-items: stretch; }
+  .lead { grid-area: lead; position: static; }
+  .head { margin-bottom: 8px; }
+  .map { max-width: 400px; margin: 0 auto; }
+  .side { display: contents; }
+  .card { grid-area: card; min-height: 0; padding: 40px 40px 26px; border-radius: 96px 96px 28px 28px; }
+  .name { margin: 6px 0 14px; font-size: clamp(34px, 3.4vw, 48px); }
+  .rows { gap: 6px; font-size: 16px; }
+  .serves { margin: 10px 0 16px; font-size: 15px; }
+  .team { margin: -4px 0 12px; }
+  .index { grid-area: index; display: grid; grid-template-columns: 3fr 2fr 1fr; column-gap: 28px; border-top: 0; }
+  .block { grid-template-columns: 1fr; border-top: 1.5px solid var(--loc-ink); border-bottom: 1px solid var(--loc-line); }
+  .blockHead { flex-direction: row; align-items: baseline; gap: 10px; padding: 8px 0 2px; }
+  .rowsList { display: flex; }
+  .rowsList li { flex: 1; min-width: 0; }
+  .rowsList li + li { border-top: 0; border-left: 1px solid var(--loc-line); }
+  .rowBtn { min-height: 44px; padding: 8px 12px; gap: 10px; }
+  .nm { font-size: 18px; white-space: nowrap; }
+  .go em { display: none; }
+}
+/* Phone: the six centers become one row of chips to swipe, and the card is tighter. */
+@media (max-width: 980px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .head { margin-bottom: 16px; }
+  .grid { gap: 16px; }
+  .map { max-width: 340px; }
+  .side { gap: 14px; flex-direction: column-reverse; }
+  .index { display: flex; gap: 14px; margin-inline: -16px; overflow-x: auto; border-top: 0; padding-inline: 16px; scrollbar-width: none; scroll-snap-type: x proximity; scroll-padding-inline: 16px; }
+  .index::-webkit-scrollbar { display: none; }
+  .block { display: block; flex: none; border-bottom: 0; scroll-snap-align: start; }
+  .blockHead { flex-direction: row; align-items: baseline; gap: 8px; padding: 0 0 6px; }
+  .rowsList { display: flex; gap: 8px; }
+  .rowsList li + li { border-top: 0; }
+  .rowBtn { min-height: 44px; border: 1.5px solid var(--loc-ink); border-radius: 999px; padding: 8px 14px; gap: 8px; grid-template-columns: 10px auto; }
+  .rowBtn .go { display: none; }
+  .nm { font-size: 17px; white-space: nowrap; }
+  .card { padding: 34px 22px 22px; }
+  .name { margin: 6px 0 12px; }
+  .serves { margin: 10px 0 14px; }
+}
+@media (max-width: 480px) { .wrap { padding-block: 32px 40px; } .block { grid-template-columns: none; } }

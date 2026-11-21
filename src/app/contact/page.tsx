@@ -34,7 +34,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
         </div>
       </Section>
       <Section tone="tint" title="Centers">
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-4 max-sm:snap-row sm:grid-cols-2 lg:grid-cols-3">
           {locations.map((l) => (
             <li key={l.slug} className="card">
               <h3 className="h3">

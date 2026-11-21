@@ -5,7 +5,6 @@ import { CenterFinder } from '@/components/site/CenterFinder';
 import { LocationCard } from '@/components/site/LocationCard';
 import { Locations } from '@/components/locations/Locations';
 import { Closing } from '@/components/site/acts/Closing';
-import { RevealGroup, RevealItem } from '@/components/site/motion';
 
 export const metadata: Metadata = {
   title: 'ABA Therapy Centers in Texas: Houston, Dallas–Fort Worth, Austin',
@@ -21,20 +20,20 @@ export default function LocationsPage() {
         <CenterFinder />
       </Section>
       <Locations eyebrow="THE MAP" title="Pick a center." lede="Tap a pin or a name to see the address, who you will meet, and how to book a tour." />
-      {regions.map((r) => {
-        const list = locations.filter((l) => l.region === r);
-        return (
-          <Section key={r} id={r.toLowerCase().replace(/[^a-z]+/g, '-')} eyebrow={`${list.length} center${list.length > 1 ? 's' : ''}`} title={`${r} area`} size="sm">
-            <RevealGroup as="ul" className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {list.map((l) => (
-                <RevealItem as="li" key={l.slug}>
+      {/* All six on one screen, grouped by area. On phones the cards are a row to swipe. */}
+      <Section id="all-centers" eyebrow={regions.map((r) => `${r} area ${locations.filter((l) => l.region === r).length}`).join(' · ')} title="All six centers" size="sm">
+        <ul className="grid gap-4 max-md:snap-row md:grid-cols-2 lg:grid-cols-3" aria-label="All six centers, grouped by area. Swipe on a phone to see them all.">
+          {regions.flatMap((r) =>
+            locations
+              .filter((l) => l.region === r)
+              .map((l, i) => (
+                <li key={l.slug} id={i === 0 ? r.toLowerCase().replace(/[^a-z]+/g, '-') : undefined} className="scroll-mt-28">
                   <LocationCard location={l} index={locations.indexOf(l)} />
-                </RevealItem>
-              ))}
-            </RevealGroup>
-          </Section>
-        );
-      })}
+                </li>
+              )),
+          )}
+        </ul>
+      </Section>
       <Closing />
     </>
   );

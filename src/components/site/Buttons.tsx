@@ -35,6 +35,17 @@ export function CallButton({ location, place, className, variant = 'secondary', 
   );
 }
 
+/** The phone number as a quiet text link. Same tracking as the button. */
+export function CallLink({ location, place, className }: { location?: Location | null; place: string; className?: string }) {
+  const phone = location?.phone ?? site.phone;
+  return (
+    <a href={`tel:${phone.tel}`} className={className} onClick={() => track({ name: 'call_tap', center: location?.slug ?? 'main', place })} aria-label={`Call ${location ? `the ${location.name} center` : 'Texas ABA Centers'} at ${phone.display}`}>
+      <Phone className="h-4 w-4" aria-hidden />
+      {phone.display}
+    </a>
+  );
+}
+
 export function DirectionsButton({ location, className, variant = 'ghost' }: { location: Location; className?: string; variant?: 'secondary' | 'ghost' }) {
   return (
     <a

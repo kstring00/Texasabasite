@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { visiblePeople, CENTER_NAME } from '@/data/people';
 import { Section } from '@/components/site/Section';
 import { PeopleCards } from '@/components/site/PeopleCards';
+import { PersonCard } from '@/components/people/PersonCard';
 import { Closing as FinalCta } from '@/components/site/acts/Closing';
 
 export const metadata: Metadata = {
@@ -17,21 +18,23 @@ export default function TeamPage() {
   return (
     <>
       <Section titleAs="h1" eyebrow="Your team" title="Real names. Real faces. Direct lines." lede="When you call, you reach a person who works here and knows the centers. These are the people you will hear back from.">
-        {bd.length > 0 && <PeopleCards people={bd} />}
+        {bd.length > 0 && <PeopleCards row people={bd} />}
       </Section>
       {reds.length > 0 && (
         <Section tone="tint" title="Regional leadership">
-          <PeopleCards people={reds} />
+          <PeopleCards row people={reds} />
         </Section>
       )}
       {cds.length > 0 && (
         <Section title="Clinical directors by center">
-          {cds.map((p) => (
-            <div key={p.id} className="mb-8">
-              <h3 className="h3 mb-3">{p.centers.map((c) => CENTER_NAME[c]).join(' & ')}</h3>
-              <PeopleCards people={[p]} />
-            </div>
-          ))}
+          <ul className="grid gap-5 max-md:snap-row md:grid-cols-2 lg:grid-cols-3">
+            {cds.map((p) => (
+              <li key={p.id} className="flex flex-col">
+                <h3 className="h3 mb-3">{p.centers.map((c) => CENTER_NAME[c]).join(' & ')}</h3>
+                <PersonCard person={p} place="team" className="flex-1" />
+              </li>
+            ))}
+          </ul>
         </Section>
       )}
       <Section tone="card" title="Who is in the room with your child">

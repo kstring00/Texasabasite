@@ -111,3 +111,27 @@
   .swap { animation: none; }
   .beam { display: none; }
 }
+
+/* ---------- One screen ---------- */
+.section { padding-block: clamp(32px, 2.8vw, 40px); }
+.head { margin-bottom: clamp(18px, 2.2vw, 28px); }
+.lede { margin-top: 8px; font-size: 16px; line-height: 1.45; }
+.tier + .tier { margin-top: 10px; }
+.body { align-items: stretch; }
+.detail { position: relative; top: auto; min-height: 0; padding: 36px 28px 20px; border-radius: 120px 120px 28px 28px; }
+.dAv { margin-top: 10px; width: 56px; height: 56px; font-size: 18px; }
+.dName { margin-top: 10px; font-size: 23px; }
+.dLabel { margin-top: 14px; }
+.dJob { font-size: 15px; line-height: 1.5; }
+.dCall { padding-top: 14px; }
+.foot { margin-top: 16px; padding-top: 12px; }
+.note { margin-top: 6px; }
+@media (max-width: 1100px) { .body { grid-template-columns: minmax(0, 1fr); } .tree { min-width: 0; } }
+/* Phone: the five stages are cards to swipe. */
+@media (max-width: 1023px) {
+  .tree { display: flex; align-items: stretch; gap: 12px; margin-inline: -1.25rem; overflow-x: auto; padding-inline: 1.25rem; scroll-padding-inline: 1.25rem; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .tree::-webkit-scrollbar { display: none; }
+  .tier { flex: 0 0 84%; max-width: 24rem; align-content: start; border: 1px solid var(--line); border-radius: 22px; padding: 16px; scroll-snap-align: start; }
+  .tier::before, .tier + .tier::before { display: none; }
+  .tier + .tier { margin-top: 0; padding-top: 16px; }
+}

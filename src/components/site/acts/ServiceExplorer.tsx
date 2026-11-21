@@ -40,12 +40,12 @@ export function ServiceExplorer() {
                 if (e.key === 'Home') { e.preventDefault(); setI(0); }
                 if (e.key === 'End') { e.preventDefault(); setI(services.length - 1); }
               }}
-              className={cn('group flex w-full items-baseline gap-5 border-t border-ink/15 py-5 text-left transition last:border-b', k === i ? 'text-ink' : 'text-ink/70 hover:text-ink')}
+              className={cn('group flex w-full items-baseline gap-5 border-t border-ink/15 py-2 text-left transition last:border-b', k === i ? 'text-ink' : 'text-ink/70 hover:text-ink')}
             >
               <span className="num w-10 shrink-0 text-[length:var(--t-lg)]">{String(k + 1).padStart(2, '0')}</span>
               <span className="flex-1">
-                <span className="block font-display text-[length:var(--t-xl)] leading-tight">{x.name}</span>
-                <span className="mt-1 block font-sans text-[length:var(--t-sm)] text-soft">{x.ages}</span>
+                <span className="block font-display text-[length:var(--t-lg)] leading-tight">{x.name}</span>
+                <span className="block font-sans text-[length:var(--t-sm)] leading-snug text-soft">{x.ages}</span>
               </span>
               <span aria-hidden className={cn('h-2.5 w-2.5 rounded-full bg-cobalt transition-opacity', k === i ? 'opacity-100' : 'opacity-0 group-hover:opacity-40')} />
             </button>
@@ -62,14 +62,14 @@ export function ServiceExplorer() {
               animate={{ opacity: 1, y: 0 }}
               exit={reduce ? undefined : { opacity: 0, y: -10 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className={cn('arch flex min-h-[34rem] flex-col justify-between p-10 pt-14', TONES[i])}
+              className={cn('flex h-full min-h-[23rem] flex-col justify-between rounded-[var(--radius)] rounded-t-[5rem] p-9 pt-11', TONES[i])}
             >
               <div>
                 <p className={cn('font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.2em]', dark ? 'text-paper/90' : 'text-ink/75')}>{s.where}</p>
                 <h3 className={cn('mt-3 font-display text-[length:var(--t-2xl)] leading-none', dark ? 'text-paper' : 'text-ink')}>{s.name}</h3>
-                <p className={cn('mt-6 max-w-xl font-sans text-[length:var(--t-lg)] leading-snug', dark ? 'text-paper/90' : 'text-ink/85')}>{s.intro}</p>
+                <p className={cn('mt-4 max-w-xl font-sans text-[length:var(--t-base)] leading-snug', dark ? 'text-paper/90' : 'text-ink/85')}>{s.intro}</p>
               </div>
-              <div className="mt-10 grid gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
+              <div className="mt-6 grid gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
                 <div>
                   <p className={cn('font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.16em]', dark ? 'text-paper/90' : 'text-ink/75')}>Who you meet</p>
                   <p className={cn('mt-1 font-sans text-[length:var(--t-sm)]', dark ? 'text-paper/85' : 'text-ink/80')}>{s.whoYouMeet.join(' · ')}</p>
@@ -83,17 +83,17 @@ export function ServiceExplorer() {
         </div>
       </div>
 
-      {/* Mobile: stacked */}
-      <ol className="flex flex-col gap-4 lg:hidden">
+      {/* Mobile: cards to swipe */}
+      <ol className="snap-row lg:hidden" aria-label="Services. Swipe to see all six.">
         {services.map((x, k) => {
           const d = TONES[k].includes('text-paper');
           return (
-            <li key={x.slug} className={cn('arch p-6 pt-10', TONES[k])}>
+            <li key={x.slug} className={cn('flex flex-col rounded-[var(--radius)] rounded-t-[3.5rem] p-6 pt-9', TONES[k])}>
               <p className={cn('num text-[length:var(--t-lg)]', d ? 'text-paper' : 'text-ink')}>{String(k + 1).padStart(2, '0')}</p>
               <h3 className={cn('mt-2 font-display text-[length:var(--t-xl)] leading-tight', d ? 'text-paper' : 'text-ink')}>{x.name}</h3>
               <p className={cn('mt-1 font-sans text-[length:var(--t-sm)]', d ? 'text-paper/90' : 'text-ink')}>{x.ages} · {x.where}</p>
               <p className={cn('mt-4 font-sans text-[length:var(--t-base)]', d ? 'text-paper/90' : 'text-ink/85')}>{x.short}</p>
-              <Link href={`/services/${x.slug}`} className={cn('mt-5 inline-flex items-center gap-1 font-sans text-[length:var(--t-sm)] font-bold uppercase tracking-[0.14em]', d ? 'text-paper' : 'text-ink')}>
+              <Link href={`/services/${x.slug}`} className={cn('mt-auto inline-flex min-h-11 items-center gap-1 pt-4 font-sans text-[length:var(--t-sm)] font-bold uppercase tracking-[0.14em]', d ? 'text-paper' : 'text-ink')}>
                 Learn more <ArrowUpRight className="h-4 w-4" aria-hidden />
               </Link>
             </li>

@@ -8,7 +8,7 @@
  * on screen never animates (no flash), reduced-motion users never animate, and a timeout
  * reveals everything regardless, so a missed observation can't leave a section blank.
  */
-import { createContext, createElement, useContext, useEffect, useRef, type ReactNode } from 'react';
+import { createContext, createElement, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useReducedMotion } from 'framer-motion';
 
 type Tag = 'div' | 'section' | 'li' | 'article' | 'header' | 'ul' | 'ol';
@@ -62,4 +62,30 @@ export function RevealItem({ children, className, as = 'div' }: { children: Reac
   if (index.current === null) index.current = group ? group.next() : 0;
   const ref = useReveal(group ? index.current * group.stagger : 0);
   return createElement(as, { ref, className, 'data-reveal': '' }, children);
+}
+
+/**
+ * For one-off entrances drawn in CSS (a line that draws, petals that bloom).
+ * Returns a ref and a state to put on the element as `data-enter`:
+ *   idle   server HTML and reduced motion: everything in its finished state, nothing moves
+ *   armed  below the fold, waiting: CSS may hold the starting pose
+ *   in     on screen: CSS plays the entrance once
+ * Content can never stay hidden: a timeout moves `armed` to `in` regardless.
+ */
+export function useEnter<T extends HTMLElement>(threshold = 0.25) {
+  const ref = useRef<T>(null);
+  const [state, setState] = useState<'idle' | 'armed' | 'in'>('idle');
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    setState('armed');
+    const io = new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && (setState('in'), io.disconnect()), { threshold });
+    io.observe(el);
+    const safety = window.setTimeout(() => setState('in'), 6000);
+    return () => {
+      io.disconnect();
+      window.clearTimeout(safety);
+    };
+  }, [threshold]);
+  return [ref, state] as const;
 }

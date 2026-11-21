@@ -150,24 +150,25 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
       )}
 
       <Section tone="tint" size="sm" eyebrow="Your team" title={`Your team at ${l.name}`} lede={hasNamedTeam(centerId) ? 'Real names. Every contact goes through the main line; ask for the person by name.' : 'Marcie is your first call. Your center team will introduce themselves at your tour.'}>
-        <PeopleCards people={people} centerId={centerId} place="location" />
-        <div className="mt-12">
-          <WhoToContact centerId={centerId} place="location" />
-        </div>
+        <PeopleCards row people={people} centerId={centerId} place="location" />
+      </Section>
+
+      <Section tone="tint" size="sm" className="!pt-0">
+        <WhoToContact centerId={centerId} place="location" />
       </Section>
 
       <Section eyebrow="At this center" title={<>Services in <span className="editorial text-cobalt">{l.city}.</span></>}>
-        <RevealGroup as="ul" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <RevealGroup as="ul" className="grid gap-4 max-sm:snap-row sm:grid-cols-2 lg:grid-cols-3">
           {centerServices.map((s, i) => {
             const dark = TONES[i % TONES.length].includes('text-paper');
             return (
               <RevealItem as="li" key={s.slug}>
-                <Link href={`/services/${s.slug}`} className={`group flex h-full min-h-[14rem] flex-col justify-between arch p-6 pt-10 transition hover:-translate-y-1 ${TONES[i % TONES.length]}`}>
+                <Link href={`/services/${s.slug}`} className={`group flex h-full min-h-[12.5rem] flex-col justify-between arch p-6 pt-9 transition hover:-translate-y-1 ${TONES[i % TONES.length]}`}>
                   <span>
-                    <span className={`font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.18em] ${dark ? 'text-paper/90' : 'text-ink/75'}`}>{s.ages}</span>
+                    <span className={`font-sans text-[length:var(--t-xs)] font-bold uppercase tracking-[0.18em] ${dark ? 'text-paper/90' : 'text-ink'}`}>{s.ages}</span>
                     <span className={`mt-2 block font-display text-[length:var(--t-xl)] leading-tight ${dark ? 'text-paper' : 'text-ink'}`}>{s.name}</span>
                   </span>
-                  <span className={`mt-4 font-sans text-[length:var(--t-sm)] ${dark ? 'text-paper/85' : 'text-ink/80'}`}>{s.short}</span>
+                  <span className={`mt-4 font-sans text-[length:var(--t-sm)] ${dark ? 'text-paper/85' : 'text-ink'}`}>{s.short}</span>
                 </Link>
               </RevealItem>
             );
@@ -256,12 +257,6 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
           </div>
         </div>
       </Section>
-
-      {people.length > 0 && (
-        <Section tone="card" size="sm" eyebrow="Who answers" title={`Your people in ${l.region}.`}>
-          <PeopleCards people={people} />
-        </Section>
-      )}
 
       <Section id="tour" eyebrow="Request a tour" title={`See the ${l.name} center.`} lede="About 30 to 45 minutes. Bring every question. Kids and siblings welcome.">
         <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr] lg:items-start">

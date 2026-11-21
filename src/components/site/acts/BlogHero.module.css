@@ -1,0 +1,97 @@
+/* Blog hero: three diagonal panels. Entrances are CSS, so they run on first paint with no script.
+   Transform and opacity only. Nothing here runs longer than about two seconds. */
+.hero { position: relative; isolation: isolate; overflow: hidden; background: rgb(var(--paper)); color: rgb(var(--ink)); }
+
+/* Backgrounds: cream on the left, soft blue on the right, and one blue parallelogram over the middle.
+   Hovering a panel slides or widens that parallelogram, so a panel grows without anything reflowing. */
+.bgRight { position: absolute; inset: 0 0 0 50%; z-index: -2; background: #eceffc; }
+.mid { position: absolute; top: 0; bottom: 0; left: 30.5%; width: 39%; z-index: -1; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.midFill { position: absolute; inset: 0 -9%; background: linear-gradient(to bottom, rgb(var(--cobalt)) 0%, #1c2b80 62%, rgb(var(--ink)) 100%); clip-path: polygon(15.5% 0, 100% 0, 84.5% 100%, 0 100%); }
+.midFill::after { content: ''; position: absolute; inset: 0; background: radial-gradient(60% 45% at 50% 82%, rgb(160 176 255 / 0.4), transparent 70%); }
+.hero[data-hover='0'] .mid { transform: translateX(1.6%); }
+.hero[data-hover='1'] .mid { transform: scaleX(1.07); }
+.hero[data-hover='2'] .mid { transform: translateX(-1.6%); }
+
+.panels { display: grid; }
+.panel { position: relative; display: flex; flex-direction: column; padding: 2.25rem 1.25rem 2.5rem; }
+.copy { position: relative; z-index: 1; }
+.eyebrow { display: flex; align-items: center; gap: 0.7rem; font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(var(--cobalt)); }
+.eyebrow::before, .eyebrow::after { content: ''; width: 1.75rem; height: 1.5px; background: currentColor; }
+.headWrap { position: relative; margin-top: 1rem; }
+.head, .ghost { font-family: var(--font-editorial); font-style: italic; font-weight: 400; font-size: clamp(2.3rem, 1.2rem + 2.6vw, 3.7rem); line-height: 0.98; letter-spacing: -0.015em; color: inherit; text-wrap: balance; }
+.ghost { position: absolute; inset: 0; pointer-events: none; user-select: none; }
+.desc { margin-top: 1rem; max-width: 21rem; font-size: var(--t-base); line-height: 1.45; }
+.btn { margin-top: 1.4rem; display: inline-flex; min-height: 3rem; align-items: center; gap: 0.6rem; border-radius: 9999px; padding: 0.5rem 1.4rem; font-size: 0.98rem; font-weight: 600; transition: background-color 0.3s, color 0.3s; }
+.btn svg { width: 1.1rem; height: 1.1rem; transition: transform 0.3s; }
+.btn:hover svg { transform: translateX(4px); }
+.btn:focus-visible { outline: 3px solid rgb(var(--cobalt)); outline-offset: 3px; }
+.light .btn:focus-visible { outline-color: rgb(var(--butter)); }
+
+/* Tones */
+.cream { background: rgb(var(--paper)); }
+.cream .btn { background: rgb(var(--ink)); color: rgb(var(--paper)); }
+.cream .btn:hover { background: rgb(var(--cobalt)); color: #fff; }
+.light { background: linear-gradient(to bottom, rgb(var(--cobalt)), #1c2b80); color: rgb(var(--paper)); }
+.light .eyebrow { color: rgb(var(--butter)); }
+.light .btn { background: rgb(var(--butter)); color: rgb(var(--ink)); }
+.light .btn:hover { background: rgb(var(--paper)); }
+.tint { background: #eceffc; }
+.tint .btn { background: rgb(var(--cobalt)); color: #fff; }
+.tint .btn:hover { background: rgb(var(--ink)); }
+
+/* The arrow: a line that draws from its tail, then the head. Rotated to its direction. */
+.arrow { position: absolute; display: block; width: clamp(3.5rem, 6vw, 5.5rem); height: 2px; transform: rotate(var(--rot)); color: rgb(var(--butter)); }
+.arrow i { position: absolute; inset: 0; background: currentColor; transform-origin: left; animation: bh-draw 0.6s cubic-bezier(0.45, 0, 0.2, 1) 1.15s both; }
+.arrow b { position: absolute; right: -1px; top: 50%; width: 0.7rem; height: 0.7rem; margin-top: -0.35rem; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); animation: bh-pop 0.3s ease-out 1.65s both; }
+.cream .arrow, .tint .arrow { color: rgb(var(--cobalt)); }
+
+/* Art, drawn in code. Decoration only. */
+.art { position: absolute; z-index: 0; pointer-events: none; }
+.art svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.art :global(.node) { transform-box: fill-box; transform-origin: center; animation: bh-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: calc(0.9s + var(--i) * 0.05s); }
+.art :global(.edge) { animation: bh-fade 0.9s ease-out 1.5s both; }
+
+/* Headline: slides in along its arrow and leaves two fading copies behind. --dx/--dy point back along the trail. */
+.head { animation: bh-slide 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both; }
+.ghost1 { opacity: 0.13; transform: translate(calc(var(--dx) * 1), calc(var(--dy) * 1)); animation: bh-ghost1 1.15s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both; }
+.ghost2 { opacity: 0.06; transform: translate(calc(var(--dx) * 2), calc(var(--dy) * 2)); animation: bh-ghost2 1.35s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both; }
+.desc, .btn, .eyebrow { animation: bh-rise 0.7s ease-out 0.7s both; }
+.eyebrow { animation-delay: 0.05s; }
+.btn { animation-delay: 0.85s; }
+
+@keyframes bh-slide { from { opacity: 0; transform: translate(calc(var(--dx) * 2.6), calc(var(--dy) * 2.6)); } to { opacity: 1; transform: none; } }
+@keyframes bh-ghost1 { from { opacity: 0; transform: translate(calc(var(--dx) * 2.6), calc(var(--dy) * 2.6)); } 60% { opacity: 0.3; } to { opacity: 0.13; transform: translate(var(--dx), var(--dy)); } }
+@keyframes bh-ghost2 { from { opacity: 0; transform: translate(calc(var(--dx) * 2.6), calc(var(--dy) * 2.6)); } 60% { opacity: 0.2; } to { opacity: 0.06; transform: translate(calc(var(--dx) * 2), calc(var(--dy) * 2)); } }
+@keyframes bh-rise { from { opacity: 0; transform: translateY(0.8rem); } to { opacity: 1; transform: none; } }
+@keyframes bh-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes bh-pop { from { opacity: 0; scale: 0.3; } to { opacity: 1; scale: 1; } }
+@keyframes bh-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── Phones: three stacked bands with a shallow diagonal ── */
+@media (max-width: 899px) {
+  .bgRight, .mid { display: none; }
+  .panel { margin-top: -1.6rem; padding-top: 3.2rem; clip-path: polygon(0 1.6rem, 100% 0, 100% 100%, 0 100%); }
+  .panel:first-child { margin-top: 0; padding-top: 1.75rem; clip-path: none; }
+  .panel { --dx: calc(var(--px) * 0.35); --dy: calc(var(--py) * 0.6); }
+  .art { right: -1rem; bottom: -0.5rem; width: 8.5rem; height: 8.5rem; opacity: 0.55; }
+  .arrow { display: none; }
+  .head, .ghost { padding-right: 3.5rem; }
+}
+
+/* ── Laptop: three diagonal panels across the full width, one screen tall at most ── */
+@media (min-width: 900px) {
+  .hero { height: min(calc(100svh - var(--nav-h)), 43rem); min-height: 33rem; }
+  .panels { height: 100%; grid-template-columns: 30.5% 39% 30.5%; }
+  .panel { --dx: var(--px); --dy: var(--py); justify-content: flex-start; padding: clamp(2.5rem, 8vh, 4.5rem) 0 0; background: none !important; }
+  .panel:nth-child(1) .copy { padding-left: max(1.5rem, calc(50vw - 37rem)); padding-right: 12%; }
+  .panel:nth-child(2) .copy { padding-left: 17%; padding-right: 15%; }
+  .panel:nth-child(3) .copy { padding-left: 16%; padding-right: max(1.5rem, calc(50vw - 37rem)); }
+  .art { left: 50%; bottom: 0; width: min(78%, 21rem); height: 42%; transform: translateX(-50%); }
+  .panel:nth-child(1) .art { left: 40%; }
+  .panel:nth-child(3) .art { left: 60%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .head, .ghost1, .ghost2, .desc, .btn, .eyebrow, .arrow i, .arrow b, .art .node, .art :global(.edge) { animation: none !important; }
+  .mid { transition: none; transform: none !important; }
+}
