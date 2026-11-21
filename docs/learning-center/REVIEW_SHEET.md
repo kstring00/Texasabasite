@@ -614,7 +614,7 @@ Added in the third build phase. These screens are what a BCBA, the Clinical Dire
 
 ### 24. For the Clinical Director: three rules about who may approve what
 
-These rules are built in and switched on. The project brief says not to hard-code a clinic policy that has not been formally agreed, so they are kept in one place (`src/lib/learn/staff/pipeline.ts`, `LC_REVIEW_POLICY`) and each can be switched off without touching anything else. Please confirm each one, or say what the rule should be.
+These rules are built in and switched on. The project brief says not to hard-code a clinic policy that has not been formally agreed, so they are kept in one place (`src/lib/learn/staff/pipeline.ts`, `LC_REVIEW_POLICY`) and each can be switched off without touching anything else. Please confirm each one, or say what the rule should be. **All three stay switched on until you answer.**
 
 | Rule | What it means | Keep it? |
 |---|---|---|
